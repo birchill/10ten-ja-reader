@@ -113,6 +113,18 @@ Other options include:
 
 (I believe the latter two options only apply to Firefox.)
 
+Both commands open `tests/playground.html` from a `file://` URL. Since Firefox
+153 ([bug 2034168](https://bugzilla.mozilla.org/show_bug.cgi?id=2034168))
+extensions no longer get `file:` access from their host permissions; the user
+has to grant it with the "Access local files on your computer" toggle in
+about:addons, and there's no way to pre-set that for a temporarily-installed
+add-on. So `pnpm start:firefox` sets
+`extensions.webextensions.fileSchemeAccess.requireOptIn` to `false` in the
+development profile to restore the old behaviour.
+
+Chrome has the equivalent "Allow access to file URLs" switch on the extension's
+entry in chrome://extensions, which you will need to turn on by hand.
+
 ### Firefox for Android
 
 Instructions are [here](https://extensionworkshop.com/documentation/develop/developing-extensions-for-firefox-for-android/).
