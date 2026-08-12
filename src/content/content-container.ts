@@ -40,6 +40,11 @@ export function getOrCreateEmptyContainer({
     // Make sure the styles are up-to-date
     resetStyles({ container: existingContainers[0], styles });
 
+    // Make sure the container is in the right place in the document and, if
+    // we're using the top layer, that it is above any content the page has put
+    // there since we last showed it.
+    addContainerElement({ elem: existingContainers[0], before });
+
     // Make sure we have a fullscreenchange callback registered
     addFullScreenChangeCallback({ id, before });
 
@@ -61,6 +66,32 @@ export function getOrCreateEmptyContainer({
   addFullScreenChangeCallback({ id, before });
 
   return container;
+}
+
+// Re-inserts the container into the top layer so that it appears above any
+// dialogs or popovers the page has shown since we last did this.
+export function raiseContentContainer(id: string) {
+  const container = document.getElementById(id);
+  if (container) {
+    addContainerElement({ elem: container });
+  }
+}
+
+// Whether we can put our content in the top layer.
+//
+// Content in the top layer is painted above everything else on the page --
+// including fullscreen elements, popovers, and modal dialogs -- and is
+// positioned relative to the initial containing block no matter where it
+// appears in the DOM.
+//
+// Note that when this returns true, `addContainerElement` shows _every_
+// container it adds as a popover, so we can take it to mean our content is
+// actually in the top layer, and not merely that it could be.
+//
+// We don't use the top layer for standalone SVG documents since there we
+// position the popup by way of the <foreignObject> element that wraps it.
+export function canUseTopLayer(): boolean {
+  return 'popover' in HTMLElement.prototype && !isSvgDoc(document);
 }
 
 export function removeContentContainer(id: string | Array<string>) {
@@ -103,7 +134,23 @@ function addContainerElement({
   };
 
   let parent: Element;
-  if (document.fullscreenElement) {
+  if (canUseTopLayer()) {
+    // A modal <dialog>, like a fullscreen element, makes everything outside its
+    // subtree inert so, in order for our content to remain interactive, we need
+    // to make it a child of whichever of those is showing. Being in the top
+    // layer means we are still painted above it and are unaffected by any
+    // clipping or transforms it applies.
+    //
+    // Only the _topmost_ modal dialog makes the rest of the page inert, but
+    // there is no way to query the ordering of the top layer, so we use the
+    // last modal dialog in document order. Likewise, we won't find dialogs
+    // inside shadow trees. In either case we simply end up inert, i.e. no worse
+    // than not doing this at all.
+    const modalDialogs = document.querySelectorAll('dialog:modal');
+    parent = modalDialogs.length
+      ? modalDialogs[modalDialogs.length - 1]
+      : (document.fullscreenElement ?? document.documentElement);
+  } else if (document.fullscreenElement) {
     parent = document.fullscreenElement;
   } else if (isSvgDoc(document)) {
     // For SVG documents we put the container <div> inside a <foreignObject>.
@@ -118,11 +165,26 @@ function addContainerElement({
     parent = document.documentElement;
   }
 
-  insertBefore(parent, elem);
+  if (elem.parentElement !== parent) {
+    insertBefore(parent, elem);
+  }
 
   // If our previous parent was a foreignObject wrapper, drop it
-  if (isForeignObjectElement(previousParent)) {
+  if (isForeignObjectElement(previousParent) && previousParent !== parent) {
     previousParent.remove();
+  }
+
+  if (canUseTopLayer()) {
+    // Re-showing the popover moves it to the end of the top layer so that it is
+    // painted above anything the page has added there in the meantime.
+    //
+    // We use a manual popover since that's the only kind that neither dismisses
+    // the page's own popovers nor gets dismissed by them.
+    elem.setAttribute('popover', 'manual');
+    if (elem.matches(':popover-open')) {
+      elem.hidePopover();
+    }
+    elem.showPopover();
   }
 }
 

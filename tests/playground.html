@@ -309,6 +309,29 @@
         cursor: pointer;
       }
 
+      /* Deliberately broad so that we also check the page's styles for top
+       * layer content don't leak into our popup */
+      dialog,
+      [popover] {
+        max-width: min(90vw, 32rem);
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        padding: 1rem 1.25rem;
+        background: var(--bg-raised);
+        color: inherit;
+      }
+
+      dialog::backdrop {
+        background: rgb(0 0 0 / 40%);
+      }
+
+      /* Offset so both dialogs are visible; neither the transform nor the
+       * clipping should have any effect on content in the top layer */
+      #nested-dialog {
+        overflow: hidden;
+        transform: translate(1.5rem, 1.5rem) rotate(-1deg);
+      }
+
       /* Links with transitions used to make the popup flicker */
       #flicker {
         display: inline-block;
@@ -411,6 +434,7 @@
           <a href="#frames">Frames</a>
           <a href="#vertical">Vertical text</a>
           <a href="#shadow-dom">Shadow DOM</a>
+          <a href="#top-layer">Top layer</a>
           <a href="#eras">Eras</a>
           <a href="#measurements">Measurements</a>
           <a href="#numbers">Numbers</a>
@@ -613,6 +637,57 @@
             to render.
           </p>
           <div id="shadow-dom-container" class="card" lang="ja"></div>
+        </section>
+
+        <section id="top-layer">
+          <h2>Top layer</h2>
+          <p class="note">
+            Dialogs and popovers are painted in the top layer, above everything
+            else on the page, no matter what <code>z-index</code> we use. The
+            popup should show above them <em>and</em> stay usable, so check the
+            tabs, the pin button, and that hovering the popup keeps it open.
+          </p>
+          <p class="note">
+            A modal <code>&lt;dialog&gt;</code> additionally makes everything
+            outside it inert, so we move our content inside it. The nested
+            dialog is transformed and clipped since neither should affect
+            content in the top layer.
+          </p>
+          <div class="card row">
+            <button id="modal-dialog-btn">Open modal dialog</button>
+            <button id="dialog-btn">Open non-modal dialog</button>
+            <button popovertarget="page-popover">Toggle popover</button>
+          </div>
+
+          <dialog id="modal-dialog">
+            <p lang="ja">
+              ある日の暮方の事である。一人の下人が、羅生門の下で雨やみを待っていた。
+            </p>
+            <div class="row">
+              <button id="nested-dialog-btn">Open a second modal dialog</button>
+              <form method="dialog"><button>Close</button></form>
+            </div>
+          </dialog>
+
+          <dialog id="nested-dialog">
+            <p lang="ja">
+              広い門の下には、この男のほかに誰もいない。ただ、所々丹塗の剥げた、大きな円柱に、蟋蟀が一匹とまっている。
+            </p>
+            <form method="dialog"><button>Close</button></form>
+          </dialog>
+
+          <dialog id="dialog">
+            <p lang="ja">
+              雨は、羅生門をつつんで、遠くから、ざあっと云う音をあつめて来る。
+            </p>
+            <form method="dialog"><button>Close</button></form>
+          </dialog>
+
+          <div id="page-popover" popover>
+            <p lang="ja">
+              下人は、大きな嚔をして、それから、大儀そうに立上った。
+            </p>
+          </div>
         </section>
 
         <section id="eras">
@@ -906,6 +981,20 @@
         explanationElem.append(
           '(In particular we want to check towards the end of the line)'
         );
+      });
+
+      // --- Dialogs ----------------------------------------------------------
+      for (const [buttonId, dialogId] of [
+        ['modal-dialog-btn', 'modal-dialog'],
+        ['nested-dialog-btn', 'nested-dialog'],
+      ]) {
+        document.getElementById(buttonId).addEventListener('click', () => {
+          document.getElementById(dialogId).showModal();
+        });
+      }
+
+      document.getElementById('dialog-btn').addEventListener('click', () => {
+        document.getElementById('dialog').show();
       });
 
       // --- Fullscreen toggle ------------------------------------------------
