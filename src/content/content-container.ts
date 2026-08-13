@@ -40,8 +40,12 @@ export function getOrCreateEmptyContainer({
     // Make sure the styles are up-to-date
     resetStyles({ container: existingContainers[0], styles });
 
-    // Make sure we have a fullscreenchange callback registered
-    addFullScreenChangeCallback({ id, before });
+    registerContainer({ id, before });
+
+    // Make sure our containers are in the right place in the document and, if
+    // we're using the top layer, that they are above any content the page has
+    // put there since we last showed them.
+    updateContainers();
 
     return existingContainers[0];
   }
@@ -57,10 +61,27 @@ export function getOrCreateEmptyContainer({
   // Add the necessary style element
   resetStyles({ container, styles });
 
-  // Update the position in the document if we go to/from fullscreen mode
-  addFullScreenChangeCallback({ id, before });
+  registerContainer({ id, before });
+  updateContainers();
 
   return container;
+}
+
+// Whether we can put our content in the top layer.
+//
+// Content in the top layer is painted above everything else on the page --
+// including fullscreen elements, popovers, and modal dialogs -- and is
+// positioned relative to the initial containing block no matter where it
+// appears in the DOM.
+//
+// Note that when this returns true, `addContainerElement` shows _every_
+// container it adds as a popover, so we can take it to mean our content is
+// actually in the top layer, and not merely that it could be.
+//
+// We don't use the top layer for standalone SVG documents since there we
+// position the popup by way of the <foreignObject> element that wraps it.
+export function canUseTopLayer(): boolean {
+  return 'popover' in HTMLElement.prototype && !isSvgDoc(document);
 }
 
 export function removeContentContainer(id: string | Array<string>) {
@@ -72,7 +93,7 @@ export function removeContentContainer(id: string | Array<string>) {
     removeContainerElement(container);
   }
   for (const id of containerIds) {
-    removeFullScreenChangeCallback(id);
+    unregisterContainer(id);
   }
 }
 
@@ -103,7 +124,23 @@ function addContainerElement({
   };
 
   let parent: Element;
-  if (document.fullscreenElement) {
+  if (canUseTopLayer()) {
+    // A modal <dialog>, like a fullscreen element, makes everything outside its
+    // subtree inert so, in order for our content to remain interactive, we need
+    // to make it a child of whichever of those is showing. Being in the top
+    // layer means we are still painted above it and are unaffected by any
+    // clipping or transforms it applies.
+    //
+    // Only the _topmost_ modal dialog makes the rest of the page inert, but
+    // there is no way to query the ordering of the top layer, so we use the
+    // last modal dialog in document order. Likewise, we won't find dialogs
+    // inside shadow trees. In either case we simply end up inert, i.e. no worse
+    // than not doing this at all.
+    const modalDialogs = document.querySelectorAll('dialog:modal');
+    parent = modalDialogs.length
+      ? modalDialogs[modalDialogs.length - 1]
+      : (document.fullscreenElement ?? document.documentElement);
+  } else if (document.fullscreenElement) {
     parent = document.fullscreenElement;
   } else if (isSvgDoc(document)) {
     // For SVG documents we put the container <div> inside a <foreignObject>.
@@ -118,11 +155,26 @@ function addContainerElement({
     parent = document.documentElement;
   }
 
-  insertBefore(parent, elem);
+  if (elem.parentElement !== parent) {
+    insertBefore(parent, elem);
+  }
 
   // If our previous parent was a foreignObject wrapper, drop it
-  if (isForeignObjectElement(previousParent)) {
+  if (isForeignObjectElement(previousParent) && previousParent !== parent) {
     previousParent.remove();
+  }
+
+  if (canUseTopLayer()) {
+    // Re-showing the popover moves it to the end of the top layer so that it is
+    // painted above anything the page has added there in the meantime.
+    //
+    // We use a manual popover since that's the only kind that neither dismisses
+    // the page's own popovers nor gets dismissed by them.
+    elem.setAttribute('popover', 'manual');
+    if (elem.matches(':popover-open')) {
+      elem.hidePopover();
+    }
+    elem.showPopover();
   }
 }
 
@@ -134,39 +186,68 @@ function removeContainerElement(elem: Element) {
   }
 }
 
-const fullScreenChangedCallbacks: Record<string, (event: Event) => void> = {};
+// The containers we have added, mapped to the ID of the element they should be
+// inserted before, if any.
+const containers = new Map<string, string | undefined>();
 
-function addFullScreenChangeCallback({
-  id,
-  before,
-}: {
-  id: string;
-  before?: string;
-}) {
-  const existingCallback = fullScreenChangedCallbacks[id];
-  if (typeof existingCallback !== 'undefined') {
+let dialogObserver: MutationObserver | undefined;
+
+function registerContainer({ id, before }: { id: string; before?: string }) {
+  const isFirstContainer = !containers.size;
+  containers.set(id, before);
+
+  if (!isFirstContainer) {
     return;
   }
 
-  const callback = () => {
-    const container = document.getElementById(id);
-    if (!container) {
-      return;
-    }
+  document.addEventListener('fullscreenchange', updateContainers);
 
-    // Re-add the container element, respecting the updated
-    // document.fullScreenElement property.
-    addContainerElement({ elem: container, before });
-  };
-
-  document.addEventListener('fullscreenchange', callback);
-  fullScreenChangedCallbacks[id] = callback;
+  // `showModal()` and `close()` set and clear the `open` attribute so we can
+  // watch for that to know when we need to move our containers into or out of a
+  // modal dialog.
+  //
+  // We need to do this even when nothing has triggered a re-render of the popup
+  // since the puck, in particular, needs to keep working without a mouse.
+  if (canUseTopLayer()) {
+    dialogObserver = new MutationObserver((records) => {
+      if (records.some((record) => record.target.nodeName === 'DIALOG')) {
+        updateContainers();
+      }
+    });
+    dialogObserver.observe(document.documentElement, {
+      subtree: true,
+      attributeFilter: ['open'],
+    });
+  }
 }
 
-function removeFullScreenChangeCallback(id: string) {
-  const callback = fullScreenChangedCallbacks[id];
-  if (callback) {
-    document.removeEventListener('fullscreenchange', callback);
+function unregisterContainer(id: string) {
+  containers.delete(id);
+
+  if (containers.size) {
+    return;
+  }
+
+  document.removeEventListener('fullscreenchange', updateContainers);
+  dialogObserver?.disconnect();
+  dialogObserver = undefined;
+}
+
+// Re-adds our containers so that they end up attached to the right element and,
+// when we're using the top layer, at the top of it.
+function updateContainers() {
+  if (!containers.size) {
+    return;
+  }
+
+  // Process the containers in document order since, in the top layer, it is the
+  // order in which content is added that determines what appears on top. That
+  // way the puck, which we always insert after the popup, stays above it.
+  const elems = document.querySelectorAll<HTMLElement>(
+    [...containers.keys()].map((id) => `#${id}`).join(', ')
+  );
+  for (const elem of elems) {
+    addContainerElement({ elem, before: containers.get(elem.id) });
   }
 }
 

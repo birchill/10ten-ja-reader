@@ -276,6 +276,10 @@ function getDefaultContainer(): HTMLElement {
     styles: popupStyles.toString(),
     // Make sure the popup container appears _before_ the puck container so that
     // we can assign them the same z-index and have the puck appear on top.
+    //
+    // In the top layer it's the order in which content is added that determines
+    // what appears on top but, since we add our containers in document order,
+    // this gets us the same result there too.
     before: LookupPuckId,
     legacyIds: ['rikaichamp-window'],
   });
