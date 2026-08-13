@@ -40,13 +40,12 @@ export function getOrCreateEmptyContainer({
     // Make sure the styles are up-to-date
     resetStyles({ container: existingContainers[0], styles });
 
-    // Make sure the container is in the right place in the document and, if
-    // we're using the top layer, that it is above any content the page has put
-    // there since we last showed it.
-    addContainerElement({ elem: existingContainers[0], before });
+    registerContainer({ id, before });
 
-    // Make sure we have a fullscreenchange callback registered
-    addFullScreenChangeCallback({ id, before });
+    // Make sure our containers are in the right place in the document and, if
+    // we're using the top layer, that they are above any content the page has
+    // put there since we last showed them.
+    updateContainers();
 
     return existingContainers[0];
   }
@@ -62,19 +61,10 @@ export function getOrCreateEmptyContainer({
   // Add the necessary style element
   resetStyles({ container, styles });
 
-  // Update the position in the document if we go to/from fullscreen mode
-  addFullScreenChangeCallback({ id, before });
+  registerContainer({ id, before });
+  updateContainers();
 
   return container;
-}
-
-// Re-inserts the container into the top layer so that it appears above any
-// dialogs or popovers the page has shown since we last did this.
-export function raiseContentContainer(id: string) {
-  const container = document.getElementById(id);
-  if (container) {
-    addContainerElement({ elem: container });
-  }
 }
 
 // Whether we can put our content in the top layer.
@@ -103,7 +93,7 @@ export function removeContentContainer(id: string | Array<string>) {
     removeContainerElement(container);
   }
   for (const id of containerIds) {
-    removeFullScreenChangeCallback(id);
+    unregisterContainer(id);
   }
 }
 
@@ -196,39 +186,68 @@ function removeContainerElement(elem: Element) {
   }
 }
 
-const fullScreenChangedCallbacks: Record<string, (event: Event) => void> = {};
+// The containers we have added, mapped to the ID of the element they should be
+// inserted before, if any.
+const containers = new Map<string, string | undefined>();
 
-function addFullScreenChangeCallback({
-  id,
-  before,
-}: {
-  id: string;
-  before?: string;
-}) {
-  const existingCallback = fullScreenChangedCallbacks[id];
-  if (typeof existingCallback !== 'undefined') {
+let dialogObserver: MutationObserver | undefined;
+
+function registerContainer({ id, before }: { id: string; before?: string }) {
+  const isFirstContainer = !containers.size;
+  containers.set(id, before);
+
+  if (!isFirstContainer) {
     return;
   }
 
-  const callback = () => {
-    const container = document.getElementById(id);
-    if (!container) {
-      return;
-    }
+  document.addEventListener('fullscreenchange', updateContainers);
 
-    // Re-add the container element, respecting the updated
-    // document.fullScreenElement property.
-    addContainerElement({ elem: container, before });
-  };
-
-  document.addEventListener('fullscreenchange', callback);
-  fullScreenChangedCallbacks[id] = callback;
+  // `showModal()` and `close()` set and clear the `open` attribute so we can
+  // watch for that to know when we need to move our containers into or out of a
+  // modal dialog.
+  //
+  // We need to do this even when nothing has triggered a re-render of the popup
+  // since the puck, in particular, needs to keep working without a mouse.
+  if (canUseTopLayer()) {
+    dialogObserver = new MutationObserver((records) => {
+      if (records.some((record) => record.target.nodeName === 'DIALOG')) {
+        updateContainers();
+      }
+    });
+    dialogObserver.observe(document.documentElement, {
+      subtree: true,
+      attributeFilter: ['open'],
+    });
+  }
 }
 
-function removeFullScreenChangeCallback(id: string) {
-  const callback = fullScreenChangedCallbacks[id];
-  if (callback) {
-    document.removeEventListener('fullscreenchange', callback);
+function unregisterContainer(id: string) {
+  containers.delete(id);
+
+  if (containers.size) {
+    return;
+  }
+
+  document.removeEventListener('fullscreenchange', updateContainers);
+  dialogObserver?.disconnect();
+  dialogObserver = undefined;
+}
+
+// Re-adds our containers so that they end up attached to the right element and,
+// when we're using the top layer, at the top of it.
+function updateContainers() {
+  if (!containers.size) {
+    return;
+  }
+
+  // Process the containers in document order since, in the top layer, it is the
+  // order in which content is added that determines what appears on top. That
+  // way the puck, which we always insert after the popup, stays above it.
+  const elems = document.querySelectorAll<HTMLElement>(
+    [...containers.keys()].map((id) => `#${id}`).join(', ')
+  );
+  for (const elem of elems) {
+    addContainerElement({ elem, before: containers.get(elem.id) });
   }
 }
 

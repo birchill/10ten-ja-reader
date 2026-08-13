@@ -4,11 +4,7 @@ import { classes } from '../../utils/classes';
 import type { Point } from '../../utils/geometry';
 import { getThemeClass } from '../../utils/themes';
 
-import {
-  canUseTopLayer,
-  getOrCreateEmptyContainer,
-  raiseContentContainer,
-} from '../content-container';
+import { getOrCreateEmptyContainer } from '../content-container';
 import type { DisplayMode } from '../popup-state';
 import { LookupPuckId } from '../puck';
 import type { QueryResult } from '../query';
@@ -280,16 +276,13 @@ function getDefaultContainer(): HTMLElement {
     styles: popupStyles.toString(),
     // Make sure the popup container appears _before_ the puck container so that
     // we can assign them the same z-index and have the puck appear on top.
+    //
+    // In the top layer it's the order in which content is added that determines
+    // what appears on top but, since we add our containers in document order,
+    // this gets us the same result there too.
     before: LookupPuckId,
     legacyIds: ['rikaichamp-window'],
   });
-
-  // In the top layer, however, it's the order in which content is added that
-  // determines what appears on top, so we need to re-add the puck after adding
-  // the popup.
-  if (canUseTopLayer()) {
-    raiseContentContainer(LookupPuckId);
-  }
 
   // Make sure our popup doesn't get inverted by Wikipedia's (experimental) dark
   // mode.
