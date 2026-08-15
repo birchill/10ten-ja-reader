@@ -40,26 +40,26 @@ jobs:
 
       - name: Create or update release PR
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
           github-token: ${{ secrets.PUSH_TOKEN }}
-          version: pnpm changeset-version
-          title: 'Release next version'
-          commit: 'chore: bump version'
-          createGithubReleases: false
+          version-script: pnpm changeset-version
+          pr-title: 'Release next version'
+          commit-message: 'chore: bump version'
+          create-github-releases: false
 
       - name: Generate release notes preview
-        if: ${{ steps.changesets.outputs.pullRequestNumber }}
+        if: ${{ steps.changesets.outputs.prNumber }}
         run: node ./scripts/release-notes-preview.js > release-notes-preview.md
 
       - name: Add preview to step summary
-        if: ${{ steps.changesets.outputs.pullRequestNumber }}
+        if: ${{ steps.changesets.outputs.prNumber }}
         run: cat release-notes-preview.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Comment release notes preview
-        if: ${{ steps.changesets.outputs.pullRequestNumber }}
+        if: ${{ steps.changesets.outputs.prNumber }}
         env:
           GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
           RELEASE_NOTES_PREVIEW_PATH: release-notes-preview.md
-          RELEASE_PR_NUMBER: ${{ steps.changesets.outputs.pullRequestNumber }}
+          RELEASE_PR_NUMBER: ${{ steps.changesets.outputs.prNumber }}
         run: node ./scripts/comment-release-notes-preview.js
