@@ -46,36 +46,20 @@ jobs:
           pnpm build:chrome
           pnpm build:thunderbird
 
-      # TEMPORARY: diagnose why Firefox never connects back to Vitest on this
-      # runner (the browser (firefox) project times out after 60s while
-      # browser (chrome) passes). To be removed once the cause is known.
-      - name: Diagnose Firefox
-        run: |-
-          set -x
-          which firefox && readlink -f "$(which firefox)" || true
-          firefox --version || true
-          sysctl kernel.apparmor_restrict_unprivileged_userns || true
-          sudo aa-status 2>&1 | head -20 || true
-          ls /etc/apparmor.d || true
-          getent hosts localhost || true
-          ip -brief addr || true
-          df -h /dev/shm || true
-          env | grep -iE 'proxy|no_proxy' || echo 'no proxy vars'
-          unshare --user --map-root-user true && echo 'userns OK' || echo 'userns BLOCKED'
-          python3 -m http.server 8199 --bind 127.0.0.1 >/dev/null 2>&1 &
-          timeout 10 bash -c 'until curl -sf -o /dev/null http://localhost:8199/; do sleep 0.2; done' || true
-          timeout 90 firefox --headless --screenshot /tmp/ff-remote.png https://example.com/ \
-            && echo 'firefox screenshot (remote) OK' || echo "firefox screenshot (remote) FAILED rc=$?"
-          timeout 90 firefox --headless --screenshot /tmp/ff-local.png http://localhost:8199/ \
-            && echo 'firefox screenshot (localhost) OK' || echo "firefox screenshot (localhost) FAILED rc=$?"
+      # The runner image only provides Firefox as a snap (/snap/bin/firefox).
+      # Snaps get a private /tmp, so Firefox can't read the temporary profile
+      # geckodriver passes it via -profile and the WebDriver session never
+      # starts, making the browser (firefox) tests time out. Install an
+      # unconfined Firefox and put it ahead of the snap on the PATH.
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@v1
 
       - name: Run tests
         env:
           CI: true
-          # TEMPORARY: verbose browser-provider logging for the diagnosis above
-          DEBUG: vitest:*
-          WDIO_LOG_LEVEL: debug
-        run: pnpm test
+        run: |-
+          which -a firefox
+          pnpm test
 
       - name: Upload any failure artifacts
         uses: actions/upload-artifact@v7
