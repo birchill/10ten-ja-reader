@@ -172,8 +172,8 @@ importers:
         specifier: 5.6.1
         version: 5.6.1(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.26)(webpack@5.109.2(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.26))
       ts-checker-rspack-plugin:
-        specifier: 1.6.0
-        version: 1.6.0(@rspack/core@2.1.8)(tslib@2.8.1)(typescript@7.0.2)
+        specifier: 1.6.1
+        version: 1.6.1(@rspack/core@2.1.8)(tslib@2.8.1)(typescript@7.0.2)
       tsx:
         specifier: 4.23.12
         version: 4.23.12
@@ -5034,8 +5034,8 @@ packages:
     peerDependencies:
       tslib: '2'
 
-  ts-checker-rspack-plugin@1.6.0:
-    resolution: {integrity: sha512-T9xp7YhbvxDP0uUAn8n5iBnzFXdPJTwiR+ePNVVRYrIsYqNkXxxfvdMFC7CWT4kPkOFXuV0N1wTIGkjxMeURYg==}
+  ts-checker-rspack-plugin@1.6.1:
+    resolution: {integrity: sha512-9bnsisnBiPfVzONCMWjHpmc4I4ND+LFw+5qY/saKXiP+fhMvicgEmwTLjMGWnxPrOOsRre9IgROGtCPwhhSj0A==}
     peerDependencies:
       '@rspack/core': ^1.0.0 || ^2.0.0
       '@typescript/native-preview': ^7.0.0-0
@@ -10064,7 +10064,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  ts-checker-rspack-plugin@1.6.0(@rspack/core@2.1.8)(tslib@2.8.1)(typescript@7.0.2):
+  ts-checker-rspack-plugin@1.6.1(@rspack/core@2.1.8)(tslib@2.8.1)(typescript@7.0.2):
     dependencies:
       '@rspack/lite-tapable': 1.1.2
       chokidar: 3.6.0
