@@ -19,7 +19,7 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     name: Test
 
     steps:
@@ -71,7 +71,7 @@ jobs:
         run: pnpm cosmos-export
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     name: Lint
 
     steps:
