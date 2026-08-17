@@ -278,18 +278,30 @@ export function scanText({
     result.text += nodeText;
     result.textRange.push({ node, start: offset, end: node.data.length });
 
+    let crossedBlockBoundary = false;
     let nextNode = nodeIterator.nextNode() as Text | Element | null;
     while (nextNode && !includeNodeText(nextNode)) {
+      if (
+        nextNode.nodeType === Node.ELEMENT_NODE &&
+        isBlockBoundary(nextNode as Element)
+      ) {
+        crossedBlockBoundary = true;
+      }
       sourceBuilder.add(nextNode);
       nextNode = nodeIterator.nextNode() as Text | Element | null;
     }
     node = nextNode as Text | null;
 
     offset = 0;
-  } while (
-    node &&
-    (node.parentNode === inlineScope || isEffectiveInline(node.parentElement))
-  );
+    if (
+      node &&
+      (crossedBlockBoundary ||
+        (node.parentNode !== inlineScope &&
+          !isEffectiveInline(node.parentElement)))
+    ) {
+      break;
+    }
+  } while (node);
 
   // Check if we didn't find any suitable characters
   if (!result.textRange!.length) {
@@ -410,6 +422,14 @@ function isEffectiveInline(element: Element | null): element is Element {
       ].includes(getComputedStyle(element).display!) ||
       (!!element.parentElement &&
         getComputedStyle(element.parentElement)?.display === 'inline-block'))
+  );
+}
+
+function isBlockBoundary(element: Element): boolean {
+  return (
+    !['RP', 'RT'].includes(element.tagName) &&
+    element.checkVisibility() &&
+    !isEffectiveInline(element)
   );
 }
 
