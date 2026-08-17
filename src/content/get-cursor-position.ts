@@ -277,6 +277,14 @@ function getCursorPositionForElement({
 }
 
 function isVisible(element: Element) {
+  const { display, opacity, visibility } = getComputedStyle(element);
+
+  // display: contents elements don't generate their own box, so
+  // checkVisibility() reports false even when their contents are visible.
+  if (display === 'contents') {
+    return opacity !== '0' && visibility !== 'hidden';
+  }
+
   // Use the checkVisibility API when available
   if ('checkVisibility' in element) {
     return element.checkVisibility({
@@ -285,7 +293,6 @@ function isVisible(element: Element) {
     });
   }
 
-  const { opacity, visibility } = getComputedStyle(element);
   return opacity !== '0' && visibility !== 'hidden';
 }
 

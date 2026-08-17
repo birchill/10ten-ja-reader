@@ -586,6 +586,7 @@ describe('getTextAtPoint', () => {
     it('uses the shadow host as the start element for a direct text child', () => {
       // Arrange
       const container = document.createElement('div');
+      container.style.display = 'contents';
       testDiv.append(container);
       const shadowRoot = container.attachShadow({ mode: 'open' });
       shadowRoot.append('テスト');
