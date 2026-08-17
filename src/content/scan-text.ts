@@ -57,9 +57,13 @@ export function scanText({
   const { offsetNode: startNode, offset: startOffset } = startPosition;
 
   // Get the ancestor for all inline nodes we intend to traverse
-  let inlineScope = startNode.parentElement;
-  while (isEffectiveInline(inlineScope) && inlineScope.parentElement) {
-    inlineScope = inlineScope.parentElement;
+  let inlineScope: Node = startNode.parentNode || startNode;
+  while (
+    inlineScope.nodeType === Node.ELEMENT_NODE &&
+    isEffectiveInline(inlineScope as Element) &&
+    inlineScope.parentNode
+  ) {
+    inlineScope = inlineScope.parentNode;
   }
 
   // If we started inside an <rp> element, bail.
@@ -103,7 +107,7 @@ export function scanText({
 
   // Setup a node iterator starting at the current node
   const nodeIterator = document.createNodeIterator(
-    inlineScope || startNode,
+    inlineScope,
     // We need to include elements simply so we can detect empty ruby parts
     NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT
   );
@@ -160,7 +164,7 @@ export function scanText({
     node = nextNode as Text | null;
 
     // Don't traverse block siblings
-    if (inlineScope && !inlineScope.contains(node)) {
+    if (!inlineScope.contains(node)) {
       node = null;
       break;
     }
@@ -284,9 +288,7 @@ export function scanText({
     offset = 0;
   } while (
     node &&
-    inlineScope &&
-    (node.parentElement === inlineScope ||
-      isEffectiveInline(node.parentElement))
+    (node.parentNode === inlineScope || isEffectiveInline(node.parentElement))
   );
 
   // Check if we didn't find any suitable characters
@@ -296,7 +298,7 @@ export function scanText({
 
   // Continue adding source context after the found text
   let nextNode: Text | Element | null = node;
-  while (nextNode && inlineScope) {
+  while (nextNode) {
     nextNode = nodeIterator.nextNode() as Text | Element | null;
     if (nextNode) {
       sourceBuilder.add(nextNode);

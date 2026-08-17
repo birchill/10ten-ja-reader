@@ -3,6 +3,7 @@ import {
   MAX_NON_JP_PREFIX_LENGTH,
 } from '../common/limits';
 import { japaneseChar } from '../utils/char-range';
+import { getParentOrShadowHost } from '../utils/dom-utils';
 import type { Point } from '../utils/geometry';
 import { bboxIncludesPoint } from '../utils/geometry';
 import {
@@ -106,14 +107,16 @@ export function getTextAtPoint({
     });
 
     if (scanResult) {
+      const startElement = getParentOrShadowHost(position.offsetNode);
       console.assert(
-        position.offsetNode.parentElement,
-        'Nodes in our position should have a parent element'
+        startElement,
+        'Nodes in our position should have a parent element or shadow host'
       );
-      const result: GetTextAtPointResult = {
-        ...scanResult,
-        startElement: position.offsetNode.parentElement!,
-      };
+      if (!startElement) {
+        return null;
+      }
+
+      const result: GetTextAtPointResult = { ...scanResult, startElement };
 
       // If we synthesized a text node, substitute the original node into the
       // result.

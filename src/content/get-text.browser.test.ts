@@ -583,6 +583,56 @@ describe('getTextAtPoint', () => {
    * ------------------------------------------------------------------------*/
 
   describe('shadow DOM', () => {
+    it('uses the shadow host as the start element for a direct text child', () => {
+      // Arrange
+      const container = document.createElement('div');
+      testDiv.append(container);
+      const shadowRoot = container.attachShadow({ mode: 'open' });
+      shadowRoot.append('テスト');
+
+      const textNode = shadowRoot.firstChild as Text;
+      const bbox = getBboxForOffset(textNode, 0);
+
+      // Act
+      const result = getTextAtPoint({
+        point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+      });
+
+      // Assert
+      expect(result?.startElement).toBe(container);
+    });
+
+    it('reads across inline children of a shadow root', () => {
+      // Arrange
+      const container = document.createElement('div');
+      testDiv.append(container);
+      const shadowRoot = container.attachShadow({ mode: 'open' });
+
+      const firstTextNode = document.createTextNode('日本語の');
+      const span = document.createElement('span');
+      const spanTextNode = document.createTextNode('特別な');
+      span.append(spanTextNode);
+      const lastTextNode = document.createTextNode('テキスト');
+      shadowRoot.append(firstTextNode, span, lastTextNode);
+
+      const bbox = getBboxForOffset(firstTextNode, 0);
+
+      // Act
+      const result = getTextAtPoint({
+        point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+      });
+
+      // Assert
+      expect(result).toMatchObject(
+        textAtPoint(
+          '日本語の特別なテキスト',
+          [firstTextNode, 0, 4],
+          [spanTextNode, 0, 3],
+          [lastTextNode, 0, 4]
+        )
+      );
+    });
+
     it('reads shadow DOM content', () => {
       // Arrange
 
