@@ -1,6 +1,7 @@
 import { html } from '../utils/builder';
 import {
   SVG_NS,
+  getParentOrShadowHost,
   isElement,
   isTextInputNode,
   isTextNode,
@@ -162,9 +163,13 @@ export function isGdocsOverlayPosition(
 function getElementForPosition(
   position: CursorPosition | null | undefined
 ): Element | null {
-  return position?.offsetNode?.nodeType === Node.ELEMENT_NODE
-    ? (position.offsetNode as Element)
-    : position?.offsetNode?.parentElement || null;
+  if (!position) {
+    return null;
+  }
+
+  return isElement(position.offsetNode)
+    ? position.offsetNode
+    : getParentOrShadowHost(position.offsetNode);
 }
 
 function getCursorPositionForElement({

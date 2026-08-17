@@ -97,6 +97,15 @@ export const isTextNode = (node: Node | null | undefined): node is Text =>
 export const isElement = (node: Node | null | undefined): node is Element =>
   !!node && node.nodeType === Node.ELEMENT_NODE;
 
+export function getParentOrShadowHost(node: Node): Element | null {
+  if (node.parentElement) {
+    return node.parentElement;
+  }
+
+  const root = node.getRootNode();
+  return root instanceof ShadowRoot ? root.host : null;
+}
+
 export function isSvg(node: Node): node is SVGElement {
   return node.nodeType === Node.ELEMENT_NODE
     ? node instanceof SVGElement
