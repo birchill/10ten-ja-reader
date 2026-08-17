@@ -634,6 +634,49 @@ describe('getTextAtPoint', () => {
       );
     });
 
+    it.each([
+      ['block', '日本'],
+      ['none', '日本語'],
+      ['contents', '日本語'],
+    ] as const)(
+      'handles display: %s children of a shadow root',
+      (display, expectedText) => {
+        // Arrange
+        const container = document.createElement('div');
+        testDiv.append(container);
+        const shadowRoot = container.attachShadow({ mode: 'open' });
+
+        const span = document.createElement('span');
+        const firstTextNode = document.createTextNode('日本');
+        span.append(firstTextNode);
+        const intervening = document.createElement('div');
+        intervening.style.display = display;
+        const lastTextNode = document.createTextNode('語');
+        shadowRoot.append(span, intervening, lastTextNode);
+
+        const bbox = getBboxForOffset(firstTextNode, 0);
+
+        // Act
+        const result = getTextAtPoint({
+          point: {
+            x: bbox.left + bbox.width / 2,
+            y: bbox.top + bbox.height / 2,
+          },
+        });
+
+        // Assert
+        const expectedRange =
+          display === 'block'
+            ? textAtPoint('日本', [firstTextNode, 0, 2])
+            : textAtPoint(
+                expectedText,
+                [firstTextNode, 0, 2],
+                [lastTextNode, 0, 1]
+              );
+        expect(result).toMatchObject(expectedRange);
+      }
+    );
+
     it('reads shadow DOM content', () => {
       // Arrange
 
