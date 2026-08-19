@@ -3,6 +3,7 @@ import Bugsnag from '@birchill/bugsnag-zero';
 import type { MoraTimingData, TtsClipRequest } from '../common/tts/tts-request';
 import { buildTtsFilename } from '../common/tts/tts-request';
 import { isAbortError } from '../utils/is-abort-error';
+import { isError } from '../utils/is-error';
 
 const TTS_BASE_URL = 'https://data.10ten.life/audio';
 const CLIP_FETCH_BUDGET_MS = 10_000;
@@ -42,7 +43,11 @@ export async function fetchTtsClip(
     if (buffer.byteLength > MAX_CLIP_BYTES) {
       void Bugsnag.notify(`TTS clip exceeds the ${MAX_CLIP_BYTES}-byte cap`, {
         severity: 'warning',
-        metadata: { byteLength: buffer.byteLength, url },
+        metadata: {
+          byteLength: buffer.byteLength,
+          status: response.status,
+          contentLength: response.headers.get('content-length'),
+        },
       });
       return { ok: false };
     }
@@ -52,7 +57,9 @@ export async function fetchTtsClip(
     if (isAbortError(e)) {
       return { ok: false };
     }
-    void Bugsnag.notify(e);
+    if (!isNetworkError(e)) {
+      void Bugsnag.notify(e);
+    }
     return { ok: false };
   } finally {
     clearTimeout(deadline);
@@ -130,4 +137,12 @@ function encodeBase64(buffer: ArrayBuffer): string {
     binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
   }
   return btoa(binary);
+}
+
+function isNetworkError(e: unknown): boolean {
+  return (
+    isError(e) &&
+    e instanceof TypeError &&
+    (e.message.startsWith('NetworkError') || e.message === 'Failed to fetch')
+  );
 }
