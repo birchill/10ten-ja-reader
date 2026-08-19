@@ -1382,6 +1382,10 @@
     "message": "なし",
     "description": "Label for not showing pitch accent information"
   },
+  "options_audio_heading": {
+    "message": "音声",
+    "description": "Heading for the section for configuring audio playback of readings"
+  },
   "options_browser_commands_no_toggle_key": {
     "message": "お使いになっているブラウザーではこのショートカットキーを変更していただけません。",
     "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."
@@ -1676,6 +1680,14 @@
   "options_offline_explanation": {
     "message": "この端末は只今オフラインになっているため、更新の確認ができませんでした。オフラインになりましたら、更新確認を行います。",
     "description": "Message shown when the system is offline so updates cannot be performed"
+  },
+  "options_play_readings_description": {
+    "message": "実験的機能: 各語の読み方の発音を再生するボタンを追加します。再生ボタンを押すと、表示されている読み方（および漢字がある場合はその漢字）が10tenのサーバーに送信されます。",
+    "description": "Description of the setting to enable the button for playing a word entry's readings as audio, including a privacy disclosure"
+  },
+  "options_play_readings_label": {
+    "message": "音声で読み方を再生する",
+    "description": "Checkbox label for the setting to enable the button for playing a word entry's readings as audio"
   },
   "options_popup_close_popup": { "message": "ポップアップを閉じる" },
   "options_popup_copy_entry": { "message": "項目をコピーする" },
