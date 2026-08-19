@@ -17,15 +17,26 @@ const SearchOtherRequestSchema = s.assign(
 
 export type SearchOtherRequest = s.Infer<typeof SearchOtherRequestSchema>;
 
+const TtsClipRequestSchema = s.type({
+  kanji: s.optional(s.string()),
+  reading: s.string(),
+  pitchAccentPos: s.optional(s.number()),
+});
+
 export const BackgroundRequestSchema = discriminator('type', {
   //
   // Requests for the background page
   //
   canHoverChanged: s.type({ value: s.boolean() }),
+  cancelTtsFetch: s.type({ requestId: s.string() }),
   disabled: s.type({}),
   disableMouseInteraction: s.type({}),
   'enable?': s.type({}),
   enabled: s.type({ src: s.string() }),
+  fetchTtsClip: s.type({
+    request: TtsClipRequestSchema,
+    requestId: s.string(),
+  }),
   isDbUpdating: s.type({}),
   options: s.type({}),
   puckStateChanged: s.type({
