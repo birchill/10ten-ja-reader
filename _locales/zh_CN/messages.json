@@ -1678,7 +1678,7 @@
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
   "options_play_readings_description": {
-    "message": "实验性功能：为每个词条添加一个播放读音发音的按钮。点击播放后，会将显示的读音（以及汉字，如果有）发送到 10ten 的服务器。",
+    "message": "实验性功能：为每个词条添加一个播放读音发音的按钮。点击播放后，会将显示的读音（以及汉字，如果有）发送到 10ten 的服务器。如果文本输入框已聚焦，第一次按下此快捷键仍会播放或停止音频而不会输入该字符，之后在您再次移动鼠标前，此快捷键及其他弹出窗口快捷键都会被忽略。",
     "description": "Description of the setting to enable the button for playing a word entry's readings as audio, including a privacy disclosure"
   },
   "options_play_readings_label": {
