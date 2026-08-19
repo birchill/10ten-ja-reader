@@ -1,4 +1,3 @@
-/** Identifies a clip for the TTS service to synthesize. */
 export type TtsClipRequest = {
   kanji?: string;
   reading: string;
@@ -10,7 +9,6 @@ export type MoraTimingData = {
   totalDurationMs: number;
 };
 
-/** A fetched TTS clip: the audio bytes plus any parsed mora-timing metadata. */
 export type TtsClip = { bytes: Uint8Array; moraTiming?: MoraTimingData };
 
 /**
