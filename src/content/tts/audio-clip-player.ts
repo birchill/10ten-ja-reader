@@ -80,6 +80,9 @@ export const playClip: PlayClip = (clip, signal) => {
       }
       const playback = prepared;
       await rejectWhenAborted(playback.ready, signal);
+      if (signal.aborted) {
+        return;
+      }
       if (playback.context.state !== 'running') {
         throw new Error('AudioContext did not resume');
       }
@@ -90,6 +93,9 @@ export const playClip: PlayClip = (clip, signal) => {
         ),
         signal
       );
+      if (signal.aborted) {
+        return;
+      }
 
       source = playback.context.createBufferSource();
       source.buffer = audioBuffer;

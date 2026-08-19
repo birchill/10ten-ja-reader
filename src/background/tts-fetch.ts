@@ -150,7 +150,11 @@ function parseMoraTimingHeaders(
 }
 
 function parseWholeMs(value: string): number | undefined {
-  return /^\d+$/.test(value) ? Number(value) : undefined;
+  if (!/^\d+$/.test(value)) {
+    return undefined;
+  }
+  const parsed = Number(value);
+  return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : undefined;
 }
 
 function encodeBase64(buffer: ArrayBuffer): string {

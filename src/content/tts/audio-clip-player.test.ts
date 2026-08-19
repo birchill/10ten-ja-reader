@@ -226,6 +226,27 @@ describe('playClip', () => {
     expect(lastSource).toBeUndefined();
   });
 
+  it('never starts a source when the signal aborts in the microtask gap right after decode resolves', async () => {
+    preparePlayback();
+    resumeDeferred.resolve();
+    await flush();
+
+    const clip: TtsClip = { bytes: new Uint8Array([1, 2, 3]) };
+    const controller = new AbortController();
+    const { started, ended } = playClip(clip, controller.signal);
+    void started.catch(() => {});
+    void ended.catch(() => {});
+    await flush();
+
+    decodeDeferred.resolve({} as AudioBuffer);
+    queueMicrotask(() => controller.abort());
+    await flush();
+
+    await expect(started).rejects.toThrow('Clip playback aborted');
+    await expect(ended).rejects.toThrow('Clip playback aborted');
+    expect(calls).not.toContain('start');
+  });
+
   it('stops and disconnects the source, and rejects `ended`, when the signal aborts mid-playback', async () => {
     preparePlayback();
     resumeDeferred.resolve();
