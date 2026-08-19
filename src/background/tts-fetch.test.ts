@@ -74,6 +74,25 @@ describe('fetchTtsClip', () => {
     expect(result).toEqual({ ok: false, status: 404 });
   });
 
+  it('skips a plain network failure silently (no notify)', async () => {
+    vi.mocked(fetch).mockRejectedValue(new TypeError('Failed to fetch'));
+
+    const result = await fetchTtsClip(key, request);
+
+    expect(result).toEqual({ ok: false });
+    expect(notifySpy).not.toHaveBeenCalled();
+  });
+
+  it('notifies for an unexpected throw that is not a recognized network failure', async () => {
+    const error = new Error('boom');
+    vi.mocked(fetch).mockRejectedValue(error);
+
+    const result = await fetchTtsClip(key, request);
+
+    expect(result).toEqual({ ok: false });
+    expect(notifySpy).toHaveBeenCalledWith(error);
+  });
+
   it('aborts the underlying fetch when canceled while in flight', async () => {
     const call = mockFetch();
 
