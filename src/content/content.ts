@@ -1152,6 +1152,7 @@ export class ContentHandler {
       movePopupUp,
       movePopupDown,
       startCopy,
+      playReadings,
     ] = [
       normalizeKeys(keys.nextDictionary),
       normalizeKeys(keys.toggleDefinition),
@@ -1161,6 +1162,7 @@ export class ContentHandler {
       normalizeKeys(keys.movePopupUp),
       normalizeKeys(keys.movePopupDown),
       normalizeKeys(keys.startCopy),
+      normalizeKeys(keys.playReadings),
     ];
 
     const key = normalizeKey(event.key);
@@ -1208,6 +1210,12 @@ export class ContentHandler {
       this.exitCopyMode();
     } else if (expandPopup.includes(key)) {
       this.expandPopup();
+    } else if (
+      this.#config.playReadings &&
+      this.isVisible() &&
+      playReadings.includes(key)
+    ) {
+      this.togglePlayReadings();
     }
     // This needs to come _after_ the above check so that if the user has
     // configured Escape to close the popup but they are in copy mode, we first
@@ -1576,6 +1584,10 @@ export class ContentHandler {
         this.movePopup(request.direction);
         break;
 
+      case 'playReadings':
+        this.togglePlayReadings();
+        break;
+
       case 'enterCopyMode':
         this.enterCopyMode({ trigger: 'keyboard' });
         break;
@@ -1647,6 +1659,18 @@ export class ContentHandler {
       );
     }
     this.updatePopup();
+  }
+
+  togglePlayReadings() {
+    if (!this.isTopMostWindow()) {
+      void browser.runtime.sendMessage({ type: 'top:playReadings' });
+      return;
+    }
+
+    // Call this before toggle, in the same turn as the key or message event.
+    // A later call could miss the user-activation window that unlocks audio.
+    preparePlayback();
+    this.#ttsPlayback?.toggleTopEntry();
   }
 
   enterCopyMode({
