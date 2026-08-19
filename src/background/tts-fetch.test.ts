@@ -202,6 +202,30 @@ describe('fetchTtsClip', () => {
     );
   });
 
+  it('returns the clip without mora timing, and warns directly, when the duration header overflows a safe integer', async () => {
+    const bytes = new Uint8Array([9, 9]);
+    mockFetch(
+      makeResponse({
+        headers: {
+          'x-amz-meta-mora-timings': '[0,100]',
+          'x-amz-meta-audio-duration': '9'.repeat(400),
+        },
+        buffer: bytes.buffer,
+      })
+    );
+
+    const result = await fetchTtsClip(key, request);
+
+    expect(result).toEqual({
+      ok: true,
+      audio: Buffer.from(bytes).toString('base64'),
+    });
+    expect(notifySpy).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ severity: 'warning' })
+    );
+  });
+
   it('aborts the fetch, and returns ok: false, when reading the body exceeds the 10s budget', async () => {
     mockFetch(makeResponse({ arrayBuffer: () => neverSettles<ArrayBuffer>() }));
 
