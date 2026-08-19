@@ -50,6 +50,28 @@ describe('fetchTtsClip', () => {
     ).rejects.toThrow('Clip fetch failed');
   });
 
+  it('rejects cleanly when the background sends no response at all', async () => {
+    sendMessage.mockResolvedValue(undefined);
+
+    await expect(
+      fetchTtsClip(request, new AbortController().signal)
+    ).rejects.toThrow('Clip fetch failed');
+  });
+
+  it('sends a cancel even when the signal is already aborted before the call', async () => {
+    sendMessage.mockResolvedValue(undefined);
+    const controller = new AbortController();
+    controller.abort();
+
+    await expect(fetchTtsClip(request, controller.signal)).rejects.toThrow(
+      'Aborted'
+    );
+
+    expect(sendMessage).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'cancelTtsFetch' })
+    );
+  });
+
   it('sends a cancel and rejects promptly when the signal aborts mid-flight', async () => {
     sendMessage.mockImplementation((message) =>
       message.type === 'fetchTtsClip'

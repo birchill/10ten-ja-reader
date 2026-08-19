@@ -74,6 +74,31 @@ describe('fetchTtsClip', () => {
     expect(result).toEqual({ ok: false, status: 404 });
   });
 
+  it('aborts the controller on a non-OK response, even if its body never finishes downloading', async () => {
+    const call = mockFetch(
+      makeResponse({
+        ok: false,
+        status: 500,
+        arrayBuffer: () => neverSettles<ArrayBuffer>(),
+      })
+    );
+
+    const result = await fetchTtsClip(key, request);
+
+    expect(result).toEqual({ ok: false, status: 500 });
+    expect(call.signal?.aborted).toBe(true);
+  });
+
+  it('honors a cancel that arrives before its fetchTtsClip registers, without waiting on the network', async () => {
+    mockFetch();
+    cancelTtsFetch(key);
+
+    const result = await fetchTtsClip(key, request);
+
+    expect(result).toEqual({ ok: false });
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
   it('skips a plain network failure silently (no notify)', async () => {
     vi.mocked(fetch).mockRejectedValue(new TypeError('Failed to fetch'));
 
@@ -103,11 +128,16 @@ describe('fetchTtsClip', () => {
     await expect(pending).resolves.toEqual({ ok: false });
   });
 
-  it('is a no-op, with nothing left to clean up, when canceled after the fetch settles', async () => {
+  it('records a harmless, bounded tombstone, but touches no live signal, when canceled after the fetch settles', async () => {
+    const settledKey: TtsFetchKey = {
+      tabId: 1,
+      frameId: 0,
+      requestId: 'settled-key',
+    };
     const call = mockFetch(makeResponse({ buffer: new ArrayBuffer(0) }));
 
-    await fetchTtsClip(key, request);
-    cancelTtsFetch(key);
+    await fetchTtsClip(settledKey, request);
+    cancelTtsFetch(settledKey);
 
     expect(call.signal?.aborted).toBe(false);
   });
@@ -118,6 +148,54 @@ describe('fetchTtsClip', () => {
     const result = await fetchTtsClip(key, request);
 
     expect(result).toEqual({ ok: false });
+    expect(notifySpy).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ severity: 'warning' })
+    );
+  });
+
+  it('returns the clip without mora timing, and warns directly, when the duration header has trailing non-digit characters', async () => {
+    const bytes = new Uint8Array([9, 9]);
+    mockFetch(
+      makeResponse({
+        headers: {
+          'x-amz-meta-mora-timings': '[0,100]',
+          'x-amz-meta-audio-duration': '300ms',
+        },
+        buffer: bytes.buffer,
+      })
+    );
+
+    const result = await fetchTtsClip(key, request);
+
+    expect(result).toEqual({
+      ok: true,
+      audio: Buffer.from(bytes).toString('base64'),
+    });
+    expect(notifySpy).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ severity: 'warning' })
+    );
+  });
+
+  it('returns the clip without mora timing, and warns directly, when the duration header is fractional', async () => {
+    const bytes = new Uint8Array([9, 9]);
+    mockFetch(
+      makeResponse({
+        headers: {
+          'x-amz-meta-mora-timings': '[0,100]',
+          'x-amz-meta-audio-duration': '1.5',
+        },
+        buffer: bytes.buffer,
+      })
+    );
+
+    const result = await fetchTtsClip(key, request);
+
+    expect(result).toEqual({
+      ok: true,
+      audio: Buffer.from(bytes).toString('base64'),
+    });
     expect(notifySpy).toHaveBeenCalledWith(
       expect.anything(),
       expect.objectContaining({ severity: 'warning' })
