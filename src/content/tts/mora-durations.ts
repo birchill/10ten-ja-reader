@@ -9,11 +9,6 @@ export type MoraDuration = { startMs: number; durationMs: number };
 
 const MIN_DURATION_MS = 50;
 
-/**
- * Turn a clip's per-codepoint timings into one `{ startMs, durationMs }` per
- * mora token, or nothing when the timings were measured against a different
- * string — in which case the caller must not animate.
- */
 export function computeMoraDurations(
   tokens: ReadonlyArray<ReadingToken>,
   reading: string,
@@ -51,24 +46,33 @@ export function computeMoraDurations(
   });
 }
 
-// One report per set of timings: the overlay recomputes durations on every
-// render, and a mismatch does not resolve itself.
-const reported = new WeakSet<MoraTimingData>();
+const REPORT_MEMORY = 32;
+
+// Keyed by what the anomaly _is_, not by the timing object: the overlay
+// recomputes durations on every render, and every replay refetches the clip
+// into a fresh object that would otherwise report the same mismatch again.
+const reported = new Set<string>();
 
 function reportMismatch(
   reading: string,
   timing: MoraTimingData,
   codepointCount: number
 ) {
-  if (reported.has(timing)) {
+  // The reading stays local to this key. It must not reach telemetry: what the
+  // user looked up is masked out of every payload this extension sends.
+  const mismatch = `${reading}|${timing.charTimingsMs.length}`;
+  if (reported.has(mismatch)) {
     return;
   }
-  reported.add(timing);
+  if (reported.size >= REPORT_MEMORY) {
+    reported.clear();
+  }
+  reported.add(mismatch);
 
   void browser.runtime
     .sendMessage<BackgroundRequest, void>({
       type: 'notifyTtsWarning',
-      message: `Mora timing mismatch: ${timing.charTimingsMs.length} timings for ${codepointCount} codepoints in "${reading}"`,
+      message: `Mora timing mismatch: ${timing.charTimingsMs.length} timings for ${codepointCount} codepoints`,
     })
     .catch(() => {});
 }
