@@ -5,6 +5,7 @@ export function rejectWhenAborted<T>(
 ): Promise<T> {
   if (signal.aborted) {
     onAbort?.();
+    void promise.catch(() => {});
     return Promise.reject(new DOMException('Aborted', 'AbortError'));
   }
 

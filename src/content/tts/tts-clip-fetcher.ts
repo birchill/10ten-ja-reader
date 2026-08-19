@@ -16,7 +16,7 @@ export const fetchTtsClip: FetchClip = async (request, signal) => {
     () => void sendCancel(requestId)
   );
 
-  if (!response.ok) {
+  if (!response?.ok) {
     throw new Error('Clip fetch failed');
   }
 
@@ -26,22 +26,22 @@ export const fetchTtsClip: FetchClip = async (request, signal) => {
   };
 };
 
+const instancePrefix = Math.random().toString(36).slice(2);
 let requestCounter = 0;
 
 function nextRequestId(): string {
   requestCounter += 1;
-  return `tts-clip-${requestCounter}`;
+  return `${instancePrefix}-${requestCounter}`;
 }
 
 function sendFetch(
   request: TtsClipRequest,
   requestId: string
-): Promise<TtsFetchResult> {
-  return browser.runtime.sendMessage<BackgroundRequest, TtsFetchResult>({
-    type: 'fetchTtsClip',
-    request,
-    requestId,
-  });
+): Promise<TtsFetchResult | undefined> {
+  return browser.runtime.sendMessage<
+    BackgroundRequest,
+    TtsFetchResult | undefined
+  >({ type: 'fetchTtsClip', request, requestId });
 }
 
 function sendCancel(requestId: string): Promise<void> {
