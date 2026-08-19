@@ -643,6 +643,10 @@ browser.runtime.onMessage.addListener(
         }
         break;
 
+      case 'notifyTtsWarning':
+        void Bugsnag.notify(request.message, { severity: 'warning' });
+        break;
+
       //
       // Forwarded messages
       //
