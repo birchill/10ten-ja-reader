@@ -3,6 +3,10 @@ import { useEffect } from 'preact/hooks';
 import { act } from 'preact/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 
+import type { WordResult } from '../../background/search-result';
+
+import type { QueryResult } from '../query';
+
 import { mountPopupComponent, withPopupRoot } from './mount';
 import { PopupPositionMode } from './popup-position';
 import { renderPopup } from './render-popup';
@@ -18,6 +22,17 @@ vi.mock('webextension-polyfill', () => ({
     runtime: { getURL: (path: string) => path },
   },
 }));
+
+// jsdom has no ResizeObserver.
+// updateExpandable calls only observe(), so a no-op stub is enough.
+vi.stubGlobal(
+  'ResizeObserver',
+  class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+);
 
 describe('renderPopup', () => {
   it("unmounts the previous render's popup islands when the popup rebuilds", async () => {
@@ -37,7 +52,48 @@ describe('renderPopup', () => {
 
     expect(cleanup).toHaveBeenCalledTimes(1);
   });
+
+  it('runs the words island wrapper and unmounts it on rebuild', async () => {
+    const host = document.createElement('div');
+    const options = createOptions(host);
+    const result = createWordsQueryResult();
+
+    renderPopup(result, options);
+
+    // This proves the words wrapper ran, not just resetContainer's unmount.
+    expect(host.textContent).toContain('日');
+
+    const cleanup = vi.fn<() => void>();
+    const probeContainer = document.createElement('div');
+    await act(() => {
+      withPopupRoot(host, () => {
+        mountPopupComponent(
+          probeContainer,
+          h(CleanupProbe, { onCleanup: cleanup })
+        );
+      });
+    });
+
+    renderPopup(result, options);
+
+    expect(cleanup).toHaveBeenCalledTimes(1);
+  });
 });
+
+function createWordsQueryResult(): QueryResult {
+  const word: WordResult = {
+    id: 1,
+    k: [{ ent: '日', match: true }],
+    r: [{ ent: 'ひ', match: true, romaji: 'hi' }],
+    s: [{ match: true, g: [{ str: 'day' }] }],
+    matchLen: 1,
+  };
+
+  return {
+    words: { type: 'words', data: [word], matchLen: 1, more: false },
+    resultType: 'full',
+  };
+}
 
 function createOptions(container: HTMLElement): ShowPopupOptions {
   return {
