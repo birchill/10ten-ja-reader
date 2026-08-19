@@ -77,6 +77,21 @@ describe('resolveTtsParams', () => {
     expect(resolveTtsParams(entry)).toEqual([{ reading: 'はいる' }]);
   });
 
+  it('resolves only the kana the popup displays', () => {
+    const entry = createEntry(
+      [
+        kana('ふんいき'),
+        kana('ふいんき', { match: false }),
+        kana('フンイキ', { i: ['sk'] }),
+      ],
+      [kanji('雰囲気')]
+    );
+
+    expect(resolveTtsParams(entry)).toEqual([
+      { reading: 'ふんいき', kanji: '雰囲気' },
+    ]);
+  });
+
   it('preserves display order across multiple readings', () => {
     const entry = createEntry(
       [kana('はいる', { a: 1 }), kana('いる', { a: 0 })],

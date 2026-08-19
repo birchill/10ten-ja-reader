@@ -38,7 +38,11 @@ export type PlaybackState =
 
 export type TtsPlayerOptions = { fetchClip: FetchClip; playClip: PlayClip };
 
-type PendingClip = { readingIndex: number; clip: Promise<TtsClip> };
+type PendingClip = {
+  readingIndex: number;
+  clip: Promise<TtsClip>;
+  controller: AbortController;
+};
 
 export class TtsPlayer {
   #options: TtsPlayerOptions;
@@ -102,23 +106,57 @@ export class TtsPlayer {
     const session = new AbortController();
     this.#session = session;
 
-    const pending = indices.map((readingIndex) => {
-      const clip = this.#options.fetchClip(
-        this.#readings[readingIndex],
-        session.signal
-      );
+    const clips = indices.map((readingIndex) => {
+      // Give each clip its own controller before you fetch it, so that the
+      // deadline in `#playWhenReady` can also cancel the fetch.
+      const controller = new AbortController();
+      const clip = this.#fetchClip(readingIndex, controller.signal);
       // A later reading can fail before its turn to play. Without a handler,
       // this gives an unhandled rejection.
       ignoreRejection(clip);
-      return { readingIndex, clip };
+      return { readingIndex, clip, controller };
     });
 
-    void this.#run(pending, session.signal);
+    void this.#run(clips, session.signal);
+  }
+
+  #fetchClip(readingIndex: number, signal: AbortSignal): Promise<TtsClip> {
+    try {
+      return this.#options.fetchClip(this.#readings[readingIndex], signal);
+    } catch (error) {
+      // A seam that throws synchronously must fail like a rejected fetch. The
+      // state machine then handles it like every other failed reading.
+      return Promise.reject(error);
+    }
   }
 
   async #run(clips: Array<PendingClip>, signal: AbortSignal) {
+    const abortClips = () => {
+      for (const { controller } of clips) {
+        controller.abort();
+      }
+    };
+    signal.addEventListener('abort', abortClips);
+
+    try {
+      await this.#playClips(clips, signal);
+    } finally {
+      signal.removeEventListener('abort', abortClips);
+      // A natural end does not abort the session, so cancel here the clips
+      // this session did not reach.
+      abortClips();
+    }
+  }
+
+  async #playClips(clips: Array<PendingClip>, signal: AbortSignal) {
     for (const [pos, pending] of clips.entries()) {
       this.#setState({ kind: 'loading', readingIndex: pending.readingIndex });
+      // A subscriber can stop us while it hears about `loading`. Install no
+      // per-clip resources for a session that is already over.
+      if (signal.aborted) {
+        return;
+      }
+
       try {
         await this.#playWhenReady(pending, signal);
       } catch {
@@ -147,32 +185,26 @@ export class TtsPlayer {
   }
 
   async #playWhenReady(
-    { readingIndex, clip }: PendingClip,
+    { readingIndex, clip, controller }: PendingClip,
     signal: AbortSignal
   ): Promise<void> {
-    const clipController = new AbortController();
-    const abortClip = () => clipController.abort();
-    signal.addEventListener('abort', abortClip);
     // The deadline aborts this clip only. It must not abort the session,
     // because the readings that follow must still play.
-    const deadline = setTimeout(abortClip, CLIP_DEADLINE_MS);
+    const deadline = setTimeout(() => controller.abort(), CLIP_DEADLINE_MS);
 
     try {
-      const fetched = await rejectWhenAborted(clip, clipController.signal);
+      const fetched = await rejectWhenAborted(clip, controller.signal);
       if (signal.aborted) {
         return;
       }
 
       const { started, ended } = this.#options.playClip(
         fetched,
-        clipController.signal
+        controller.signal
       );
       ignoreRejection(ended);
 
-      const { startedAt } = await rejectWhenAborted(
-        started,
-        clipController.signal
-      );
+      const { startedAt } = await rejectWhenAborted(started, controller.signal);
       // A clip can play for longer than the deadline, so stop the deadline as
       // soon as the audio starts.
       clearTimeout(deadline);
@@ -186,13 +218,12 @@ export class TtsPlayer {
         startedAt,
         moraTiming: fetched.moraTiming,
       });
-      await rejectWhenAborted(ended, clipController.signal);
+      await rejectWhenAborted(ended, controller.signal);
     } finally {
       clearTimeout(deadline);
-      signal.removeEventListener('abort', abortClip);
       // Abort after every outcome, also a natural end. This tells the playback
       // seam to release the resources of this clip.
-      clipController.abort();
+      controller.abort();
     }
   }
 }
