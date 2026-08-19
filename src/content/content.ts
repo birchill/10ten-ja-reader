@@ -1668,6 +1668,12 @@ export class ContentHandler {
       return;
     }
 
+    // Re-check here: a forwarded message can arrive after this frame's own
+    // popup state moved on, so the sender's state can no longer be trusted.
+    if (!this.#config.playReadings || !this.isVisible()) {
+      return;
+    }
+
     // Call this before toggle, in the same turn as the key or message event.
     // A later call could miss the user-activation window that unlocks audio.
     preparePlayback();

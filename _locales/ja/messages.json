@@ -1682,7 +1682,7 @@
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
   "options_play_readings_description": {
-    "message": "実験的機能: 各語の読み方の発音を再生するボタンを追加します。再生ボタンを押すと、表示されている読み方（および漢字がある場合はその漢字）が10tenのサーバーに送信されます。",
+    "message": "実験的機能: 各語の読み方の発音を再生するボタンを追加します。再生ボタンを押すと、表示されている読み方（および漢字がある場合はその漢字）が10tenのサーバーに送信されます。テキスト入力欄にフォーカスがある状態でこのショートカットキーを押すと、最初の一回だけ文字の入力の代わりに再生・停止が行われますが、それ以降はマウスを動かすまで、このショートカットキーを含むポップアップのショートカットキーはすべて無視されます。",
     "description": "Description of the setting to enable the button for playing a word entry's readings as audio, including a privacy disclosure"
   },
   "options_play_readings_label": {
