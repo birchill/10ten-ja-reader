@@ -1,0 +1,60 @@
+import browser from 'webextension-polyfill';
+
+import type { BackgroundRequest } from '../../background/background-request';
+import type { TtsFetchResult } from '../../background/tts-fetch';
+import type { TtsClipRequest } from '../../common/tts/tts-request';
+import { rejectWhenAborted } from '../../utils/reject-when-aborted';
+
+import type { FetchClip } from './tts-player';
+
+export const fetchTtsClip: FetchClip = async (request, signal) => {
+  const requestId = nextRequestId();
+
+  const response = await rejectWhenAborted(
+    sendFetch(request, requestId),
+    signal,
+    () => void sendCancel(requestId)
+  );
+
+  if (!response.ok) {
+    throw new Error('Clip fetch failed');
+  }
+
+  return {
+    bytes: decodeBase64(response.audio),
+    moraTiming: response.moraTiming,
+  };
+};
+
+let requestCounter = 0;
+
+function nextRequestId(): string {
+  requestCounter += 1;
+  return `tts-clip-${requestCounter}`;
+}
+
+function sendFetch(
+  request: TtsClipRequest,
+  requestId: string
+): Promise<TtsFetchResult> {
+  return browser.runtime.sendMessage<BackgroundRequest, TtsFetchResult>({
+    type: 'fetchTtsClip',
+    request,
+    requestId,
+  });
+}
+
+function sendCancel(requestId: string): Promise<void> {
+  return browser.runtime
+    .sendMessage<BackgroundRequest, void>({ type: 'cancelTtsFetch', requestId })
+    .catch(() => {});
+}
+
+function decodeBase64(base64: string): Uint8Array {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytes;
+}
