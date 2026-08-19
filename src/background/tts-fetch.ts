@@ -16,12 +16,18 @@ export type TtsFetchResult =
 export type TtsFetchKey = { tabId: number; frameId: number; requestId: string };
 
 const pendingFetches = new Map<string, AbortController>();
+const cancelledKeys = new Set<string>();
+const MAX_CANCELLED_KEYS = 50;
 
 export async function fetchTtsClip(
   key: TtsFetchKey,
   request: TtsClipRequest
 ): Promise<TtsFetchResult> {
   const mapKey = keyFor(key);
+  if (cancelledKeys.delete(mapKey)) {
+    return { ok: false };
+  }
+
   const controller = new AbortController();
   pendingFetches.set(mapKey, controller);
   const deadline = setTimeout(() => controller.abort(), CLIP_FETCH_BUDGET_MS);
@@ -34,6 +40,7 @@ export async function fetchTtsClip(
     );
 
     if (!response.ok) {
+      controller.abort();
       return { ok: false, status: response.status };
     }
 
@@ -70,7 +77,20 @@ export async function fetchTtsClip(
 }
 
 export function cancelTtsFetch(key: TtsFetchKey): void {
-  pendingFetches.get(keyFor(key))?.abort();
+  const mapKey = keyFor(key);
+  const controller = pendingFetches.get(mapKey);
+  if (controller) {
+    controller.abort();
+    return;
+  }
+
+  cancelledKeys.add(mapKey);
+  if (cancelledKeys.size > MAX_CANCELLED_KEYS) {
+    const oldestKey = cancelledKeys.values().next().value;
+    if (oldestKey !== undefined) {
+      cancelledKeys.delete(oldestKey);
+    }
+  }
 }
 
 function keyFor(key: TtsFetchKey): string {
@@ -107,11 +127,11 @@ function parseMoraTimingHeaders(
 
   try {
     const charTimingsMs: unknown = JSON.parse(rawTimings);
-    const totalDurationMs = parseInt(rawDuration, 10);
+    const totalDurationMs = parseWholeMs(rawDuration);
     if (
       Array.isArray(charTimingsMs) &&
       charTimingsMs.every((n) => typeof n === 'number' && Number.isFinite(n)) &&
-      Number.isFinite(totalDurationMs)
+      totalDurationMs !== undefined
     ) {
       return { charTimingsMs, totalDurationMs };
     }
@@ -127,6 +147,10 @@ function parseMoraTimingHeaders(
   }
 
   return undefined;
+}
+
+function parseWholeMs(value: string): number | undefined {
+  return /^\d+$/.test(value) ? Number(value) : undefined;
 }
 
 function encodeBase64(buffer: ArrayBuffer): string {

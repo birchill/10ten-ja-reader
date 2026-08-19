@@ -9,7 +9,24 @@ let prepared: PreparedPlayback | undefined;
 // Do not call this outside a user gesture handler. WebKit keeps the context
 // suspended if the gesture is over.
 export function preparePlayback(): void {
-  ensurePrepared();
+  if (!prepared || prepared.context.state === 'closed') {
+    prepared = createPrepared();
+    return;
+  }
+  if (prepared.context.state === 'suspended') {
+    prepared.ready = resumeTracked(prepared.context);
+  }
+}
+
+function createPrepared(): PreparedPlayback {
+  const context = new AudioContext();
+  return { context, ready: resumeTracked(context) };
+}
+
+function resumeTracked(context: AudioContext): Promise<void> {
+  const ready = context.resume();
+  void ready.catch(() => {});
+  return ready;
 }
 
 export const playClip: PlayClip = (clip, signal) => {
@@ -17,6 +34,18 @@ export const playClip: PlayClip = (clip, signal) => {
   const ended = deferred<void>();
   let source: AudioBufferSourceNode | undefined;
   let settled = false;
+
+  const stopQuietly = () => {
+    try {
+      source?.stop();
+    } catch {}
+  };
+
+  const disconnectQuietly = () => {
+    try {
+      source?.disconnect();
+    } catch {}
+  };
 
   const settle = (error?: unknown) => {
     if (settled) {
@@ -26,13 +55,13 @@ export const playClip: PlayClip = (clip, signal) => {
     signal.removeEventListener('abort', onAbort);
 
     if (error === undefined) {
-      source?.disconnect();
+      disconnectQuietly();
       ended.resolve();
       return;
     }
 
-    source?.stop();
-    source?.disconnect();
+    stopQuietly();
+    disconnectQuietly();
     started.reject(error);
     ended.reject(error);
   };
@@ -46,12 +75,18 @@ export const playClip: PlayClip = (clip, signal) => {
 
   async function run() {
     try {
-      const playback = ensurePrepared();
+      if (!prepared) {
+        throw new Error('preparePlayback() was not called');
+      }
+      const playback = prepared;
       await rejectWhenAborted(playback.ready, signal);
+      if (playback.context.state !== 'running') {
+        throw new Error('AudioContext did not resume');
+      }
 
       const audioBuffer = await rejectWhenAborted(
         playback.context.decodeAudioData(
-          clip.bytes.buffer.slice(0) as ArrayBuffer
+          clip.bytes.slice().buffer as ArrayBuffer
         ),
         signal
       );
@@ -68,16 +103,6 @@ export const playClip: PlayClip = (clip, signal) => {
     }
   }
 };
-
-function ensurePrepared(): PreparedPlayback {
-  if (!prepared) {
-    const context = new AudioContext();
-    prepared = { context, ready: context.resume() };
-  } else if (prepared.context.state === 'suspended') {
-    prepared.ready = prepared.context.resume();
-  }
-  return prepared;
-}
 
 function deferred<T>() {
   let resolve!: (value: T) => void;
