@@ -51,7 +51,7 @@ const evenTiming: MoraTimingData = {
 beforeEach(() => {
   sendMessage.mockReset();
   sendMessage.mockResolvedValue(undefined);
-  reduceMotion(false);
+  installMatchMedia();
   vi.spyOn(performance, 'now').mockReturnValue(STARTED_AT);
 });
 
@@ -240,26 +240,57 @@ describe('TtsReadingOverlay', () => {
     expect(overlay()).toBeNull();
   });
 
-  it('restarts rather than fades when the same reading plays again', () => {
+  it('builds new mora spans when a reading replays during the fade-out', () => {
     const { overlay, moras, publish } = mount();
 
     publish(playing());
-    publish({ kind: 'idle' });
-    vi.spyOn(performance, 'now').mockReturnValue(STARTED_AT + 5000);
-    publish(playing({ startedAt: 5000 }));
+    const first = moras();
+    expect(first).toHaveLength(3);
 
-    expect(overlay()!.style.animation).toBe('');
-    expect(revealAnimations(moras())[0]).toBe(
-      'fade-in 200ms ease-in-out -1000ms forwards'
+    publish({ kind: 'idle' });
+    expect(overlay()!.style.animation).toBe(
+      'fade-out 400ms ease-in-out forwards'
     );
+
+    // Replay 200ms in, while the overlay is still fading. Retiming the spans
+    // that are already there would leave their finished animations finished —
+    // the whole reading lit, with no sweep — so they have to be new elements.
+    const replayedAt = STARTED_AT + 200;
+    vi.spyOn(performance, 'now').mockReturnValue(replayedAt);
+    publish(playing({ startedAt: replayedAt }));
+
+    const second = moras();
+    expect(overlay()!.style.animation).toBe('');
+    expect(second).toHaveLength(3);
+    expect(second.some((span, index) => span === first[index])).toBe(false);
+    expect(revealAnimations(second)).toEqual([
+      'fade-in 200ms ease-in-out 0ms forwards',
+      'fade-in 200ms ease-in-out 200ms forwards',
+      'fade-in 200ms ease-in-out 400ms forwards',
+    ]);
   });
 
   it('renders no overlay under prefers-reduced-motion', () => {
-    reduceMotion(true);
+    setReducedMotion(true);
 
     const { overlay } = mount({ initialState: playing() });
 
     expect(overlay()).toBeNull();
+  });
+
+  it('resyncs from the current clock when animation is switched back on', () => {
+    setReducedMotion(true);
+    const { overlay, moras } = mount({ initialState: playing() });
+    expect(overlay()).toBeNull();
+
+    vi.spyOn(performance, 'now').mockReturnValue(STARTED_AT + 400);
+    act(() => setReducedMotion(false));
+
+    expect(revealAnimations(moras())).toEqual([
+      'fade-in 200ms ease-in-out -400ms forwards',
+      'fade-in 200ms ease-in-out -200ms forwards',
+      'fade-in 200ms ease-in-out 0ms forwards',
+    ]);
   });
 
   it('renders no overlay when the clip has no timings', () => {
@@ -286,9 +317,10 @@ describe('TtsReadingOverlay', () => {
 
     expect(overlay()).toBeNull();
     expect(sendMessage).toHaveBeenCalledTimes(1);
+    // What the user looked up must not reach telemetry.
     expect(sendMessage).toHaveBeenCalledWith({
       type: 'notifyTtsWarning',
-      message: 'Mora timing mismatch: 2 timings for 3 codepoints in "たべる"',
+      message: 'Mora timing mismatch: 2 timings for 3 codepoints',
     });
   });
 });
@@ -376,18 +408,40 @@ function growSpans(moras: Array<HTMLElement>): Array<HTMLElement> {
   return moras.map((mora) => mora.firstElementChild as HTMLElement);
 }
 
-function reduceMotion(reduce: boolean) {
+let reduced = false;
+let motionListeners: Array<(event: MediaQueryListEvent) => void> = [];
+
+function installMatchMedia() {
+  reduced = false;
+  motionListeners = [];
   vi.stubGlobal(
     'matchMedia',
-    vi
-      .fn()
-      .mockImplementation((query: string) => ({
-        matches: reduce,
-        media: query,
-        addEventListener: () => {},
-        removeEventListener: () => {},
-      }))
+    vi.fn().mockImplementation((query: string) => ({
+      get matches() {
+        return reduced;
+      },
+      media: query,
+      addEventListener: (
+        _type: string,
+        listener: (event: MediaQueryListEvent) => void
+      ) => {
+        motionListeners.push(listener);
+      },
+      removeEventListener: (
+        _type: string,
+        listener: (event: MediaQueryListEvent) => void
+      ) => {
+        motionListeners = motionListeners.filter((l) => l !== listener);
+      },
+    }))
   );
+}
+
+function setReducedMotion(reduce: boolean) {
+  reduced = reduce;
+  for (const listener of motionListeners) {
+    listener({ matches: reduce } as MediaQueryListEvent);
+  }
 }
 
 function animationEnd(animationName: string): Event {
