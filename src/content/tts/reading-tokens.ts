@@ -91,11 +91,6 @@ function binaryAccent(
   return mora === accentPos ? 'fall' : 'low';
 }
 
-/**
- * Merge neighbouring moras that draw one continuous accent line into a single
- * segment, so a reading renders the two or three spans it needs rather than
- * one span per mora.
- */
 export function coalesceReadingTokens(
   tokens: ReadonlyArray<ReadingToken>
 ): Array<{ text: string; accent?: ReadingTokenAccent }> {

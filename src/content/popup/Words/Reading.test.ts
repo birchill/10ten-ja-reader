@@ -178,6 +178,32 @@ describe('Reading', () => {
     ]);
   });
 
+  // The two cases below are a deliberate change from the pre-token rendering,
+  // which clamped mora offsets inconsistently with how it sliced the text.
+  it('marks a one-mora reading whose accent runs past its end as a fall', () => {
+    // Was: a rise on the mora plus an empty trailing fall span.
+    expect(renderSegments({ ent: 'め', a: 2 }, 'binary')).toEqual([
+      ['め', FALL],
+    ]);
+    expect(renderSegments({ ent: 'め', a: 3 }, 'binary')).toEqual([
+      ['め', FALL],
+    ]);
+  });
+
+  it('keeps every small kana of a mora built from three codepoints', () => {
+    // Was: ぎゃぁ rendered as ぎゃ — the trailing ぁ was dropped outright.
+    expect(renderSegments({ ent: 'ぎゃぁ', a: 1 }, 'binary')).toEqual([
+      ['ぎゃぁ', FALL],
+    ]);
+    expect(renderSegments({ ent: 'ぎゃぁ', a: 0 }, 'binary')).toEqual([
+      ['ぎゃぁ', HIGH],
+    ]);
+    // Was: ぎゃꜜぁ, with the mark inside the mora it belongs to.
+    expect(renderReading({ ent: 'ぎゃぁ', a: 1 }, 'downstep').innerHTML).toBe(
+      'ぎゃぁꜜ'
+    );
+  });
+
   it('renders bare text when there is nothing to mark', () => {
     expect(renderReading({ ent: 'さくら', a: 0 }, 'none').innerHTML).toBe(
       'さくら'

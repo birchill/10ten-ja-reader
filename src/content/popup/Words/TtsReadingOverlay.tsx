@@ -45,13 +45,14 @@ export function TtsReadingOverlay(props: TtsReadingOverlayProps) {
     }
   }, [playing?.timing, playing?.startedAt]);
 
-  // Read the clock once per clip. Recomputing it on later renders would
-  // restart the mora animations part-way through the reading.
+  // Read the clock once per clip, and again when animation is switched back on
+  // — that builds a fresh subtree, which has its own catching up to do. Any
+  // other render must reuse the reading, or the sweep restarts mid-word.
   const startedAt = highlight?.startedAt;
   const elapsedMs = useMemo(
     () =>
       startedAt === undefined ? 0 : Math.max(performance.now() - startedAt, 0),
-    [startedAt]
+    [startedAt, shouldAnimate]
   );
 
   if (!shouldAnimate || !highlight) {
@@ -90,6 +91,11 @@ export function TtsReadingOverlay(props: TtsReadingOverlayProps) {
       }}
     >
       <span
+        // A CSS animation's clock starts when its element is created, and a
+        // replay recomputes the very delays it computed the first time — so
+        // there is nothing to write, nothing retimes, and the finished spans
+        // stay lit. Keying per clip builds elements that start their own clocks.
+        key={highlight.startedAt}
         class={layer.classes}
         style={{ '--border-width': layer.borderWidth }}
       >
@@ -125,19 +131,6 @@ export function TtsReadingOverlay(props: TtsReadingOverlayProps) {
   );
 }
 
-function solidAccentClasses(
-  accent: ReadingToken['accent']
-): string | undefined {
-  const borders = accentClasses(accent);
-
-  // Only a mora that draws a line may name a border style: nothing in this
-  // popup resets `border-width`, so `border-style` on its own resurrects the
-  // browser's default `medium` width and pads the mora out by 3px a side.
-  return borders
-    ? classes('tp:border-solid tp:border-(--primary-highlight)', borders)
-    : undefined;
-}
-
 function spokenNow(
   state: TtsPlaybackState,
   entryIndex: number,
@@ -154,4 +147,17 @@ function spokenNow(
   }
 
   return { timing: state.moraTiming, startedAt: state.startedAt };
+}
+
+function solidAccentClasses(
+  accent: ReadingToken['accent']
+): string | undefined {
+  const borders = accentClasses(accent);
+
+  // Only a mora that draws a line may name a border style: nothing in this
+  // popup resets `border-width`, so `border-style` on its own resurrects the
+  // browser's default `medium` width and pads the mora out by 3px a side.
+  return borders
+    ? classes('tp:border-solid tp:border-(--primary-highlight)', borders)
+    : undefined;
 }
