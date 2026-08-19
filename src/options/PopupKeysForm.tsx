@@ -8,7 +8,9 @@ import { classes } from '../utils/classes';
 import { KeyBox, KeyCheckbox } from './KeyBox';
 import { NewBadge } from './NewBadge';
 
-const newKeys = ['expandPopup'];
+const newKeys: Array<{ name: keyof StoredKeyboardKeys; expiry: Date }> = [
+  { name: 'playReadings', expiry: new Date('2027-02-20') },
+];
 
 type Props = {
   isMac: boolean;
@@ -117,9 +119,10 @@ function PopupKey(props: {
       </div>
       <div>
         {t(props.l10nKey)}
-        {newKeys.includes(props.name) && (
-          <NewBadge expiry={new Date('2023-10-10')} />
-        )}
+        {(() => {
+          const newKey = newKeys.find((k) => k.name === props.name);
+          return newKey && <NewBadge expiry={newKey.expiry} />;
+        })()}
         {/* For the copy key we show the other copy-related keys as a
             reference. */}
         {props.name === 'startCopy' && (
