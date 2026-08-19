@@ -8,18 +8,21 @@ export function getOrCreateEmptyContainer({
   styles,
   before,
   legacyIds,
+  onBeforeRemove,
 }: {
   id: string;
   styles: string;
   before?: string;
   legacyIds?: Array<string>;
+  onBeforeRemove?: (container: HTMLElement) => void;
 }): HTMLElement {
   // Drop any legacy containers
   if (legacyIds?.length) {
-    const legacyContainers = document.querySelectorAll(
+    const legacyContainers = document.querySelectorAll<HTMLElement>(
       legacyIds.map((id) => `#${id}`).join(', ')
     );
     for (const container of legacyContainers) {
+      onBeforeRemove?.(container);
       removeContainerElement(container);
     }
   }
@@ -31,7 +34,9 @@ export function getOrCreateEmptyContainer({
   if (existingContainers.length) {
     // Drop any duplicate containers, returning only the last one
     while (existingContainers.length > 1) {
-      removeContainerElement(existingContainers.shift()!);
+      const duplicate = existingContainers.shift()!;
+      onBeforeRemove?.(duplicate);
+      removeContainerElement(duplicate);
     }
 
     // Drop any existing content (except styles)

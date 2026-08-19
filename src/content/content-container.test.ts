@@ -12,24 +12,36 @@ import {
   unmountPopupComponents,
   withPopupRoot,
 } from './popup/mount';
+import { removePopup } from './popup/popup';
 
 /**
  * @vitest-environment jsdom
  */
 
+vi.mock('webextension-polyfill', () => ({
+  default: {
+    i18n: { getMessage: () => '' },
+    runtime: { getURL: (path: string) => path },
+  },
+}));
+
 const popupId = 'tenten-ja-window';
 const puckId = 'tenten-ja-puck';
 
-describe('removeContentContainer', () => {
+describe('removePopup', () => {
   afterEach(() => {
     removeContentContainer([popupId, puckId]);
   });
 
-  it('unmounts the popup islands registered under a removed container before removing it', async () => {
-    const cleanup = vi.fn<() => void>();
+  it("unmounts the popup's islands before detaching the host from the document", async () => {
     const host = getOrCreateEmptyContainer({ id: popupId, styles: '' });
     const container = document.createElement('div');
     host.shadowRoot!.append(container);
+
+    let hostWasConnected: boolean | undefined;
+    const cleanup = vi.fn<() => void>(() => {
+      hostWasConnected = host.isConnected;
+    });
 
     await act(() => {
       withPopupRoot(host, () => {
@@ -37,9 +49,10 @@ describe('removeContentContainer', () => {
       });
     });
 
-    removeContentContainer(popupId, unmountPopupComponents);
+    removePopup();
 
     expect(cleanup).toHaveBeenCalledTimes(1);
+    expect(hostWasConnected).toBe(true);
     expect(document.getElementById(popupId)).toBeNull();
   });
 });
@@ -67,6 +80,37 @@ describe('getOrCreateEmptyContainer', () => {
     getOrCreateEmptyContainer({ id: puckId, styles: '' });
 
     expect(cleanup).not.toHaveBeenCalled();
+  });
+
+  it('unmounts the original popup root when a later duplicate causes it to be discarded', async () => {
+    const cleanup = vi.fn<() => void>();
+    const originalHost = getOrCreateEmptyContainer({
+      id: popupId,
+      styles: '',
+      onBeforeRemove: unmountPopupComponents,
+    });
+    const container = document.createElement('div');
+    originalHost.shadowRoot!.append(container);
+
+    await act(() => {
+      withPopupRoot(originalHost, () => {
+        mountPopupComponent(container, h(CleanupProbe, { onCleanup: cleanup }));
+      });
+    });
+
+    // This has the same id and comes after the original in document order.
+    // The duplicate-recovery loop below then discards the original.
+    const duplicate = document.createElement('div');
+    duplicate.id = popupId;
+    document.documentElement.append(duplicate);
+
+    getOrCreateEmptyContainer({
+      id: popupId,
+      styles: '',
+      onBeforeRemove: unmountPopupComponents,
+    });
+
+    expect(cleanup).toHaveBeenCalledTimes(1);
   });
 });
 

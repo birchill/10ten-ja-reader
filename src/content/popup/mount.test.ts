@@ -83,6 +83,38 @@ describe('mountPopupComponent / unmountPopupComponents', () => {
     expect(() => unmountPopupComponents(root)).not.toThrow();
   });
 
+  it('keeps a replacement mounted when a cleanup remounts one under the same root', async () => {
+    const root = document.createElement('div');
+    const container = document.createElement('div');
+    const replacementContainer = document.createElement('div');
+    const replacementCleanup = vi.fn<() => void>();
+
+    const onCleanup = () => {
+      withPopupRoot(root, () => {
+        mountPopupComponent(
+          replacementContainer,
+          h(CleanupProbe, { onCleanup: replacementCleanup })
+        );
+      });
+    };
+
+    await act(() => {
+      withPopupRoot(root, () => {
+        mountPopupComponent(container, h(CleanupProbe, { onCleanup }));
+      });
+    });
+
+    await act(() => {
+      unmountPopupComponents(root);
+    });
+
+    expect(replacementCleanup).not.toHaveBeenCalled();
+
+    unmountPopupComponents(root);
+
+    expect(replacementCleanup).toHaveBeenCalledTimes(1);
+  });
+
   it('throws when mounting outside a withPopupRoot scope', () => {
     const container = document.createElement('div');
 

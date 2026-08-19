@@ -30,10 +30,14 @@ export function unmountPopupComponents(root: Element): void {
     return;
   }
 
+  // Drop the registry entry before running cleanups.
+  // A cleanup can mount a replacement under this same root.
+  // The replacement must land in a new entry, not this one.
+  mountsByRoot.delete(root);
+
   for (const container of mounts) {
     render(null, container);
   }
-  mountsByRoot.delete(root);
 }
 
 export function withPopupRoot<T>(root: Element, run: () => T): T {

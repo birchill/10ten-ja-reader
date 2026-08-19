@@ -294,6 +294,7 @@ function getDefaultContainer(): HTMLElement {
     // this gets us the same result there too.
     before: LookupPuckId,
     legacyIds: ['rikaichamp-window'],
+    onBeforeRemove: unmountPopupComponents,
   });
 
   // Make sure our popup doesn't get inverted by Wikipedia's (experimental) dark
