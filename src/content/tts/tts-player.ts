@@ -6,7 +6,7 @@ import type {
 } from '../../common/tts/tts-request';
 import { buildTtsFilename } from '../../common/tts/tts-request';
 
-const CLIP_START_DEADLINE_MS = 10_000;
+const CLIP_DEADLINE_MS = 10_000;
 
 export type StartInfo = {
   /** The start time, on the `performance.now()` clock. */
@@ -25,12 +25,6 @@ export type FetchClip = (
 
 export type PlayClip = (clip: TtsClip, signal: AbortSignal) => ClipPlayback;
 
-export type AudioClipPlayer = {
-  /** Call this inside a user gesture. {@link TtsPlayer} never calls it. */
-  preparePlayback: () => void;
-  playClip: PlayClip;
-};
-
 export type PlaybackState =
   | { kind: 'idle' }
   | { kind: 'loading'; readingIndex: number }
@@ -42,10 +36,7 @@ export type PlaybackState =
     }
   | { kind: 'error' };
 
-export type TtsPlayerOptions = {
-  fetchClip: FetchClip;
-  playClip: AudioClipPlayer['playClip'];
-};
+export type TtsPlayerOptions = { fetchClip: FetchClip; playClip: PlayClip };
 
 type PendingClip = { readingIndex: number; clip: Promise<TtsClip> };
 
@@ -125,20 +116,16 @@ export class TtsPlayer {
     void this.#run(pending, session.signal);
   }
 
-  async #run(pending: Array<PendingClip>, signal: AbortSignal) {
-    for (const [pos, { readingIndex, clip }] of pending.entries()) {
-      this.#setState({ kind: 'loading', readingIndex });
+  async #run(clips: Array<PendingClip>, signal: AbortSignal) {
+    for (const [pos, pending] of clips.entries()) {
+      this.#setState({ kind: 'loading', readingIndex: pending.readingIndex });
       try {
-        const fetched = await clip;
-        if (signal.aborted) {
-          return;
-        }
-        await this.#playClip(fetched, readingIndex, signal);
+        await this.#playWhenReady(pending, signal);
       } catch {
         if (signal.aborted) {
           return;
         }
-        if (pos < pending.length - 1) {
+        if (pos < clips.length - 1) {
           continue;
         }
         // Keep this 2s delay equal to the error-icon fade-out in
@@ -159,9 +146,8 @@ export class TtsPlayer {
     this.#setState({ kind: 'idle' });
   }
 
-  async #playClip(
-    clip: TtsClip,
-    readingIndex: number,
+  async #playWhenReady(
+    { readingIndex, clip }: PendingClip,
     signal: AbortSignal
   ): Promise<void> {
     const clipController = new AbortController();
@@ -169,11 +155,16 @@ export class TtsPlayer {
     signal.addEventListener('abort', abortClip);
     // The deadline aborts this clip only. It must not abort the session,
     // because the readings that follow must still play.
-    const startDeadline = setTimeout(abortClip, CLIP_START_DEADLINE_MS);
+    const deadline = setTimeout(abortClip, CLIP_DEADLINE_MS);
 
     try {
+      const fetched = await rejectWhenAborted(clip, clipController.signal);
+      if (signal.aborted) {
+        return;
+      }
+
       const { started, ended } = this.#options.playClip(
-        clip,
+        fetched,
         clipController.signal
       );
       ignoreRejection(ended);
@@ -182,7 +173,9 @@ export class TtsPlayer {
         started,
         clipController.signal
       );
-      clearTimeout(startDeadline);
+      // A clip can play for longer than the deadline, so stop the deadline as
+      // soon as the audio starts.
+      clearTimeout(deadline);
       if (signal.aborted) {
         return;
       }
@@ -191,11 +184,11 @@ export class TtsPlayer {
         kind: 'playing',
         readingIndex,
         startedAt,
-        moraTiming: clip.moraTiming,
+        moraTiming: fetched.moraTiming,
       });
       await rejectWhenAborted(ended, clipController.signal);
     } finally {
-      clearTimeout(startDeadline);
+      clearTimeout(deadline);
       signal.removeEventListener('abort', abortClip);
       // Abort after every outcome, also a natural end. This tells the playback
       // seam to release the resources of this clip.
