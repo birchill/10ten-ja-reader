@@ -4,6 +4,7 @@ import { getThemeClass } from '../../utils/themes';
 import { removeContentContainer } from '../content-container';
 
 import { addFontStyles, removeFontStyles } from './font-styles';
+import { unmountPopupComponents } from './mount';
 import { getPopupContainer } from './popup-container';
 
 export function isPopupVisible(): boolean {
@@ -16,7 +17,10 @@ export function hidePopup() {
 }
 
 export function removePopup() {
-  removeContentContainer(['rikaichamp-window', 'tenten-ja-window']);
+  removeContentContainer(
+    ['rikaichamp-window', 'tenten-ja-window'],
+    unmountPopupComponents
+  );
   removeFontStyles();
 }
 

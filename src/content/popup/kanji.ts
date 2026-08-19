@@ -1,9 +1,10 @@
 import type { KanjiResult } from '@birchill/jpdict-idb';
-import { h, render } from 'preact';
+import { h } from 'preact';
 
 import { html } from '../../utils/builder';
 
 import { KanjiEntry } from './Kanji/KanjiEntry';
+import { mountPopupComponent } from './mount';
 import { PopupOptionsProvider } from './options-context';
 import { getSelectedIndex } from './selected-index';
 import type { ShowPopupOptions } from './show-popup';
@@ -57,7 +58,8 @@ function renderKanjiEntry({
     style:
       'scroll-snap-align: start; scroll-margin-bottom: var(--expand-button-allowance);',
   });
-  render(
+  mountPopupComponent(
+    containerElement,
     h(
       PopupOptionsProvider,
       { ...options },
@@ -69,8 +71,7 @@ function renderKanjiEntry({
         selectState,
         showComponents: options.showKanjiComponents,
       })
-    ),
-    containerElement
+    )
   );
   return containerElement;
 }

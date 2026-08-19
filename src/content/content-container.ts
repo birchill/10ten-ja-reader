@@ -84,12 +84,16 @@ export function canUseTopLayer(): boolean {
   return 'popover' in HTMLElement.prototype && !isSvgDoc(document);
 }
 
-export function removeContentContainer(id: string | Array<string>) {
+export function removeContentContainer(
+  id: string | Array<string>,
+  onBeforeRemove?: (container: HTMLElement) => void
+) {
   const containerIds = typeof id === 'string' ? [id] : id;
   const containers = Array.from<HTMLElement>(
     document.querySelectorAll(containerIds.map((id) => `#${id}`).join(', '))
   );
   for (const container of containers) {
+    onBeforeRemove?.(container);
     removeContainerElement(container);
   }
   for (const id of containerIds) {

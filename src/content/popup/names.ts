@@ -1,9 +1,10 @@
-import { h, render } from 'preact';
+import { h } from 'preact';
 
 import type { NameResult } from '../../background/search-result';
 import { html } from '../../utils/builder';
 
 import { NameTable } from './Names/NameTable';
+import { mountPopupComponent } from './mount';
 import type { ShowPopupOptions } from './show-popup';
 
 export function renderNamesEntries({
@@ -19,7 +20,8 @@ export function renderNamesEntries({
 }): HTMLElement {
   const containerElement = html('div', { class: 'entry-data' });
 
-  render(
+  mountPopupComponent(
+    containerElement,
     h(NameTable, {
       entries,
       matchLen,
@@ -29,8 +31,7 @@ export function renderNamesEntries({
       meta: options.meta,
       copyState: options.copyState,
       onStartCopy: options.onStartCopy,
-    }),
-    containerElement
+    })
   );
 
   return containerElement;

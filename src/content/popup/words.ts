@@ -1,4 +1,4 @@
-import { h, render } from 'preact';
+import { h } from 'preact';
 
 import type { WordResult } from '../../background/search-result';
 import { html } from '../../utils/builder';
@@ -6,6 +6,7 @@ import { html } from '../../utils/builder';
 import type { NamePreview } from '../query';
 
 import { WordTable } from './Words/WordTable';
+import { mountPopupComponent } from './mount';
 import { PopupOptionsProvider } from './options-context';
 import type { ShowPopupOptions } from './show-popup';
 
@@ -26,7 +27,8 @@ export function renderWordEntries({
 }): HTMLElement {
   const containerElement = html('div', { class: 'entry-data' });
 
-  render(
+  mountPopupComponent(
+    containerElement,
     h(
       PopupOptionsProvider,
       { ...options },
@@ -46,8 +48,7 @@ export function renderWordEntries({
         copyState: options.copyState,
         onStartCopy: options.onStartCopy,
       })
-    ),
-    containerElement
+    )
   );
 
   return containerElement;
