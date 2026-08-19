@@ -219,6 +219,22 @@ describe('TtsPlayer', () => {
     expect(player.state).toEqual({ kind: 'idle' });
   });
 
+  it('plays nothing when a stop lands between the fetch and the playback', async () => {
+    const { player, fetches, playbacks } = makePlayer([readings[0]], {
+      deferFetch: true,
+      fetchIgnoresAbort: true,
+    });
+
+    player.playAll();
+    await flush();
+    fetches[0].resolve();
+    void Promise.resolve().then(() => player.stop());
+    await flush();
+
+    expect(playbacks).toHaveLength(0);
+    expect(player.state).toEqual({ kind: 'idle' });
+  });
+
   it('skips a reading whose fetch fails', async () => {
     const { player } = makePlayer(readings, {
       fetchFailsFor: (request) => request.reading === 'はいる',
@@ -288,6 +304,35 @@ describe('TtsPlayer', () => {
     expect(player.state).toEqual({ kind: 'idle' });
   });
 
+  it('skips a reading whose fetch never settles', async () => {
+    const { player, playbacks } = makePlayer(readings, {
+      deferFetch: true,
+      fetchIgnoresAbort: true,
+    });
+
+    player.playAll();
+    await vi.advanceTimersByTimeAsync(10_000);
+
+    expect(playbacks).toHaveLength(0);
+    expect(player.state).toEqual({ kind: 'loading', readingIndex: 1 });
+  });
+
+  it('shows the error state when the only fetch never settles', async () => {
+    const { player } = makePlayer([readings[0]], {
+      deferFetch: true,
+      fetchIgnoresAbort: true,
+    });
+
+    player.playAll();
+    await vi.advanceTimersByTimeAsync(10_000);
+
+    expect(player.state).toEqual({ kind: 'error' });
+
+    await vi.advanceTimersByTimeAsync(2000);
+
+    expect(player.state).toEqual({ kind: 'idle' });
+  });
+
   it('shows the error state when the only clip never starts', async () => {
     const { player } = makePlayer([readings[0]], { unresponsive: true });
 
@@ -305,7 +350,7 @@ describe('TtsPlayer', () => {
     expect(player.state).toEqual({ kind: 'idle' });
   });
 
-  it('keeps playing a clip that lasts longer than the start deadline', async () => {
+  it('keeps playing a clip that lasts longer than the deadline', async () => {
     const { player, playbacks } = makePlayer([readings[0]]);
 
     player.playAll();
@@ -338,19 +383,18 @@ describe('TtsPlayer', () => {
   });
 
   it('removes its session abort listener when each clip settles', async () => {
-    const { player, fetches, playbacks } = makePlayer(readings);
+    const { player, sessions, playbacks } = makePlayer(readings, {
+      fetchIgnoresAbort: true,
+    });
 
     player.playAll();
-    const sessionSignal = fetches[0].signal;
-    const added = vi.spyOn(sessionSignal, 'addEventListener');
-    const removed = vi.spyOn(sessionSignal, 'removeEventListener');
-
     for (let clip = 0; clip < readings.length; clip++) {
       await flush();
       playbacks[clip].end();
     }
     await flush();
 
+    const { added, removed } = sessions[0];
     expect(player.state).toEqual({ kind: 'idle' });
     expect(added.mock.calls).toHaveLength(readings.length);
     expect(removed.mock.calls.map((call) => call[1])).toEqual(
@@ -446,8 +490,13 @@ function makePlayer(
 ) {
   const fetches: Array<FetchCall> = [];
   const playbacks: Array<PlaybackCall> = [];
+  const sessions: Array<ReturnType<typeof watchSignal>> = [];
 
   const fetchClip: FetchClip = (request, signal) => {
+    if (!sessions.some((session) => session.signal === signal)) {
+      sessions.push(watchSignal(signal));
+    }
+
     const result = deferred<TtsClip>();
     const clip: TtsClip = {
       bytes: new Uint8Array([fetches.length]),
@@ -510,7 +559,15 @@ function makePlayer(
   const states: Array<PlaybackState> = [];
   player.subscribe((state) => states.push(state));
 
-  return { player, states, fetches, playbacks };
+  return { player, states, fetches, playbacks, sessions };
+}
+
+function watchSignal(signal: AbortSignal) {
+  return {
+    signal,
+    added: vi.spyOn(signal, 'addEventListener'),
+    removed: vi.spyOn(signal, 'removeEventListener'),
+  };
 }
 
 function deferred<T>() {
