@@ -114,6 +114,21 @@
 }
 
 /*
+ * Only inline `style` attributes use this, and Tailwind does not scan those, so
+ * it has to stay out of `@theme` or the build drops it.
+ */
+@keyframes tts-mora-grow {
+  0%,
+  100% {
+    scale: 1;
+  }
+
+  50% {
+    scale: 1.05;
+  }
+}
+
+/*
  * TODO Convert the following to more Tailwind-like utilities.
  */
 @layer components {

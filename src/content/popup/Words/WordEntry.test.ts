@@ -20,7 +20,10 @@ vi.mock('../../../common/i18n', () => ({
 vi.mock('webextension-polyfill', () => ({
   default: {
     i18n: { getMessage: () => '' },
-    runtime: { getURL: (path: string) => path },
+    runtime: {
+      getURL: (path: string) => path,
+      sendMessage: () => Promise.resolve(),
+    },
   },
 }));
 
