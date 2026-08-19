@@ -34,4 +34,10 @@ describe('buildTtsFilename', () => {
       `${encodeURIComponent('入る')},${encodeURIComponent('はいる')},1.mp3`
     );
   });
+
+  it('percent-encodes reserved characters, the field separator included', () => {
+    expect(buildTtsFilename({ kanji: 'a/b?c#d&e', reading: 'f,g' })).toBe(
+      'a%2Fb%3Fc%23d%26e,f%2Cg.mp3'
+    );
+  });
 });

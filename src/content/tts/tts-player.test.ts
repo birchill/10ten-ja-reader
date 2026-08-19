@@ -31,6 +31,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.useRealTimers();
+  vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
 
@@ -235,6 +236,59 @@ describe('TtsPlayer', () => {
     expect(player.state).toEqual({ kind: 'idle' });
   });
 
+  it('does not start the next reading when a stop follows the end of a clip', async () => {
+    const { player, states, playbacks } = makePlayer(readings);
+
+    player.playAll();
+    await flush();
+    playbacks[0].end();
+    void Promise.resolve().then(() => player.stop());
+    await flush();
+
+    expect(player.state).toEqual({ kind: 'idle' });
+    expect(states.filter((state) => state.kind === 'loading')).toHaveLength(1);
+    expect(playbacks).toHaveLength(1);
+  });
+
+  it('installs no clip resources when a subscriber stops it while loading', async () => {
+    const { player, playbacks } = makePlayer(readings, { deferFetch: true });
+    player.subscribe((state) => {
+      if (state.kind === 'loading') {
+        player.stop();
+      }
+    });
+    const timers = vi.spyOn(globalThis, 'setTimeout');
+
+    player.playAll();
+    await flush();
+
+    expect(player.state).toEqual({ kind: 'idle' });
+    expect(playbacks).toHaveLength(0);
+    expect(timers).not.toHaveBeenCalled();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('turns a fetch seam that throws into a failed reading', async () => {
+    const { player, fetches } = makePlayer([readings[0], readings[1]], {
+      deferFetch: true,
+      fetchIgnoresAbort: true,
+      fetchThrowsFor: (request) => request.reading === 'いる',
+    });
+
+    expect(() => player.playAll()).not.toThrow();
+    expect(player.state).toEqual({ kind: 'loading', readingIndex: 0 });
+    expect(fetches).toHaveLength(1);
+
+    await vi.advanceTimersByTimeAsync(10_000);
+
+    expect(player.state).toEqual({ kind: 'error' });
+    expect(fetches[0].signal.aborted).toBe(true);
+
+    await vi.advanceTimersByTimeAsync(2000);
+
+    expect(player.state).toEqual({ kind: 'idle' });
+  });
+
   it('skips a reading whose fetch fails', async () => {
     const { player } = makePlayer(readings, {
       fetchFailsFor: (request) => request.reading === 'はいる',
@@ -317,6 +371,34 @@ describe('TtsPlayer', () => {
     expect(player.state).toEqual({ kind: 'loading', readingIndex: 1 });
   });
 
+  it('cancels the fetch of a clip that misses its deadline', async () => {
+    const { player, fetches } = makePlayer([readings[0]], {
+      deferFetch: true,
+      fetchIgnoresAbort: true,
+    });
+
+    player.playAll();
+
+    expect(fetches[0].signal.aborted).toBe(false);
+
+    await vi.advanceTimersByTimeAsync(10_000);
+
+    expect(fetches[0].signal.aborted).toBe(true);
+    expect(player.state).toEqual({ kind: 'error' });
+  });
+
+  it('gives a clip its own deadline when its turn begins', async () => {
+    const { player, playbacks } = makePlayer([readings[0], readings[1]]);
+
+    player.playAll();
+    await flush();
+    await vi.advanceTimersByTimeAsync(30_000);
+    playbacks[0].end();
+    await flush();
+
+    expect(player.state).toMatchObject({ kind: 'playing', readingIndex: 1 });
+  });
+
   it('shows the error state when the only fetch never settles', async () => {
     const { player } = makePlayer([readings[0]], {
       deferFetch: true,
@@ -382,10 +464,11 @@ describe('TtsPlayer', () => {
     expect(player.state).toMatchObject({ kind: 'playing', readingIndex: 0 });
   });
 
-  it('removes its session abort listener when each clip settles', async () => {
-    const { player, sessions, playbacks } = makePlayer(readings, {
+  it('releases its session abort listener and its clips when the run ends', async () => {
+    const { player, fetches, playbacks } = makePlayer(readings, {
       fetchIgnoresAbort: true,
     });
+    const signals = watchNewSignals();
 
     player.playAll();
     for (let clip = 0; clip < readings.length; clip++) {
@@ -394,12 +477,14 @@ describe('TtsPlayer', () => {
     }
     await flush();
 
-    const { added, removed } = sessions[0];
+    const { added, removed } = signals[0];
     expect(player.state).toEqual({ kind: 'idle' });
-    expect(added.mock.calls).toHaveLength(readings.length);
+    expect(added.mock.calls).toHaveLength(1);
     expect(removed.mock.calls.map((call) => call[1])).toEqual(
       added.mock.calls.map((call) => call[1])
     );
+    expect(fetches.every((fetch) => fetch.signal.aborted)).toBe(true);
+    expect(vi.getTimerCount()).toBe(0);
   });
 
   it('supersedes the running session on a new play', async () => {
@@ -463,6 +548,7 @@ type Behavior = {
   deferFetch?: boolean;
   fetchIgnoresAbort?: boolean;
   fetchFailsFor?: (request: TtsClipRequest) => boolean;
+  fetchThrowsFor?: (request: TtsClipRequest) => boolean;
   deferStart?: boolean;
   unresponsive?: boolean;
   withoutMoraTiming?: boolean;
@@ -490,11 +576,10 @@ function makePlayer(
 ) {
   const fetches: Array<FetchCall> = [];
   const playbacks: Array<PlaybackCall> = [];
-  const sessions: Array<ReturnType<typeof watchSignal>> = [];
 
   const fetchClip: FetchClip = (request, signal) => {
-    if (!sessions.some((session) => session.signal === signal)) {
-      sessions.push(watchSignal(signal));
+    if (behavior.fetchThrowsFor?.(request)) {
+      throw new Error('fetch seam threw');
     }
 
     const result = deferred<TtsClip>();
@@ -559,7 +644,24 @@ function makePlayer(
   const states: Array<PlaybackState> = [];
   player.subscribe((state) => states.push(state));
 
-  return { player, states, fetches, playbacks, sessions };
+  return { player, states, fetches, playbacks };
+}
+
+function watchNewSignals() {
+  const watched: Array<ReturnType<typeof watchSignal>> = [];
+  const RealAbortController = AbortController;
+
+  vi.stubGlobal(
+    'AbortController',
+    class extends RealAbortController {
+      constructor() {
+        super();
+        watched.push(watchSignal(this.signal));
+      }
+    }
+  );
+
+  return watched;
 }
 
 function watchSignal(signal: AbortSignal) {
