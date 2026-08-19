@@ -49,7 +49,7 @@ describe('getOrCreateEmptyContainer', () => {
     removeContentContainer([popupId, puckId]);
   });
 
-  it('does not unmount popup islands when an unrelated container is created', async () => {
+  it('does not unmount popup islands when an unrelated container is reset', async () => {
     const cleanup = vi.fn<() => void>();
     const host = getOrCreateEmptyContainer({ id: popupId, styles: '' });
     const container = document.createElement('div');
@@ -61,6 +61,9 @@ describe('getOrCreateEmptyContainer', () => {
       });
     });
 
+    // The first call creates the puck container.
+    // The second call resets it and discards its old content.
+    getOrCreateEmptyContainer({ id: puckId, styles: '' });
     getOrCreateEmptyContainer({ id: puckId, styles: '' });
 
     expect(cleanup).not.toHaveBeenCalled();

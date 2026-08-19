@@ -82,6 +82,17 @@ describe('mountPopupComponent / unmountPopupComponents', () => {
 
     expect(() => unmountPopupComponents(root)).not.toThrow();
   });
+
+  it('throws when mounting outside a withPopupRoot scope', () => {
+    const container = document.createElement('div');
+
+    expect(() =>
+      mountPopupComponent(
+        container,
+        h(CleanupProbe, { onCleanup: vi.fn<() => void>() })
+      )
+    ).toThrow(/popup root/);
+  });
 });
 
 function CleanupProbe({ onCleanup }: { onCleanup: () => void }) {

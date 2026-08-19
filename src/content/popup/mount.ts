@@ -8,11 +8,13 @@ export function mountPopupComponent(
   container: Element,
   vnode: VNode<any>
 ): void {
-  render(vnode, container);
-
   if (!activeRoot) {
-    return;
+    // Call this only inside withPopupRoot.
+    // A silent skip here would break cleanup on unmount.
+    throw new Error('mountPopupComponent: no active popup root');
   }
+
+  render(vnode, container);
 
   let mounts = mountsByRoot.get(activeRoot);
   if (!mounts) {
