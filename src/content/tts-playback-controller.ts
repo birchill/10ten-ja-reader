@@ -51,6 +51,10 @@ export class TtsPlaybackController {
     return this.#state;
   }
 
+  get hasEntries(): boolean {
+    return this.#entries.length > 0;
+  }
+
   subscribe(listener: TtsPlaybackListener): () => void {
     this.#listeners.add(listener);
     notify(listener, this.#state);

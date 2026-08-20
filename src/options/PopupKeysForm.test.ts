@@ -1,6 +1,6 @@
 import { h, render } from 'preact';
 import { act } from 'preact/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { StoredKeyboardKeys } from '../common/popup-keys';
 
@@ -16,7 +16,16 @@ vi.mock('../common/i18n', () => ({
 
 let container: HTMLDivElement | undefined;
 
+beforeEach(() => {
+  // Before both this badge's expiry and the dropped 2023-10-10 one, so a
+  // returning stale entry would still fail the badge-absence assertion.
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date('2020-01-01'));
+});
+
 afterEach(() => {
+  vi.useRealTimers();
+
   if (container) {
     render(null, container);
     container.remove();
