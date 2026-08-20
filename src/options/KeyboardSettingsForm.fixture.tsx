@@ -24,6 +24,10 @@ export default function KeyboardSettingsFormFixture() {
     defaultValue: 'none',
   });
 
+  const [playReadingsEnabled] = useValue('play readings enabled', {
+    defaultValue: true,
+  });
+
   const toggleCommand = useMemo(() => {
     try {
       return Command.fromString(toggleCommandString);
@@ -80,6 +84,7 @@ export default function KeyboardSettingsFormFixture() {
       onChangeHoldToShowKeys={setHoldToShowKeys}
       onChangeToggleKey={onChangeToggleKey}
       onUpdatePopupKey={updatePopupKey}
+      playReadingsEnabled={playReadingsEnabled}
       popupKeys={popupKeys}
       toggleKey={toggleCommand}
       toggleKeyDisabled={

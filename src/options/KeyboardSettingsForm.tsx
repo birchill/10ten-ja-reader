@@ -18,6 +18,7 @@ type Props = {
     name: keyof StoredKeyboardKeys,
     keys: Array<string>
   ) => void;
+  playReadingsEnabled: boolean;
   popupKeys: StoredKeyboardKeys;
   toggleKey?: Command;
   toggleKeyDisabled?: 'chrome' | 'edge' | 'other';
@@ -50,6 +51,7 @@ export function KeyboardSettingsForm(props: Props) {
         isHoldToShowShiftEnabled={
           props.holdToShowKeys.shift || props.holdToShowImageKeys.shift
         }
+        playReadingsEnabled={props.playReadingsEnabled}
       />
     </>
   );

@@ -33,22 +33,22 @@ afterEach(() => {
   }
 });
 
+const emptyKeys: StoredKeyboardKeys = {
+  closePopup: [],
+  expandPopup: [],
+  kanjiLookup: [],
+  movePopupDownOrUp: [],
+  nextDictionary: [],
+  pinPopup: [],
+  playReadings: [],
+  startCopy: [],
+  toggleDefinition: [],
+};
+
 describe('PopupKeysForm new-key badges', () => {
   it('shows the new badge for playReadings but not for the stale expandPopup entry', () => {
     container = document.createElement('div');
     document.body.append(container);
-
-    const emptyKeys: StoredKeyboardKeys = {
-      closePopup: [],
-      expandPopup: [],
-      kanjiLookup: [],
-      movePopupDownOrUp: [],
-      nextDictionary: [],
-      pinPopup: [],
-      playReadings: [],
-      startCopy: [],
-      toggleDefinition: [],
-    };
 
     act(() => {
       render(
@@ -57,6 +57,7 @@ describe('PopupKeysForm new-key badges', () => {
           keys: emptyKeys,
           onUpdateKey: () => {},
           isHoldToShowShiftEnabled: false,
+          playReadingsEnabled: true,
         }),
         container!
       );
@@ -69,5 +70,49 @@ describe('PopupKeysForm new-key badges', () => {
     expect(text).not.toContain(
       'options_popup_expand_popupoptions_new_badge_text'
     );
+  });
+});
+
+describe('PopupKeysForm playReadings row', () => {
+  it('hides the row while the play-readings setting is off', () => {
+    container = document.createElement('div');
+    document.body.append(container);
+
+    act(() => {
+      render(
+        h(PopupKeysForm, {
+          isMac: false,
+          keys: emptyKeys,
+          onUpdateKey: () => {},
+          isHoldToShowShiftEnabled: false,
+          playReadingsEnabled: false,
+        }),
+        container!
+      );
+    });
+
+    const text = container.textContent ?? '';
+    expect(text).not.toContain('options_popup_play_readings');
+  });
+
+  it('shows the row, with its new badge, once the play-readings setting is on', () => {
+    container = document.createElement('div');
+    document.body.append(container);
+
+    act(() => {
+      render(
+        h(PopupKeysForm, {
+          isMac: false,
+          keys: emptyKeys,
+          onUpdateKey: () => {},
+          isHoldToShowShiftEnabled: false,
+          playReadingsEnabled: true,
+        }),
+        container!
+      );
+    });
+
+    const text = container.textContent ?? '';
+    expect(text).toContain('options_popup_play_readingsoptions_new_badge_text');
   });
 });
