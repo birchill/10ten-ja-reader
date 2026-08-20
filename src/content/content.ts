@@ -1215,6 +1215,10 @@ export class ContentHandler {
       this.#config.playReadings &&
       this.isVisible() &&
       this.#popupState?.hasPlayableReadings &&
+      // Don't steal the key from copy mode: let it fall through to the
+      // copy-mode key handling below (which itself falls through unhandled
+      // for keys copy mode doesn't recognize).
+      this.#copyState.kind === 'inactive' &&
       !hasModifiers(event) &&
       playReadings.includes(key)
     ) {
@@ -1678,7 +1682,10 @@ export class ContentHandler {
     if (
       !this.#config.playReadings ||
       !this.isVisible() ||
-      !this.#popupState?.hasPlayableReadings
+      !this.#popupState?.hasPlayableReadings ||
+      // Don't let a stale or forwarded request restart audio underneath the
+      // copy-mode overlay.
+      this.#copyState.kind !== 'inactive'
     ) {
       return;
     }
