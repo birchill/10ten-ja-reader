@@ -1,3 +1,5 @@
+import type { VNode } from 'preact';
+
 import type { FontFace, FontSize } from '../../common/content-config-params';
 import { html } from '../../utils/builder';
 import { classes } from '../../utils/classes';
@@ -9,23 +11,24 @@ import type { DisplayMode } from '../popup-state';
 import { LookupPuckId } from '../puck';
 import type { QueryResult } from '../query';
 
+import { Expandable } from './Expandable';
+import { KanjiList } from './Kanji/KanjiList';
+import { WordTable } from './Words/WordTable';
 import { renderArrow } from './arrow';
 import { renderCloseButton } from './close';
 import { renderCopyOverlay } from './copy-overlay';
 import type { CopyState } from './copy-state';
-import { updateExpandable } from './expandable';
 import { addFontStyles, removeFontStyles } from './font-styles';
-import { renderKanjiEntries } from './kanji';
 import { renderMetadata } from './metadata';
-import { unmountPopupComponents } from './mount';
+import { mountPopupComponent, unmountPopupComponents } from './mount';
 import { renderNamesEntries } from './names';
+import { PopupOptionsProvider } from './options-context';
 import { getPopupContainer } from './popup-container';
 import popupStyles from './popup.css?inline';
 import type { ShowPopupOptions } from './show-popup';
 import { renderCopyDetails, renderUpdatingStatus } from './status';
 import { onHorizontalSwipe } from './swipe';
 import { renderTabBar, showWordsTab } from './tabs';
-import { renderWordEntries } from './words';
 
 export function renderPopup(
   result: QueryResult | undefined,
@@ -51,7 +54,7 @@ export function renderPopup(
     popupStyle: options.popupStyle,
   });
 
-  const contentContainer = html('div', { class: 'content' });
+  const contentContainer = html('div', { class: 'content thin-scrollbars' });
 
   const hasResult = result && (result.words || result.kanji || result.names);
   const showTabs =
@@ -102,18 +105,29 @@ export function renderPopup(
 
   const resultToShow = result?.[options.dictToShow];
 
+  // Content that we render with Preact once the content container is in the
+  // document (so that the expandable content can measure itself).
+  let content: VNode | undefined;
+
+  const expandableProps = {
+    expandShortcuts: options.expandShortcuts,
+    isExpanded: options.isExpanded || !!result?.title,
+    onExpandPopup: options.onExpandPopup,
+    showKeyboardShortcut: options.displayMode === 'static',
+  };
+
   switch (resultToShow?.type) {
     case 'kanji':
-      contentContainer.append(
-        html(
-          'div',
-          { class: 'expandable' },
-          renderKanjiEntries({
-            entries: resultToShow.data,
-            options,
-            popupHost: host,
-          })
-        )
+      content = (
+        <Expandable {...expandableProps}>
+          <KanjiList
+            copyState={options.copyState}
+            entries={resultToShow.data}
+            kanjiReferences={options.kanjiReferences}
+            onStartCopy={options.onStartCopy}
+            showComponents={options.showKanjiComponents}
+          />
+        </Expandable>
       );
       break;
 
@@ -134,23 +148,27 @@ export function renderPopup(
       break;
 
     case 'words':
-      {
-        contentContainer.append(
-          html(
-            'div',
-            { class: 'expandable' },
-            renderWordEntries({
-              entries: resultToShow.data,
-              matchLen: resultToShow.matchLen,
-              more: resultToShow.more,
-              namePreview: result!.namePreview,
-              options,
-              popupHost: host,
-              title: result!.title,
-            })
-          )
-        );
-      }
+      content = (
+        <Expandable {...expandableProps}>
+          <div class="entry-data">
+            <WordTable
+              config={{
+                ...options,
+                fx: options.fxData,
+                readingOnly: !options.showDefinitions,
+              }}
+              copyState={options.copyState}
+              entries={resultToShow.data}
+              matchLen={resultToShow.matchLen}
+              meta={options.meta}
+              more={resultToShow.more}
+              namePreview={result!.namePreview}
+              onStartCopy={options.onStartCopy}
+              title={result!.title}
+            />
+          </div>
+        </Expandable>
+      );
       break;
 
     default:
@@ -255,14 +273,18 @@ export function renderPopup(
 
   overlayContainer.insertBefore(contentWrapper, overlayContainer.firstChild);
 
-  // Collapse expandable containers
-  for (const expandable of contentContainer.querySelectorAll<HTMLElement>(
-    '.expandable'
-  )) {
-    updateExpandable(expandable, {
-      ...options,
-      isExpanded: options.isExpanded || !!result?.title,
-      showKeyboardShortcut: options.displayMode === 'static',
+  // Render the Preact content.
+  //
+  // We need to do this _after_ adding the content container to the document
+  // since the expandable content measures itself as part of rendering (in order
+  // to work out where to collapse it).
+  if (content) {
+    mountPopupComponent({
+      popupHost: host,
+      container: contentContainer,
+      vnode: (
+        <PopupOptionsProvider {...options}>{content}</PopupOptionsProvider>
+      ),
     });
   }
 
@@ -272,7 +294,7 @@ export function renderPopup(
   // otherwise we won't know if it's in view or not.
   requestAnimationFrame(() => {
     const selectedElem =
-      contentContainer.querySelector('.expandable .-selected') ||
+      contentContainer.querySelector('[data-type="expandable"] .-selected') ||
       contentContainer.querySelector('.-flash');
     selectedElem?.scrollIntoView({ block: 'nearest' });
   });
