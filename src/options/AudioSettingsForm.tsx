@@ -19,6 +19,7 @@ export function AudioSettingsForm(props: Props) {
           name="playReadings"
           type="checkbox"
           checked={props.playReadings}
+          aria-describedby="playReadings-description"
           onChange={(e) => props.onChangePlayReadings(e.currentTarget.checked)}
         />
         <label for="playReadings">
@@ -26,7 +27,10 @@ export function AudioSettingsForm(props: Props) {
           <NewBadge expiry={new Date('2027-02-20')} />
         </label>
       </CheckboxRow>
-      <p class="m-0 text-xs text-zinc-500 dark:text-zinc-400">
+      <p
+        id="playReadings-description"
+        class="m-0 text-xs text-zinc-500 dark:text-zinc-400"
+      >
         {t('options_play_readings_description')}
       </p>
     </div>
