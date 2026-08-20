@@ -6,7 +6,7 @@ import type { AccentDisplay } from '../../common/content-config-params';
 export type ReadingTokenAccent = 'high' | 'low' | 'rise' | 'fall';
 
 export type ReadingToken = {
-  /** One mora: a single codepoint, or two for a combined mora such as きゃ. */
+  /** One mora — one codepoint, or several combined, as in きゃ or ぎゃぁ. */
   text: string;
   /** Codepoint offset of the mora's first character. */
   charIndex: number;
@@ -25,9 +25,9 @@ export function getReadingTokens(
     return moras;
   }
 
-  // `moraSubstring` clamps an offset past the end of the reading, so accent
-  // data that overruns the reading draws its downstep on the final mora.
-  // Clamp here too, or such a reading loses its downstep entirely.
+  // Accent data can name a position past the reading's last mora. Clamp to
+  // `moras.length`, not `length - 1`, so the `accent - 1` lookup below still
+  // lands on the final mora instead of dropping the downstep.
   const accent = Math.min(accentPos, moras.length);
 
   if (accentDisplay === 'downstep') {
