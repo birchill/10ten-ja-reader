@@ -71,6 +71,7 @@ export default {
           };
 
     const controller = {
+      state,
       subscribe: (listener: (next: TtsPlaybackState) => void) => {
         listener(state);
         return () => {};

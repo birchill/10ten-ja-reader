@@ -18,7 +18,7 @@ import { useShouldAnimate } from '../hooks/use-should-animate';
 import { accentClasses, accentLayer } from './Reading';
 
 export type TtsReadingOverlayProps = {
-  controller: Pick<TtsPlaybackController, 'subscribe'>;
+  controller: Pick<TtsPlaybackController, 'subscribe' | 'state'>;
   entryIndex: number;
   readingIndex: number;
   kana: WordResult['r'][0];
@@ -30,11 +30,17 @@ type Highlight = { timing: MoraTimingData; startedAt: number; fading: boolean };
 export function TtsReadingOverlay(props: TtsReadingOverlayProps) {
   const shouldAnimate = useShouldAnimate();
 
-  const [state, setState] = useState<TtsPlaybackState>({ kind: 'idle' });
+  const [state, setState] = useState<TtsPlaybackState>(
+    () => props.controller.state
+  );
   useEffect(() => props.controller.subscribe(setState), [props.controller]);
 
   const playing = spokenNow(state, props.entryIndex, props.readingIndex);
-  const [highlight, setHighlight] = useState<Highlight | undefined>(undefined);
+  // Seed from the first render's state, not just the subscribe effect: a popup
+  // rebuilt mid-playback would otherwise paint one unhighlighted frame.
+  const [highlight, setHighlight] = useState<Highlight | undefined>(() =>
+    playing ? { ...playing, fading: false } : undefined
+  );
   useEffect(() => {
     if (playing) {
       setHighlight({ ...playing, fading: false });
