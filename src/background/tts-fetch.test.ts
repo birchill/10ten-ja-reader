@@ -99,7 +99,7 @@ describe('fetchTtsClip', () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it('skips a plain network failure silently (no notify)', async () => {
+  it('skips a TypeError from fetch() silently, regardless of its message (Chrome wording)', async () => {
     vi.mocked(fetch).mockRejectedValue(new TypeError('Failed to fetch'));
 
     const result = await fetchTtsClip(key, request);
@@ -108,7 +108,16 @@ describe('fetchTtsClip', () => {
     expect(notifySpy).not.toHaveBeenCalled();
   });
 
-  it('notifies for an unexpected throw that is not a recognized network failure', async () => {
+  it('skips a TypeError from fetch() silently, regardless of its message (Safari wording)', async () => {
+    vi.mocked(fetch).mockRejectedValue(new TypeError('Load failed'));
+
+    const result = await fetchTtsClip(key, request);
+
+    expect(result).toEqual({ ok: false });
+    expect(notifySpy).not.toHaveBeenCalled();
+  });
+
+  it('notifies when fetch() itself throws something other than a TypeError', async () => {
     const error = new Error('boom');
     vi.mocked(fetch).mockRejectedValue(error);
 
@@ -116,6 +125,19 @@ describe('fetchTtsClip', () => {
 
     expect(result).toEqual({ ok: false });
     expect(notifySpy).toHaveBeenCalledWith(error);
+  });
+
+  it('notifies when encoding the clip throws, even though the fetch itself succeeded', async () => {
+    mockFetch(makeResponse({ buffer: new Uint8Array([1, 2, 3]).buffer }));
+    const encodeError = new TypeError('Load failed');
+    vi.stubGlobal('btoa', () => {
+      throw encodeError;
+    });
+
+    const result = await fetchTtsClip(key, request);
+
+    expect(result).toEqual({ ok: false });
+    expect(notifySpy).toHaveBeenCalledWith(encodeError);
   });
 
   it('aborts the underlying fetch when canceled while in flight', async () => {

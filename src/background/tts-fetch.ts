@@ -3,7 +3,6 @@ import Bugsnag from '@birchill/bugsnag-zero';
 import type { MoraTimingData, TtsClipRequest } from '../common/tts/tts-request';
 import { buildTtsFilename } from '../common/tts/tts-request';
 import { isAbortError } from '../utils/is-abort-error';
-import { isError } from '../utils/is-error';
 
 const TTS_BASE_URL = 'https://data.10ten.life/audio';
 const CLIP_FETCH_BUDGET_MS = 10_000;
@@ -34,10 +33,21 @@ export async function fetchTtsClip(
 
   try {
     const url = `${TTS_BASE_URL}/${buildTtsFilename(request)}`;
-    const response = await abortable(
-      fetch(url, { signal: controller.signal }),
-      controller.signal
-    );
+    let response: Response;
+    try {
+      response = await abortable(
+        fetch(url, { signal: controller.signal }),
+        controller.signal
+      );
+    } catch (e) {
+      // The Fetch spec ties every TypeError from fetch() itself to a
+      // network failure. Match the error's type here, not engine-specific
+      // wording ("Failed to fetch", "Load failed", ...).
+      if (!isAbortError(e) && e instanceof TypeError) {
+        return { ok: false };
+      }
+      throw e;
+    }
 
     if (!response.ok) {
       controller.abort();
@@ -64,9 +74,7 @@ export async function fetchTtsClip(
     if (isAbortError(e)) {
       return { ok: false };
     }
-    if (!isNetworkError(e)) {
-      void Bugsnag.notify(e);
-    }
+    void Bugsnag.notify(e);
     return { ok: false };
   } finally {
     clearTimeout(deadline);
@@ -165,12 +173,4 @@ function encodeBase64(buffer: ArrayBuffer): string {
     binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
   }
   return btoa(binary);
-}
-
-function isNetworkError(e: unknown): boolean {
-  return (
-    isError(e) &&
-    e instanceof TypeError &&
-    (e.message.startsWith('NetworkError') || e.message === 'Failed to fetch')
-  );
 }
