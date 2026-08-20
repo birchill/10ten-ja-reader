@@ -323,6 +323,32 @@ describe('TtsReadingOverlay', () => {
       message: 'Mora timing mismatch: 2 timings for 3 codepoints',
     });
   });
+
+  it('highlights on the very first paint when the controller is already playing', () => {
+    const controller: TtsReadingOverlayProps['controller'] = {
+      state: playing(),
+      subscribe: () => () => {},
+    };
+    const container = document.createElement('div');
+    document.body.append(container);
+
+    // Not wrapped in act(): a popup rebuilt mid-playback must paint the
+    // highlight on its synchronous first render, before effects flush.
+    render(
+      h(TtsReadingOverlay, {
+        controller,
+        entryIndex: 0,
+        readingIndex: 0,
+        kana: { ent: 'たべる' } as Kana,
+        accentDisplay: 'binary',
+      }),
+      container
+    );
+
+    const overlay = container.firstElementChild as HTMLElement | null;
+    expect(overlay).not.toBeNull();
+    expect([...(overlay!.firstElementChild?.children ?? [])]).toHaveLength(3);
+  });
 });
 
 type Kana = WordResult['r'][0];
@@ -357,6 +383,9 @@ function mount(
 
   const props: TtsReadingOverlayProps = {
     controller: {
+      get state() {
+        return current;
+      },
       subscribe: (nextListener) => {
         listener = nextListener;
         nextListener(current);
