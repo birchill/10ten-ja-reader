@@ -248,6 +248,62 @@ describe('fetchTtsClip', () => {
     );
   });
 
+  it.each([
+    { shape: 'a negative entry', rawTimings: '[0,-1,200]' },
+    { shape: 'a decreasing pair', rawTimings: '[0,200,100]' },
+    { shape: 'an entry past the total duration', rawTimings: '[0,100,400]' },
+    { shape: 'a non-numeric entry', rawTimings: '[0,"100"]' },
+    { shape: 'no array at all', rawTimings: '{"0":100}' },
+  ])(
+    'returns the clip without mora timing, and warns once, when the timings header has $shape',
+    async ({ rawTimings }) => {
+      const bytes = new Uint8Array([9, 9]);
+      mockFetch(
+        makeResponse({
+          headers: {
+            'x-amz-meta-mora-timings': rawTimings,
+            'x-amz-meta-audio-duration': '300',
+          },
+          buffer: bytes.buffer,
+        })
+      );
+
+      const result = await fetchTtsClip(key, request);
+
+      expect(result).toEqual({
+        ok: true,
+        audio: Buffer.from(bytes).toString('base64'),
+      });
+      expect(notifySpy).toHaveBeenCalledTimes(1);
+      expect(notifySpy).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ severity: 'warning' })
+      );
+    }
+  );
+
+  it('keeps a timing sequence whose adjacent entries repeat, up to the total duration', async () => {
+    const bytes = new Uint8Array([9, 9]);
+    mockFetch(
+      makeResponse({
+        headers: {
+          'x-amz-meta-mora-timings': '[0,100,100,300]',
+          'x-amz-meta-audio-duration': '300',
+        },
+        buffer: bytes.buffer,
+      })
+    );
+
+    const result = await fetchTtsClip(key, request);
+
+    expect(result).toEqual({
+      ok: true,
+      audio: Buffer.from(bytes).toString('base64'),
+      moraTiming: { charTimingsMs: [0, 100, 100, 300], totalDurationMs: 300 },
+    });
+    expect(notifySpy).not.toHaveBeenCalled();
+  });
+
   it('aborts the fetch, and returns ok: false, when reading the body exceeds the 10s budget', async () => {
     mockFetch(makeResponse({ arrayBuffer: () => neverSettles<ArrayBuffer>() }));
 

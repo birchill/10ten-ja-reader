@@ -134,14 +134,15 @@ function parseMoraTimingHeaders(
   }
 
   try {
-    const charTimingsMs: unknown = JSON.parse(rawTimings);
     const totalDurationMs = parseWholeMs(rawDuration);
-    if (
-      Array.isArray(charTimingsMs) &&
-      charTimingsMs.every((n) => typeof n === 'number' && Number.isFinite(n)) &&
-      totalDurationMs !== undefined
-    ) {
-      return { charTimingsMs, totalDurationMs };
+    if (totalDurationMs !== undefined) {
+      const charTimingsMs = parseCharTimingsMs(
+        JSON.parse(rawTimings),
+        totalDurationMs
+      );
+      if (charTimingsMs !== undefined) {
+        return { charTimingsMs, totalDurationMs };
+      }
     }
     void Bugsnag.notify('TTS mora-timing headers invalid', {
       severity: 'warning',
@@ -163,6 +164,33 @@ function parseWholeMs(value: string): number | undefined {
   }
   const parsed = Number(value);
   return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : undefined;
+}
+
+function parseCharTimingsMs(
+  value: unknown,
+  totalDurationMs: number
+): Array<number> | undefined {
+  if (!Array.isArray(value)) {
+    return undefined;
+  }
+
+  const timings: Array<number> = [];
+  let previous = 0;
+  for (const entry of value) {
+    if (
+      typeof entry !== 'number' ||
+      !Number.isFinite(entry) ||
+      // Equal adjacent values are correct. A long vowel repeats its timestamp.
+      entry < previous ||
+      entry > totalDurationMs
+    ) {
+      return undefined;
+    }
+    timings.push(entry);
+    previous = entry;
+  }
+
+  return timings;
 }
 
 function encodeBase64(buffer: ArrayBuffer): string {
