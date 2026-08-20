@@ -1214,9 +1214,14 @@ export class ContentHandler {
     } else if (
       this.#config.playReadings &&
       this.isVisible() &&
+      this.#popupState?.hasPlayableReadings &&
+      !hasModifiers(event) &&
       playReadings.includes(key)
     ) {
-      this.togglePlayReadings();
+      // A held key repeats the keydown; treat the whole hold as one toggle.
+      if (!event.repeat) {
+        this.togglePlayReadings();
+      }
     }
     // This needs to come _after_ the above check so that if the user has
     // configured Escape to close the popup but they are in copy mode, we first
@@ -1670,7 +1675,11 @@ export class ContentHandler {
 
     // Re-check here: a forwarded message can arrive after this frame's own
     // popup state moved on, so the sender's state can no longer be trusted.
-    if (!this.#config.playReadings || !this.isVisible()) {
+    if (
+      !this.#config.playReadings ||
+      !this.isVisible() ||
+      !this.#popupState?.hasPlayableReadings
+    ) {
       return;
     }
 
@@ -2388,6 +2397,7 @@ export class ContentHandler {
         }),
       },
       contentType: this.#currentTargetProps?.contentType || 'text',
+      hasPlayableReadings: !!this.#ttsPlayback?.hasEntries,
       display: this.getNextDisplay(displayMode),
     };
 
