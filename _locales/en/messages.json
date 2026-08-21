@@ -1682,8 +1682,8 @@
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
   "options_play_readings_description": {
-    "message": "Experimental: adds a button that plays the pronunciation of a word's readings. Pressing it sends the displayed reading (and any kanji) to 10ten's server to fetch the audio. If a text box has focus, the Play readings key (default: p, configurable in the Keyboard settings) still plays or stops the audio instead of typing the letter, but typing any other character first turns off all popup shortcuts in that box until you move the mouse again.",
-    "description": "Description of the setting to enable the button for playing a word entry's readings as audio, including a privacy disclosure"
+    "message": "Experimental: play a word's readings as audio, fetched from 10ten's server.",
+    "description": "Short, one-sentence description of the setting to enable the button for playing a word entry's readings as audio. Kept deliberately terse per owner decision 2026-08-21; the full privacy disclosure lives in the store listings (release checklist §3), not here."
   },
   "options_play_readings_label": {
     "message": "Play readings audio",

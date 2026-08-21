@@ -1678,8 +1678,8 @@
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
   "options_play_readings_description": {
-    "message": "实验性功能：为每个词条添加一个播放读音发音的按钮。点击播放后，会将显示的读音（以及汉字，如果有）发送到 10ten 的服务器。如果文本框已聚焦，按下播放读音快捷键（默认为「p」，可在键盘设置中更改）仍会播放或停止音频而不会输入该字符，但只要先输入其他字符，在您移动鼠标之前，该文本框内的所有弹出窗口快捷键都会失效。",
-    "description": "Description of the setting to enable the button for playing a word entry's readings as audio, including a privacy disclosure"
+    "message": "实验性功能：播放词语读音的语音，该语音从 10ten 的服务器获取。",
+    "description": "Short, one-sentence description of the setting to enable the button for playing a word entry's readings as audio. Kept deliberately terse per owner decision 2026-08-21; the full privacy disclosure lives in the store listings (release checklist §3), not here."
   },
   "options_play_readings_label": {
     "message": "以语音播放读音",
