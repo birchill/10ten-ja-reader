@@ -155,9 +155,9 @@ function ReadingGlyphLayer(props: {
           duration && props.fadeElapsedMs !== undefined
             ? moraPlaybackPhase(duration, props.fadeElapsedMs)
             : undefined;
-        const grow =
+        const hop =
           timing && (!props.fading || playbackPhase === 'active')
-            ? `tts-mora-grow-${props.animationPhase} ${timing}`
+            ? `tts-mora-hop-${props.animationPhase} ${timing}`
             : undefined;
         const color =
           duration && timing
@@ -180,14 +180,13 @@ function ReadingGlyphLayer(props: {
           >
             <span
               class="tp:inline-block"
-              style={
-                grow || color
-                  ? {
-                      transformOrigin: 'center bottom',
-                      animation: [grow, color].filter(Boolean).join(', '),
-                    }
-                  : undefined
-              }
+              style={{
+                // Keep the delayed hop's resting paint state identical to the
+                // idle one. Attaching a scale animation here made Chromium
+                // rerasterize every gray mora before any highlight was visible.
+                translate: '0 0',
+                animation: [hop, color].filter(Boolean).join(', ') || undefined,
+              }}
             >
               {token.text}
             </span>
