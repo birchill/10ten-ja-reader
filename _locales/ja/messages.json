@@ -1682,8 +1682,8 @@
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
   "options_play_readings_description": {
-    "message": "実験的機能: 各語の読み方の発音を再生するボタンを追加します。再生ボタンを押すと、表示されている読み方（および漢字がある場合はその漢字）が10tenのサーバーに送信されます。テキスト入力欄にフォーカスがある状態で読み方を再生するキー（既定は「p」、キーボード設定で変更可能）を押すと、文字の入力の代わりに再生・停止が行われますが、先に別の文字を入力すると、マウスを動かすまでその入力欄ではポップアップのショートカットキーがすべて無効になります。",
-    "description": "Description of the setting to enable the button for playing a word entry's readings as audio, including a privacy disclosure"
+    "message": "実験的機能: 語の読み方を、10tenのサーバーから取得した音声で再生します。",
+    "description": "Short, one-sentence description of the setting to enable the button for playing a word entry's readings as audio. Kept deliberately terse per owner decision 2026-08-21; the full privacy disclosure lives in the store listings (release checklist §3), not here."
   },
   "options_play_readings_label": {
     "message": "音声で読み方を再生する",
