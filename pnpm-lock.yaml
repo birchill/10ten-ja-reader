@@ -154,8 +154,8 @@ importers:
         specifier: 7.3.0
         version: 7.3.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@8.1.1)
       react-cosmos-plugin-boolean-input:
-        specifier: 7.3.0
-        version: 7.3.0
+        specifier: 7.4.0
+        version: 7.4.0
       react-cosmos-plugin-rspack:
         specifier: 3.0.0
         version: 3.0.0(@rspack/core@2.1.10)(react-cosmos@7.3.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@8.1.1))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)(webpack@5.109.2(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.26))
@@ -3004,6 +3004,7 @@ packages:
   eslint@9.39.4:
     resolution: {integrity: sha512-XoMjdBOwe/esVgEvLmNsD3IRHkm7fbKIUGvrleloJXUZgDHig2IPWNniv+GwjyJXzuNqVjlr5+4yVUZjycJwfQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -4513,8 +4514,8 @@ packages:
       react: '>=18'
       react-dom: '>=18'
 
-  react-cosmos-plugin-boolean-input@7.3.0:
-    resolution: {integrity: sha512-PFf7UrNt7D67qC7yrInV1uDJtGLZODOxqRoAJHZoNx7frTh0VWbml3Nr2g0iiYjRleDcXTRCOcYcNNfJAyMQjg==}
+  react-cosmos-plugin-boolean-input@7.4.0:
+    resolution: {integrity: sha512-InNPAYExO4O/B6bFVR4L//m8R8QzGOddqmA0c8tag6n+DzWjW7qQZgHH+KRdxLjtTkgy+wJsASUl8dOcSoP8fw==}
 
   react-cosmos-plugin-rspack@3.0.0:
     resolution: {integrity: sha512-E3wBvpexXWsNl6GkwLU3RMAhSZJAad5GcduopddDAm2mc7B77KotsS+jSrL07/rland2PQfCJxafLRIYZX1XZg==}
@@ -9520,7 +9521,7 @@ snapshots:
       react-cosmos-renderer: 7.3.0(react@19.2.4)
       react-dom: 19.2.4(react@19.2.4)
 
-  react-cosmos-plugin-boolean-input@7.3.0: {}
+  react-cosmos-plugin-boolean-input@7.4.0: {}
 
   react-cosmos-plugin-rspack@3.0.0(@rspack/core@2.1.10)(react-cosmos@7.3.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@8.1.1))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)(webpack@5.109.2(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.26)):
     dependencies:
