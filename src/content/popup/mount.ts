@@ -27,9 +27,9 @@ export function unmountPopupComponents(popupHost: Element): void {
     return;
   }
 
-  // Drop the registry entry before running cleanups.
-  // A cleanup can mount a replacement under this same popup host.
-  // The replacement must land in a new entry, not this one.
+  // Remove the old registry entry before unmounting its components.
+  // An effect cleanup may synchronously call mountPopupComponent() for the
+  // same popup host; that replacement must be registered in a new entry.
   mountsByPopupHost.delete(popupHost);
 
   for (const container of mounts) {
