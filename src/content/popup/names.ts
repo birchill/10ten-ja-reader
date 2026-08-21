@@ -12,17 +12,20 @@ export function renderNamesEntries({
   matchLen,
   more,
   options,
+  popupHost,
 }: {
   entries: Array<NameResult>;
   matchLen: number;
   more: boolean;
   options: ShowPopupOptions;
+  popupHost: Element;
 }): HTMLElement {
   const containerElement = html('div', { class: 'entry-data' });
 
-  mountPopupComponent(
-    containerElement,
-    h(NameTable, {
+  mountPopupComponent({
+    popupHost,
+    container: containerElement,
+    vnode: h(NameTable, {
       entries,
       matchLen,
       more,
@@ -31,8 +34,8 @@ export function renderNamesEntries({
       meta: options.meta,
       copyState: options.copyState,
       onStartCopy: options.onStartCopy,
-    })
-  );
+    }),
+  });
 
   return containerElement;
 }

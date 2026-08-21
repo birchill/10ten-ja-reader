@@ -8,7 +8,11 @@ import type { SelectionMeta } from '../meta';
 import { MetadataContainer } from './Metadata/MetadataContainer';
 import { mountPopupComponent } from './mount';
 
-export function renderMetadata(props: {
+export function renderMetadata({
+  popupHost,
+  ...props
+}: {
+  popupHost: Element;
   fxData: ContentConfigParams['fx'];
   preferredUnits: ContentConfigParams['preferredUnits'];
   isCombinedResult: boolean;
@@ -17,6 +21,10 @@ export function renderMetadata(props: {
   metaonly?: boolean;
 }): HTMLElement | null {
   const container = html('div');
-  mountPopupComponent(container, h(MetadataContainer, { ...props }));
+  mountPopupComponent({
+    popupHost,
+    container,
+    vnode: h(MetadataContainer, { ...props }),
+  });
   return container;
 }

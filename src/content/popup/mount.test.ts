@@ -3,127 +3,117 @@ import { useEffect } from 'preact/hooks';
 import { act } from 'preact/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 
-import {
-  mountPopupComponent,
-  unmountPopupComponents,
-  withPopupRoot,
-} from './mount';
+import { mountPopupComponent, unmountPopupComponents } from './mount';
 
 /**
  * @vitest-environment jsdom
  */
 
 describe('mountPopupComponent / unmountPopupComponents', () => {
-  it('runs the mounted component effect cleanup when its root is unmounted', async () => {
+  it('runs the mounted component effect cleanup when its popup host is unmounted', async () => {
     const cleanup = vi.fn<() => void>();
-    const root = document.createElement('div');
+    const popupHost = document.createElement('div');
     const container = document.createElement('div');
 
     await act(() => {
-      withPopupRoot(root, () => {
-        mountPopupComponent(container, h(CleanupProbe, { onCleanup: cleanup }));
+      mountPopupComponent({
+        popupHost,
+        container,
+        vnode: h(CleanupProbe, { onCleanup: cleanup }),
       });
     });
     expect(cleanup).not.toHaveBeenCalled();
 
-    unmountPopupComponents(root);
+    unmountPopupComponents(popupHost);
 
     expect(cleanup).toHaveBeenCalledTimes(1);
   });
 
-  it('unmounts every container registered under the same root', async () => {
+  it('unmounts every container registered under the same popup host', async () => {
     const firstCleanup = vi.fn<() => void>();
     const secondCleanup = vi.fn<() => void>();
-    const root = document.createElement('div');
+    const popupHost = document.createElement('div');
     const firstContainer = document.createElement('div');
     const secondContainer = document.createElement('div');
 
     await act(() => {
-      withPopupRoot(root, () => {
-        mountPopupComponent(
-          firstContainer,
-          h(CleanupProbe, { onCleanup: firstCleanup })
-        );
-        mountPopupComponent(
-          secondContainer,
-          h(CleanupProbe, { onCleanup: secondCleanup })
-        );
+      mountPopupComponent({
+        popupHost,
+        container: firstContainer,
+        vnode: h(CleanupProbe, { onCleanup: firstCleanup }),
+      });
+      mountPopupComponent({
+        popupHost,
+        container: secondContainer,
+        vnode: h(CleanupProbe, { onCleanup: secondCleanup }),
       });
     });
 
-    unmountPopupComponents(root);
+    unmountPopupComponents(popupHost);
 
     expect(firstCleanup).toHaveBeenCalledTimes(1);
     expect(secondCleanup).toHaveBeenCalledTimes(1);
   });
 
-  it('leaves components registered under a different root mounted', async () => {
+  it('leaves components registered under a different popup host mounted', async () => {
     const cleanup = vi.fn<() => void>();
-    const popupRoot = document.createElement('div');
-    const puckRoot = document.createElement('div');
+    const popupHost = document.createElement('div');
+    const puckHost = document.createElement('div');
     const container = document.createElement('div');
 
     await act(() => {
-      withPopupRoot(popupRoot, () => {
-        mountPopupComponent(container, h(CleanupProbe, { onCleanup: cleanup }));
+      mountPopupComponent({
+        popupHost,
+        container,
+        vnode: h(CleanupProbe, { onCleanup: cleanup }),
       });
     });
 
-    unmountPopupComponents(puckRoot);
+    unmountPopupComponents(puckHost);
 
     expect(cleanup).not.toHaveBeenCalled();
 
-    unmountPopupComponents(popupRoot);
+    unmountPopupComponents(popupHost);
     expect(cleanup).toHaveBeenCalledTimes(1);
   });
 
-  it('unmounting a root with no registered components is a no-op', () => {
-    const root = document.createElement('div');
+  it('unmounting a popup host with no registered components is a no-op', () => {
+    const popupHost = document.createElement('div');
 
-    expect(() => unmountPopupComponents(root)).not.toThrow();
+    expect(() => unmountPopupComponents(popupHost)).not.toThrow();
   });
 
-  it('keeps a replacement mounted when a cleanup remounts one under the same root', async () => {
-    const root = document.createElement('div');
+  it('keeps a replacement mounted when a cleanup remounts one under the same popup host', async () => {
+    const popupHost = document.createElement('div');
     const container = document.createElement('div');
     const replacementContainer = document.createElement('div');
     const replacementCleanup = vi.fn<() => void>();
 
     const onCleanup = () => {
-      withPopupRoot(root, () => {
-        mountPopupComponent(
-          replacementContainer,
-          h(CleanupProbe, { onCleanup: replacementCleanup })
-        );
+      mountPopupComponent({
+        popupHost,
+        container: replacementContainer,
+        vnode: h(CleanupProbe, { onCleanup: replacementCleanup }),
       });
     };
 
     await act(() => {
-      withPopupRoot(root, () => {
-        mountPopupComponent(container, h(CleanupProbe, { onCleanup }));
+      mountPopupComponent({
+        popupHost,
+        container,
+        vnode: h(CleanupProbe, { onCleanup }),
       });
     });
 
     await act(() => {
-      unmountPopupComponents(root);
+      unmountPopupComponents(popupHost);
     });
 
     expect(replacementCleanup).not.toHaveBeenCalled();
 
-    unmountPopupComponents(root);
+    unmountPopupComponents(popupHost);
 
     expect(replacementCleanup).toHaveBeenCalledTimes(1);
-  });
-
-  it('throws when mounting outside a withPopupRoot scope', () => {
-    const container = document.createElement('div');
-
-    expect(() =>
-      mountPopupComponent(
-        container,
-        h(CleanupProbe, { onCleanup: vi.fn<() => void>() })
-      )
-    ).toThrow(/popup root/);
   });
 });
 

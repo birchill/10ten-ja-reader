@@ -7,7 +7,7 @@ import type { WordResult } from '../../background/search-result';
 
 import type { QueryResult } from '../query';
 
-import { mountPopupComponent, withPopupRoot } from './mount';
+import { mountPopupComponent } from './mount';
 import { PopupPositionMode } from './popup-position';
 import { renderPopup } from './render-popup';
 import type { ShowPopupOptions } from './show-popup';
@@ -42,8 +42,10 @@ describe('renderPopup', () => {
     host.append(container);
 
     await act(() => {
-      withPopupRoot(host, () => {
-        mountPopupComponent(container, h(CleanupProbe, { onCleanup: cleanup }));
+      mountPopupComponent({
+        popupHost: host,
+        container,
+        vnode: h(CleanupProbe, { onCleanup: cleanup }),
       });
     });
     expect(cleanup).not.toHaveBeenCalled();
@@ -53,24 +55,23 @@ describe('renderPopup', () => {
     expect(cleanup).toHaveBeenCalledTimes(1);
   });
 
-  it('runs the words island wrapper and unmounts it on rebuild', async () => {
+  it('mounts the words island and unmounts it on rebuild', async () => {
     const host = document.createElement('div');
     const options = createOptions(host);
     const result = createWordsQueryResult();
 
     renderPopup(result, options);
 
-    // This proves the words wrapper ran, not just resetContainer's unmount.
+    // This proves the words island mounted, not just resetContainer's unmount.
     expect(host.textContent).toContain('日');
 
     const cleanup = vi.fn<() => void>();
     const probeContainer = document.createElement('div');
     await act(() => {
-      withPopupRoot(host, () => {
-        mountPopupComponent(
-          probeContainer,
-          h(CleanupProbe, { onCleanup: cleanup })
-        );
+      mountPopupComponent({
+        popupHost: host,
+        container: probeContainer,
+        vnode: h(CleanupProbe, { onCleanup: cleanup }),
       });
     });
 

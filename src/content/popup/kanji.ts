@@ -12,9 +12,11 @@ import type { ShowPopupOptions } from './show-popup';
 export function renderKanjiEntries({
   entries,
   options,
+  popupHost,
 }: {
   entries: ReadonlyArray<KanjiResult>;
   options: ShowPopupOptions;
+  popupHost: Element;
 }): HTMLElement {
   const container = html('div', { class: 'kanjilist entry-data' });
 
@@ -28,6 +30,7 @@ export function renderKanjiEntries({
         entry,
         index: i,
         options,
+        popupHost,
         selectState:
           selectedIndex === i
             ? options.copyState.kind === 'active'
@@ -45,11 +48,13 @@ function renderKanjiEntry({
   entry,
   index,
   options,
+  popupHost,
   selectState,
 }: {
   entry: KanjiResult;
   index: number;
   options: ShowPopupOptions;
+  popupHost: Element;
   selectState: 'unselected' | 'selected' | 'flash';
 }): HTMLElement {
   const containerElement = html('div', {
@@ -58,9 +63,10 @@ function renderKanjiEntry({
     style:
       'scroll-snap-align: start; scroll-margin-bottom: var(--expand-button-allowance);',
   });
-  mountPopupComponent(
-    containerElement,
-    h(
+  mountPopupComponent({
+    popupHost,
+    container: containerElement,
+    vnode: h(
       PopupOptionsProvider,
       { ...options },
       h(KanjiEntry, {
@@ -71,7 +77,7 @@ function renderKanjiEntry({
         selectState,
         showComponents: options.showKanjiComponents,
       })
-    )
-  );
+    ),
+  });
   return containerElement;
 }

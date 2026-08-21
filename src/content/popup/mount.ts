@@ -1,51 +1,38 @@
 import { type VNode, render } from 'preact';
 
-let activeRoot: Element | undefined;
+const mountsByPopupHost = new Map<Element, Set<Element>>();
 
-const mountsByRoot = new Map<Element, Set<Element>>();
-
-export function mountPopupComponent(
-  container: Element,
-  vnode: VNode<any>
-): void {
-  if (!activeRoot) {
-    // Call this only inside withPopupRoot.
-    // A silent skip here would break cleanup on unmount.
-    throw new Error('mountPopupComponent: no active popup root');
-  }
-
+export function mountPopupComponent({
+  popupHost,
+  container,
+  vnode,
+}: {
+  popupHost: Element;
+  container: Element;
+  vnode: VNode<any>;
+}): void {
   render(vnode, container);
 
-  let mounts = mountsByRoot.get(activeRoot);
+  let mounts = mountsByPopupHost.get(popupHost);
   if (!mounts) {
     mounts = new Set();
-    mountsByRoot.set(activeRoot, mounts);
+    mountsByPopupHost.set(popupHost, mounts);
   }
   mounts.add(container);
 }
 
-export function unmountPopupComponents(root: Element): void {
-  const mounts = mountsByRoot.get(root);
+export function unmountPopupComponents(popupHost: Element): void {
+  const mounts = mountsByPopupHost.get(popupHost);
   if (!mounts) {
     return;
   }
 
   // Drop the registry entry before running cleanups.
-  // A cleanup can mount a replacement under this same root.
+  // A cleanup can mount a replacement under this same popup host.
   // The replacement must land in a new entry, not this one.
-  mountsByRoot.delete(root);
+  mountsByPopupHost.delete(popupHost);
 
   for (const container of mounts) {
     render(null, container);
-  }
-}
-
-export function withPopupRoot<T>(root: Element, run: () => T): T {
-  const previousRoot = activeRoot;
-  activeRoot = root;
-  try {
-    return run();
-  } finally {
-    activeRoot = previousRoot;
   }
 }

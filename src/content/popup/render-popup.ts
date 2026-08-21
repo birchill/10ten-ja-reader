@@ -17,7 +17,7 @@ import { updateExpandable } from './expandable';
 import { addFontStyles, removeFontStyles } from './font-styles';
 import { renderKanjiEntries } from './kanji';
 import { renderMetadata } from './metadata';
-import { unmountPopupComponents, withPopupRoot } from './mount';
+import { unmountPopupComponents } from './mount';
 import { renderNamesEntries } from './names';
 import { getPopupContainer } from './popup-container';
 import popupStyles from './popup.css?inline';
@@ -108,27 +108,28 @@ export function renderPopup(
         html(
           'div',
           { class: 'expandable' },
-          withPopupRoot(host, () =>
-            renderKanjiEntries({ entries: resultToShow.data, options })
-          )
+          renderKanjiEntries({
+            entries: resultToShow.data,
+            options,
+            popupHost: host,
+          })
         )
       );
       break;
 
     case 'names':
       contentContainer.append(
-        withPopupRoot(host, () =>
-          renderNamesEntries({
-            entries: resultToShow.data,
-            matchLen: resultToShow.matchLen,
-            more: resultToShow.more,
-            options: {
-              ...options,
-              // Hide the meta if we have already shown it on the words tab
-              meta: result?.words ? undefined : options.meta,
-            },
-          })
-        )
+        renderNamesEntries({
+          entries: resultToShow.data,
+          matchLen: resultToShow.matchLen,
+          more: resultToShow.more,
+          options: {
+            ...options,
+            // Hide the meta if we have already shown it on the words tab
+            meta: result?.words ? undefined : options.meta,
+          },
+          popupHost: host,
+        })
       );
       break;
 
@@ -138,16 +139,15 @@ export function renderPopup(
           html(
             'div',
             { class: 'expandable' },
-            withPopupRoot(host, () =>
-              renderWordEntries({
-                entries: resultToShow.data,
-                matchLen: resultToShow.matchLen,
-                more: resultToShow.more,
-                namePreview: result!.namePreview,
-                options,
-                title: result!.title,
-              })
-            )
+            renderWordEntries({
+              entries: resultToShow.data,
+              matchLen: resultToShow.matchLen,
+              more: resultToShow.more,
+              namePreview: result!.namePreview,
+              options,
+              popupHost: host,
+              title: result!.title,
+            })
           )
         );
       }
@@ -160,16 +160,15 @@ export function renderPopup(
           return null;
         }
 
-        const metadata = withPopupRoot(host, () =>
-          renderMetadata({
-            fxData: options.fxData,
-            preferredUnits: options.preferredUnits,
-            isCombinedResult: false,
-            matchLen: 0,
-            meta,
-            metaonly: true,
-          })
-        );
+        const metadata = renderMetadata({
+          fxData: options.fxData,
+          preferredUnits: options.preferredUnits,
+          isCombinedResult: false,
+          matchLen: 0,
+          meta,
+          metaonly: true,
+          popupHost: host,
+        });
         if (!metadata) {
           return null;
         }
@@ -184,22 +183,21 @@ export function renderPopup(
   // Render the copy overlay if needed
   if (showOverlay(options.copyState)) {
     overlayContainer.append(
-      withPopupRoot(host, () =>
-        renderCopyOverlay({
-          copyState: options.copyState,
-          includeAllSenses: options.copy?.includeAllSenses !== false,
-          includeLessCommonHeadwords:
-            options.copy?.includeLessCommonHeadwords !== false,
-          includePartOfSpeech: options.copy?.includePartOfSpeech !== false,
-          kanjiReferences: options.kanjiReferences,
-          onCancelCopy: options.onCancelCopy,
-          onCopy: options.onCopy,
-          result: resultToShow ? result : undefined,
-          series: options.dictToShow,
-          showKanjiComponents: options.showKanjiComponents,
-          showRomaji: options.showRomaji,
-        })
-      )
+      renderCopyOverlay({
+        copyState: options.copyState,
+        includeAllSenses: options.copy?.includeAllSenses !== false,
+        includeLessCommonHeadwords:
+          options.copy?.includeLessCommonHeadwords !== false,
+        includePartOfSpeech: options.copy?.includePartOfSpeech !== false,
+        kanjiReferences: options.kanjiReferences,
+        onCancelCopy: options.onCancelCopy,
+        onCopy: options.onCopy,
+        popupHost: host,
+        result: resultToShow ? result : undefined,
+        series: options.dictToShow,
+        showKanjiComponents: options.showKanjiComponents,
+        showRomaji: options.showRomaji,
+      })
     );
 
     windowElem.dataset.hasOverlay = 'true';

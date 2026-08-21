@@ -11,7 +11,11 @@ import { CopyOverlay } from './CopyOverlay/CopyOverlay';
 import type { CopyState } from './copy-state';
 import { mountPopupComponent } from './mount';
 
-export function renderCopyOverlay(props: {
+export function renderCopyOverlay({
+  popupHost,
+  ...props
+}: {
+  popupHost: Element;
   copyState: CopyState;
   includeAllSenses: boolean;
   includeLessCommonHeadwords: boolean;
@@ -26,7 +30,11 @@ export function renderCopyOverlay(props: {
 }): HTMLDivElement {
   const containerElement = html('div', { class: 'tp:flex' });
 
-  mountPopupComponent(containerElement, h(CopyOverlay, props));
+  mountPopupComponent({
+    popupHost,
+    container: containerElement,
+    vnode: h(CopyOverlay, props),
+  });
 
   return containerElement;
 }

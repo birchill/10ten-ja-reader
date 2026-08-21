@@ -16,6 +16,7 @@ export function renderWordEntries({
   more,
   namePreview,
   options,
+  popupHost,
   title,
 }: {
   entries: Array<WordResult>;
@@ -23,13 +24,15 @@ export function renderWordEntries({
   more: boolean;
   namePreview: NamePreview | undefined;
   options: ShowPopupOptions;
+  popupHost: Element;
   title: string | undefined;
 }): HTMLElement {
   const containerElement = html('div', { class: 'entry-data' });
 
-  mountPopupComponent(
-    containerElement,
-    h(
+  mountPopupComponent({
+    popupHost,
+    container: containerElement,
+    vnode: h(
       PopupOptionsProvider,
       { ...options },
       h(WordTable, {
@@ -48,8 +51,8 @@ export function renderWordEntries({
         copyState: options.copyState,
         onStartCopy: options.onStartCopy,
       })
-    )
-  );
+    ),
+  });
 
   return containerElement;
 }

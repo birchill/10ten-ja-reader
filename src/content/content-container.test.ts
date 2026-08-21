@@ -7,11 +7,7 @@ import {
   getOrCreateEmptyContainer,
   removeContentContainer,
 } from './content-container';
-import {
-  mountPopupComponent,
-  unmountPopupComponents,
-  withPopupRoot,
-} from './popup/mount';
+import { mountPopupComponent, unmountPopupComponents } from './popup/mount';
 import { removePopup } from './popup/popup';
 
 /**
@@ -44,8 +40,10 @@ describe('removePopup', () => {
     });
 
     await act(() => {
-      withPopupRoot(host, () => {
-        mountPopupComponent(container, h(CleanupProbe, { onCleanup: cleanup }));
+      mountPopupComponent({
+        popupHost: host,
+        container,
+        vnode: h(CleanupProbe, { onCleanup: cleanup }),
       });
     });
 
@@ -69,8 +67,10 @@ describe('getOrCreateEmptyContainer', () => {
     host.shadowRoot!.append(container);
 
     await act(() => {
-      withPopupRoot(host, () => {
-        mountPopupComponent(container, h(CleanupProbe, { onCleanup: cleanup }));
+      mountPopupComponent({
+        popupHost: host,
+        container,
+        vnode: h(CleanupProbe, { onCleanup: cleanup }),
       });
     });
 
@@ -93,8 +93,10 @@ describe('getOrCreateEmptyContainer', () => {
     originalHost.shadowRoot!.append(container);
 
     await act(() => {
-      withPopupRoot(originalHost, () => {
-        mountPopupComponent(container, h(CleanupProbe, { onCleanup: cleanup }));
+      mountPopupComponent({
+        popupHost: originalHost,
+        container,
+        vnode: h(CleanupProbe, { onCleanup: cleanup }),
       });
     });
 
