@@ -55,9 +55,12 @@ describe('TtsReading browser rendering', () => {
     // merely because playback changed their animation attributes.
     expectRectClose(rect(afterNodes[1]), beforeRects[1]);
     expectRectClose(rect(afterNodes[2]), beforeRects[2]);
+    expect(afterNodes[2].style.animation).toContain('tts-mora-hop');
+    expect(afterNodes[2].style.animation).not.toContain('tts-mora-grow');
+    expect(getComputedStyle(afterNodes[2]).translate).toBe('0px');
   });
 
-  it('has only one visible text-bearing glyph per mora at peak scale', async () => {
+  it('has only one visible text-bearing glyph per mora at peak hop', async () => {
     const subject = mount({
       kana: { ent: 'きゃく', a: 1, match: true },
       timing: { charTimingsMs: [0, 0, 220], totalDurationMs: 440 },
@@ -69,7 +72,7 @@ describe('TtsReading browser rendering', () => {
     expect(
       visibleTextElements(subject.root()).map((node) => node.textContent)
     ).toEqual(['きゃ', 'く']);
-    expect(getComputedStyle(subject.glyphs()[0]).scale).not.toBe('none');
+    expect(getComputedStyle(subject.glyphs()[0]).translate).not.toBe('0px');
   });
 
   it('aligns the dotted and solid accent boxes without transforming them', async () => {
@@ -137,7 +140,7 @@ describe('TtsReading browser rendering', () => {
     subject.publish(playing(performance.now() - 330));
     await nextFrame();
 
-    expect(getComputedStyle(subject.glyphs()[1]).scale).not.toBe('none');
+    expect(getComputedStyle(subject.glyphs()[1]).translate).not.toBe('0px');
     expect(getComputedStyle(downstep).transform).toBe('none');
     expectRectClose(rect(downstep), before);
   });
