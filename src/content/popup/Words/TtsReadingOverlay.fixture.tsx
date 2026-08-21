@@ -7,8 +7,7 @@ import type { MoraTimingData } from '../../../common/tts/tts-request';
 
 import type { TtsPlaybackState } from '../../tts-playback-controller';
 
-import { Reading } from './Reading';
-import { TtsReadingOverlay } from './TtsReadingOverlay';
+import { TtsReading } from './TtsReadingOverlay';
 
 const MS_PER_SOUND = 220;
 
@@ -80,18 +79,13 @@ export default {
 
     return (
       <div class="tp:p-4 tp:text-xl tp:text-(--reading-highlight)" lang="ja">
-        <span class="tp:inline-grid tp:*:row-start-1 tp:*:col-start-1">
-          <span>
-            <Reading kana={kana} accentDisplay={accentDisplay} />
-          </span>
-          <TtsReadingOverlay
-            controller={controller}
-            entryIndex={0}
-            readingIndex={0}
-            kana={kana}
-            accentDisplay={accentDisplay}
-          />
-        </span>
+        <TtsReading
+          controller={controller}
+          entryIndex={0}
+          readingIndex={0}
+          kana={kana}
+          accentDisplay={accentDisplay}
+        />
         <span class="tp:opacity-60">、そのあと</span>
       </div>
     );
