@@ -1,6 +1,6 @@
 import { type VNode, render } from 'preact';
 
-const mountsByPopupHost = new Map<Element, Set<Element>>();
+const mountsByPopupHost = new WeakMap<Element, Set<Element>>();
 
 export function mountPopupComponent({
   popupHost,
