@@ -17,6 +17,7 @@ import { updateExpandable } from './expandable';
 import { addFontStyles, removeFontStyles } from './font-styles';
 import { renderKanjiEntries } from './kanji';
 import { renderMetadata } from './metadata';
+import { unmountPopupComponents } from './mount';
 import { renderNamesEntries } from './names';
 import { getPopupContainer } from './popup-container';
 import popupStyles from './popup.css?inline';
@@ -107,7 +108,11 @@ export function renderPopup(
         html(
           'div',
           { class: 'expandable' },
-          renderKanjiEntries({ entries: resultToShow.data, options })
+          renderKanjiEntries({
+            entries: resultToShow.data,
+            options,
+            popupHost: host,
+          })
         )
       );
       break;
@@ -123,6 +128,7 @@ export function renderPopup(
             // Hide the meta if we have already shown it on the words tab
             meta: result?.words ? undefined : options.meta,
           },
+          popupHost: host,
         })
       );
       break;
@@ -139,6 +145,7 @@ export function renderPopup(
               more: resultToShow.more,
               namePreview: result!.namePreview,
               options,
+              popupHost: host,
               title: result!.title,
             })
           )
@@ -148,7 +155,8 @@ export function renderPopup(
 
     default:
       {
-        if (!options.meta) {
+        const { meta } = options;
+        if (!meta) {
           return null;
         }
 
@@ -157,8 +165,9 @@ export function renderPopup(
           preferredUnits: options.preferredUnits,
           isCombinedResult: false,
           matchLen: 0,
-          meta: options.meta,
+          meta,
           metaonly: true,
+          popupHost: host,
         });
         if (!metadata) {
           return null;
@@ -183,6 +192,7 @@ export function renderPopup(
         kanjiReferences: options.kanjiReferences,
         onCancelCopy: options.onCancelCopy,
         onCopy: options.onCopy,
+        popupHost: host,
         result: resultToShow ? result : undefined,
         series: options.dictToShow,
         showKanjiComponents: options.showKanjiComponents,
@@ -282,6 +292,7 @@ function getDefaultContainer(): HTMLElement {
     // this gets us the same result there too.
     before: LookupPuckId,
     legacyIds: ['rikaichamp-window'],
+    onBeforeRemove: unmountPopupComponents,
   });
 
   // Make sure our popup doesn't get inverted by Wikipedia's (experimental) dark
@@ -307,6 +318,8 @@ function resetContainer({
   fontSize: FontSize;
   popupStyle: string;
 }): HTMLElement {
+  unmountPopupComponents(host);
+
   const container = html('div', { class: 'container' });
   const windowDiv = html('div', {
     class: classes(

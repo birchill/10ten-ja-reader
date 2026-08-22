@@ -1,5 +1,5 @@
 import type { MajorDataSeries } from '@birchill/jpdict-idb';
-import { h, render } from 'preact';
+import { h } from 'preact';
 
 import type { CopyType } from '../../common/copy-keys';
 import type { ReferenceAbbreviation } from '../../common/refs';
@@ -9,8 +9,13 @@ import type { QueryResult } from '../query';
 
 import { CopyOverlay } from './CopyOverlay/CopyOverlay';
 import type { CopyState } from './copy-state';
+import { mountPopupComponent } from './mount';
 
-export function renderCopyOverlay(props: {
+export function renderCopyOverlay({
+  popupHost,
+  ...props
+}: {
+  popupHost: Element;
   copyState: CopyState;
   includeAllSenses: boolean;
   includeLessCommonHeadwords: boolean;
@@ -25,7 +30,11 @@ export function renderCopyOverlay(props: {
 }): HTMLDivElement {
   const containerElement = html('div', { class: 'tp:flex' });
 
-  render(h(CopyOverlay, props), containerElement);
+  mountPopupComponent({
+    popupHost,
+    container: containerElement,
+    vnode: h(CopyOverlay, props),
+  });
 
   return containerElement;
 }

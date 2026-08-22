@@ -1,4 +1,6 @@
 .DS_Store
+docs/plans
+spikes
 **/*.xcuserstate
 **/xcuserdata/**
 **/__screenshots__
