@@ -268,6 +268,69 @@ describe('TtsPlayer', () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
+  it('keeps the session a subscriber starts while it is stopping', async () => {
+    const { player, playbacks } = makePlayer(readings);
+
+    player.playAll();
+    await flush();
+
+    let restarted = false;
+    player.subscribe((state) => {
+      if (state.kind === 'idle' && !restarted) {
+        restarted = true;
+        player.playAll();
+      }
+    });
+
+    player.playAll();
+    await flush();
+
+    expect(player.state).toMatchObject({ kind: 'playing' });
+    expect(playbacks).toHaveLength(2);
+
+    player.stop();
+
+    expect(player.state).toEqual({ kind: 'idle' });
+    expect(playbacks.every((playback) => playback.signal.aborted)).toBe(true);
+  });
+
+  it('lets a subscriber that stops while it is stopping cancel the play', async () => {
+    const { player, fetches } = makePlayer(readings);
+
+    player.playAll();
+    await flush();
+    const fetchesBefore = fetches.length;
+
+    let stopped = false;
+    player.subscribe((state) => {
+      if (state.kind === 'idle' && !stopped) {
+        stopped = true;
+        player.stop();
+      }
+    });
+
+    player.playAll();
+
+    expect(fetches).toHaveLength(fetchesBefore);
+    expect(player.state).toEqual({ kind: 'idle' });
+  });
+
+  it('does not tell later subscribers about a state an earlier one left', () => {
+    const { player } = makePlayer(readings);
+    const seen: Array<PlaybackState['kind']> = [];
+    player.subscribe((state) => {
+      if (state.kind === 'loading') {
+        player.stop();
+      }
+    });
+    player.subscribe((state) => seen.push(state.kind));
+
+    player.playAll();
+
+    expect(player.state).toEqual({ kind: 'idle' });
+    expect(seen).toEqual(['idle']);
+  });
+
   it('turns a fetch seam that throws into a failed reading', async () => {
     const { player, fetches } = makePlayer([readings[0], readings[1]], {
       deferFetch: true,
@@ -283,10 +346,6 @@ describe('TtsPlayer', () => {
 
     expect(player.state).toEqual({ kind: 'error' });
     expect(fetches[0].signal.aborted).toBe(true);
-
-    await vi.advanceTimersByTimeAsync(2000);
-
-    expect(player.state).toEqual({ kind: 'idle' });
   });
 
   it('skips a reading whose fetch fails', async () => {
@@ -371,22 +430,6 @@ describe('TtsPlayer', () => {
     expect(player.state).toEqual({ kind: 'loading', readingIndex: 1 });
   });
 
-  it('cancels the fetch of a clip that misses its deadline', async () => {
-    const { player, fetches } = makePlayer([readings[0]], {
-      deferFetch: true,
-      fetchIgnoresAbort: true,
-    });
-
-    player.playAll();
-
-    expect(fetches[0].signal.aborted).toBe(false);
-
-    await vi.advanceTimersByTimeAsync(10_000);
-
-    expect(fetches[0].signal.aborted).toBe(true);
-    expect(player.state).toEqual({ kind: 'error' });
-  });
-
   it('gives a clip its own deadline when its turn begins', async () => {
     const { player, playbacks } = makePlayer([readings[0], readings[1]]);
 
@@ -399,15 +442,19 @@ describe('TtsPlayer', () => {
     expect(player.state).toMatchObject({ kind: 'playing', readingIndex: 1 });
   });
 
-  it('shows the error state when the only fetch never settles', async () => {
-    const { player } = makePlayer([readings[0]], {
+  it('cancels a fetch that never settles, then shows the error state', async () => {
+    const { player, fetches } = makePlayer([readings[0]], {
       deferFetch: true,
       fetchIgnoresAbort: true,
     });
 
     player.playAll();
+
+    expect(fetches[0].signal.aborted).toBe(false);
+
     await vi.advanceTimersByTimeAsync(10_000);
 
+    expect(fetches[0].signal.aborted).toBe(true);
     expect(player.state).toEqual({ kind: 'error' });
 
     await vi.advanceTimersByTimeAsync(2000);
@@ -426,10 +473,6 @@ describe('TtsPlayer', () => {
     await vi.advanceTimersByTimeAsync(10_000);
 
     expect(player.state).toEqual({ kind: 'error' });
-
-    await vi.advanceTimersByTimeAsync(2000);
-
-    expect(player.state).toEqual({ kind: 'idle' });
   });
 
   it('keeps playing a clip that lasts longer than the deadline', async () => {
