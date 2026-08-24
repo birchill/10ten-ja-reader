@@ -23,7 +23,6 @@ export function getDisplayedKana(entry: WordResult): WordResult['r'] {
         (matchedOnIrregularKana &&
           !r.i?.includes('ik') &&
           !r.i?.includes('ok') &&
-          !r.i?.includes('rk') &&
-          !r.i?.includes('sk')))
+          !r.i?.includes('rk')))
   );
 }
