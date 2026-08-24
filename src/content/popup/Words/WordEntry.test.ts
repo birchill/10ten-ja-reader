@@ -13,38 +13,15 @@ vi.mock('../../../common/i18n', () => ({
   useLocale: () => ({ t: () => '', langTag: 'en' }),
 }));
 
-describe('WordEntry kana cluster', () => {
-  it('renders every matching kana headword, in order, when matched on kanji', () => {
+describe('WordEntry', () => {
+  it('renders only the displayed kana headwords, in order', () => {
     const entry = createEntry([
       { ent: 'ひ', romaji: 'hi', match: true },
+      { ent: 'ひー', romaji: 'hi-', match: true, i: ['sk'] },
       { ent: 'にち', romaji: 'nichi', match: true },
     ]);
 
-    expect(renderKanaCluster(entry)).toBe('ひ、にち');
-  });
-
-  it('falls back to the regular kana headword when every match is irregular', () => {
-    const entry = createEntry([
-      {
-        ent: 'ふいんき',
-        romaji: 'fuinki',
-        match: true,
-        matchRange: [0, 4],
-        i: ['ik'],
-      },
-      { ent: 'ふんいき', romaji: "fun'iki", match: false },
-    ]);
-
-    expect(renderKanaCluster(entry)).toBe('ふいんき(ik)、ふんいき');
-  });
-
-  it('excludes a search-only kana headword even when it matched', () => {
-    const entry = createEntry([
-      { ent: 'ひ', romaji: 'hi', match: true, matchRange: [0, 1] },
-      { ent: 'ひー', romaji: 'hi-', match: true, i: ['sk'] },
-    ]);
-
-    expect(renderKanaCluster(entry)).toBe('ひ');
+    expect(renderKana(entry)).toBe('ひ、にち');
   });
 });
 
@@ -52,7 +29,7 @@ function createEntry(r: WordResult['r']): WordResult {
   return { id: 1, k: [], r, s: [], matchLen: 1 };
 }
 
-function renderKanaCluster(entry: WordResult): string | null {
+function renderKana(entry: WordResult): string | null {
   const config: WordEntryConfig = {
     accentDisplay: 'none',
     dictLang: 'en',
