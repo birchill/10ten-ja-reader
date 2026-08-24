@@ -1,6 +1,3 @@
-import browser from 'webextension-polyfill';
-
-import type { BackgroundRequest } from '../../background/background-request';
 import type { MoraTimingData } from '../../common/tts/tts-request';
 
 import type { ReadingToken } from './reading-tokens';
@@ -11,15 +8,8 @@ const MIN_DURATION_MS = 50;
 
 export function computeMoraDurations(
   tokens: ReadonlyArray<ReadingToken>,
-  reading: string,
   timing: MoraTimingData
-): Array<MoraDuration> | undefined {
-  const codepointCount = [...reading].length;
-  if (timing.charTimingsMs.length !== codepointCount) {
-    reportMismatch(reading, timing, codepointCount);
-    return undefined;
-  }
-
+): Array<MoraDuration> {
   const startOf = (token: ReadingToken) =>
     timing.charTimingsMs[token.charIndex] ?? 0;
 
@@ -44,35 +34,4 @@ export function computeMoraDurations(
       durationMs: Math.max(nextStart - startMs, MIN_DURATION_MS),
     };
   });
-}
-
-const REPORT_MEMORY = 32;
-
-// Keyed by what the anomaly _is_, not by the timing object: the overlay
-// recomputes durations on every render, and every replay refetches the clip
-// into a fresh object that would otherwise report the same mismatch again.
-const reported = new Set<string>();
-
-function reportMismatch(
-  reading: string,
-  timing: MoraTimingData,
-  codepointCount: number
-) {
-  // The reading stays local to this key. It must not reach telemetry: what the
-  // user looked up is masked out of every payload this extension sends.
-  const mismatch = `${reading}|${timing.charTimingsMs.length}`;
-  if (reported.has(mismatch)) {
-    return;
-  }
-  if (reported.size >= REPORT_MEMORY) {
-    reported.clear();
-  }
-  reported.add(mismatch);
-
-  void browser.runtime
-    .sendMessage<BackgroundRequest, void>({
-      type: 'notifyTtsWarning',
-      message: `Mora timing mismatch: ${timing.charTimingsMs.length} timings for ${codepointCount} codepoints`,
-    })
-    .catch(() => {});
 }

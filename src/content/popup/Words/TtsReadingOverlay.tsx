@@ -90,7 +90,7 @@ export function TtsReading(props: TtsReadingProps) {
   const tokens = getReadingTokens(props.kana.ent, accentPos, accentDisplay);
   const durations =
     shouldAnimate && highlight
-      ? computeMoraDurations(tokens, props.kana.ent, highlight.timing)
+      ? computeMoraDurations(tokens, highlight.timing)
       : undefined;
   const animationPhase = useAnimationPhase(
     durations ? highlight?.startedAt : undefined
