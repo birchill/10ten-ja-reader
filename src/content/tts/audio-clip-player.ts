@@ -6,14 +6,15 @@ type PreparedPlayback = { context: AudioContext; ready: Promise<void> };
 
 let prepared: PreparedPlayback | undefined;
 
-// Do not call this outside a user gesture handler. WebKit keeps the context
-// suspended if the gesture is over.
 export function preparePlayback(): void {
   if (!prepared || prepared.context.state === 'closed') {
     prepared = createPrepared();
     return;
   }
-  if (prepared.context.state === 'suspended') {
+  if (prepared.context.state !== 'running') {
+    // Resume while the user gesture is still on the stack. WebKit keeps the
+    // context suspended for a resume() that arrives after the gesture is over,
+    // so this cannot wait until the clip is ready to play.
     prepared.ready = resumeTracked(prepared.context);
   }
 }
@@ -88,9 +89,7 @@ export const playClip: PlayClip = (clip, signal) => {
       }
 
       const audioBuffer = await rejectWhenAborted(
-        playback.context.decodeAudioData(
-          clip.bytes.slice().buffer as ArrayBuffer
-        ),
+        playback.context.decodeAudioData(clip.bytes.slice().buffer),
         signal
       );
       if (signal.aborted) {
