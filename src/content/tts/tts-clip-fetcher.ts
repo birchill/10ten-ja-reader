@@ -21,7 +21,7 @@ export const fetchTtsClip: FetchClip = async (request, signal) => {
   }
 
   return {
-    bytes: decodeBase64(response.audio),
+    bytes: decodeBase64(response.audioBase64),
     moraTiming: response.moraTiming,
   };
 };
