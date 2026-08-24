@@ -5,8 +5,10 @@ import type {
   TtsClipRequest,
 } from '../../common/tts/tts-request';
 import { buildTtsFilename } from '../../common/tts/tts-request';
+import { rejectWhenAborted } from '../../utils/reject-when-aborted';
 
 const CLIP_DEADLINE_MS = 10_000;
+const ERROR_STATE_RESET_MS = 2000;
 
 export type StartInfo = {
   /** The start time, on the `performance.now()` clock. */
@@ -52,6 +54,7 @@ export class TtsPlayer {
   #listeners = new Set<(state: PlaybackState) => void>();
   #session: AbortController | null = null;
   #errorResetTimer: ReturnType<typeof setTimeout> | undefined;
+  #action = 0;
 
   constructor(options: TtsPlayerOptions) {
     this.#options = options;
@@ -68,37 +71,59 @@ export class TtsPlayer {
 
   setReadings(readings: ReadonlyArray<TtsClipRequest>) {
     const key = readings.map(buildTtsFilename).join('\n');
-    if (key !== this.#readingsKey) {
-      this.stop();
-    }
+    const changed = key !== this.#readingsKey;
+    // Install the readings before stopping, so that a subscriber which starts
+    // playback from the stop notification plays this word and not the last.
     this.#readings = readings;
     this.#readingsKey = key;
+    if (changed) {
+      this.stop();
+    }
   }
 
   playAll = () => {
-    this.#play(getPlayableReadingIndices(this.#readings));
+    this.#play();
   };
 
   stop = () => {
+    this.#action++;
+    this.#teardown();
+  };
+
+  #teardown() {
     this.#session?.abort();
     this.#session = null;
     clearTimeout(this.#errorResetTimer);
-    // `setReadings` stops on every word change. Do not make subscribers
-    // re-render for an idle-to-idle change.
+    // Do not make subscribers re-render for an idle-to-idle change.
     if (this.#state.kind !== 'idle') {
       this.#setState({ kind: 'idle' });
     }
-  };
+  }
 
   #setState(state: PlaybackState) {
     this.#state = state;
     for (const listener of this.#listeners) {
+      // A listener can move the state on. Do not tell the listeners after it
+      // about a state the player has already left.
+      if (this.#state !== state) {
+        return;
+      }
       listener(state);
     }
   }
 
-  #play(indices: Array<number>) {
-    this.stop();
+  #play() {
+    // `#teardown` notifies subscribers synchronously, and one of them can stop
+    // us or install new readings. Let a later action win, and resolve the
+    // indices against a snapshot rather than the field it may have replaced.
+    const action = ++this.#action;
+    this.#teardown();
+    if (action !== this.#action) {
+      return;
+    }
+
+    const readings = this.#readings;
+    const indices = getPlayableReadingIndices(readings);
     if (!indices.length) {
       return;
     }
@@ -110,7 +135,7 @@ export class TtsPlayer {
       // Give each clip its own controller before you fetch it, so that the
       // deadline in `#playWhenReady` can also cancel the fetch.
       const controller = new AbortController();
-      const clip = this.#fetchClip(readingIndex, controller.signal);
+      const clip = this.#fetchClip(readings[readingIndex], controller.signal);
       // A later reading can fail before its turn to play. Without a handler,
       // this gives an unhandled rejection.
       ignoreRejection(clip);
@@ -120,9 +145,9 @@ export class TtsPlayer {
     void this.#run(clips, session.signal);
   }
 
-  #fetchClip(readingIndex: number, signal: AbortSignal): Promise<TtsClip> {
+  #fetchClip(request: TtsClipRequest, signal: AbortSignal): Promise<TtsClip> {
     try {
-      return this.#options.fetchClip(this.#readings[readingIndex], signal);
+      return this.#options.fetchClip(request, signal);
     } catch (error) {
       // A seam that throws synchronously must fail like a rejected fetch. The
       // state machine then handles it like every other failed reading.
@@ -150,6 +175,11 @@ export class TtsPlayer {
 
   async #playClips(clips: Array<PendingClip>, signal: AbortSignal) {
     for (const [pos, pending] of clips.entries()) {
+      // An abort that already happened never fires, so check before
+      // publishing: otherwise this run strands the UI in `loading`.
+      if (signal.aborted) {
+        return;
+      }
       this.#setState({ kind: 'loading', readingIndex: pending.readingIndex });
       // A subscriber can stop us while it hears about `loading`. Install no
       // per-clip resources for a session that is already over.
@@ -166,12 +196,11 @@ export class TtsPlayer {
         if (pos < clips.length - 1) {
           continue;
         }
-        // Keep this 2s delay equal to the error-icon fade-out in
-        // `TtsPlayButton.tsx`. Set the timer before you tell the listeners.
-        // Then a listener that starts a new session can cancel it with `stop`.
+        // Set the timer before you tell the listeners. Then a listener that
+        // starts a new session can cancel it with `stop`.
         this.#errorResetTimer = setTimeout(
           () => this.#setState({ kind: 'idle' }),
-          2000
+          ERROR_STATE_RESET_MS
         );
         this.#setState({ kind: 'error' });
         return;
@@ -230,21 +259,4 @@ export class TtsPlayer {
 
 function ignoreRejection(promise: Promise<unknown>) {
   void promise.catch(() => {});
-}
-
-function rejectWhenAborted<T>(
-  promise: Promise<T>,
-  signal: AbortSignal
-): Promise<T> {
-  if (signal.aborted) {
-    return Promise.reject(new Error('Playback aborted'));
-  }
-
-  return new Promise<T>((resolve, reject) => {
-    const onAbort = () => reject(new Error('Playback aborted'));
-    signal.addEventListener('abort', onAbort, { once: true });
-    void promise.then(resolve, reject).finally(() => {
-      signal.removeEventListener('abort', onAbort);
-    });
-  });
 }
