@@ -5,7 +5,7 @@ import type { WordResult } from '../background/search-result';
 import { getDisplayedKana } from './displayed-kana';
 
 describe('getDisplayedKana', () => {
-  it('shows the matching kana headwords when the lookup matched on kanji', () => {
+  it('returns all matching kana headwords for a kanji match', () => {
     const entry = createEntry([
       { ent: 'ひ', romaji: 'hi', match: true },
       { ent: 'にち', romaji: 'nichi', match: true },
@@ -14,7 +14,7 @@ describe('getDisplayedKana', () => {
     expect(kanaOf(getDisplayedKana(entry))).toEqual(['ひ', 'にち']);
   });
 
-  it('shows only the matching kana headword when the lookup matched on kana', () => {
+  it('returns only the matching kana headword for a kana match', () => {
     const entry = createEntry([
       { ent: 'ひ', romaji: 'hi', match: true, matchRange: [0, 1] },
       { ent: 'にち', romaji: 'nichi', match: false },
@@ -23,7 +23,7 @@ describe('getDisplayedKana', () => {
     expect(kanaOf(getDisplayedKana(entry))).toEqual(['ひ']);
   });
 
-  it('adds the regular kana headword when every kana match is irregular', () => {
+  it('includes the regular kana headword when all kana matches are irregular', () => {
     const entry = createEntry([
       {
         ent: 'ふいんき',
@@ -38,7 +38,7 @@ describe('getDisplayedKana', () => {
     expect(kanaOf(getDisplayedKana(entry))).toEqual(['ふいんき', 'ふんいき']);
   });
 
-  it('excludes search-only kana headwords even when they matched', () => {
+  it('excludes matched search-only kana headwords', () => {
     const entry = createEntry([
       { ent: 'ひ', romaji: 'hi', match: true, matchRange: [0, 1] },
       { ent: 'ひー', romaji: 'hi-', match: true, i: ['sk'] },
@@ -47,7 +47,7 @@ describe('getDisplayedKana', () => {
     expect(kanaOf(getDisplayedKana(entry))).toEqual(['ひ']);
   });
 
-  it('excludes a search-only kana headword from the irregular fallback too', () => {
+  it('excludes search-only kana headwords from the irregular fallback', () => {
     const entry = createEntry([
       {
         ent: 'ふいんき',
