@@ -20,72 +20,6 @@ let connectThrows: boolean;
 let preparePlayback: () => void;
 let playClip: PlayClip;
 
-class FakeSourceNode {
-  buffer: AudioBuffer | null = null;
-  onended: (() => void) | null = null;
-  #started = false;
-
-  connect = vi.fn<() => void>(() => {
-    if (connectThrows) {
-      throw new Error('connect failed');
-    }
-  });
-
-  start = vi.fn<() => void>(() => {
-    this.#started = true;
-    calls.push('start');
-  });
-
-  stop = vi.fn<() => void>(() => {
-    if (!this.#started) {
-      throw new DOMException(
-        'cannot call stop without calling start first',
-        'InvalidStateError'
-      );
-    }
-    calls.push('stop');
-  });
-
-  disconnect = vi.fn<() => void>(() => calls.push('disconnect'));
-}
-
-class FakeAudioContext {
-  state: 'suspended' | 'running' | 'closed' = 'suspended';
-  destination = {};
-
-  constructor() {
-    contextInstances += 1;
-    calls.push('construct');
-    recordContext(this);
-  }
-
-  resume = vi.fn<() => Promise<void>>(() => {
-    calls.push('resume');
-    return resumeDeferred.promise.then(() => {
-      if (!staysAudioSuspended) {
-        this.state = 'running';
-      }
-    });
-  });
-
-  decodeAudioData = vi.fn<(buffer: ArrayBuffer) => Promise<AudioBuffer>>(
-    (buffer) => {
-      calls.push('decode');
-      lastDecodeArg = buffer;
-      return decodeDeferred.promise;
-    }
-  );
-
-  createBufferSource = vi.fn<() => FakeSourceNode>(() => {
-    lastSource = new FakeSourceNode();
-    return lastSource;
-  });
-}
-
-function recordContext(context: FakeAudioContext): void {
-  lastContext = context;
-}
-
 beforeEach(async () => {
   vi.useFakeTimers();
   vi.resetModules();
@@ -118,6 +52,18 @@ describe('preparePlayback', () => {
     expect(calls).toEqual(['construct', 'resume']);
 
     preparePlayback();
+    expect(calls).toEqual(['construct', 'resume', 'resume']);
+  });
+
+  it('resumes an existing context that WebKit left interrupted', async () => {
+    preparePlayback();
+    resumeDeferred.resolve();
+    await flush();
+
+    lastContext!.state = 'interrupted';
+    preparePlayback();
+
+    expect(contextInstances).toBe(1);
     expect(calls).toEqual(['construct', 'resume', 'resume']);
   });
 
@@ -298,6 +244,72 @@ describe('playClip', () => {
     expect(contextInstances).toBe(1);
   });
 });
+
+class FakeAudioContext {
+  state: AudioContextState = 'suspended';
+  destination = {};
+
+  constructor() {
+    contextInstances += 1;
+    calls.push('construct');
+    recordContext(this);
+  }
+
+  resume = vi.fn<() => Promise<void>>(() => {
+    calls.push('resume');
+    return resumeDeferred.promise.then(() => {
+      if (!staysAudioSuspended) {
+        this.state = 'running';
+      }
+    });
+  });
+
+  decodeAudioData = vi.fn<(buffer: ArrayBuffer) => Promise<AudioBuffer>>(
+    (buffer) => {
+      calls.push('decode');
+      lastDecodeArg = buffer;
+      return decodeDeferred.promise;
+    }
+  );
+
+  createBufferSource = vi.fn<() => FakeSourceNode>(() => {
+    lastSource = new FakeSourceNode();
+    return lastSource;
+  });
+}
+
+function recordContext(context: FakeAudioContext): void {
+  lastContext = context;
+}
+
+class FakeSourceNode {
+  buffer: AudioBuffer | null = null;
+  onended: (() => void) | null = null;
+  #started = false;
+
+  connect = vi.fn<() => void>(() => {
+    if (connectThrows) {
+      throw new Error('connect failed');
+    }
+  });
+
+  start = vi.fn<() => void>(() => {
+    this.#started = true;
+    calls.push('start');
+  });
+
+  stop = vi.fn<() => void>(() => {
+    if (!this.#started) {
+      throw new DOMException(
+        'cannot call stop without calling start first',
+        'InvalidStateError'
+      );
+    }
+    calls.push('stop');
+  });
+
+  disconnect = vi.fn<() => void>(() => calls.push('disconnect'));
+}
 
 function flush() {
   return vi.advanceTimersByTimeAsync(0);
