@@ -27,18 +27,10 @@ describe('resolveTtsParams', () => {
     ]);
   });
 
-  it('includes the first non-sK kanji headword when app is unset', () => {
-    const entry = createEntry([kana('たべる')], [kanji('食べる')]);
-
-    expect(resolveTtsParams(entry)).toEqual([
-      { reading: 'たべる', kanji: '食べる' },
-    ]);
-  });
-
-  it('skips an sK-flagged kanji headword ahead of a usable one', () => {
+  it('selects the first eligible non-sK kanji when app is unset', () => {
     const entry = createEntry(
       [kana('そうさく')],
-      [kanji('搜索', { i: ['sK'] }), kanji('捜索')]
+      [kanji('搜索', { i: ['sK'] }), kanji('捜索'), kanji('搜尋')]
     );
 
     expect(resolveTtsParams(entry)).toEqual([
@@ -92,7 +84,7 @@ describe('resolveTtsParams', () => {
     ]);
   });
 
-  it('preserves display order across multiple readings', () => {
+  it('returns every displayed reading in display order and preserves pitch accent 0', () => {
     const entry = createEntry(
       [kana('はいる', { a: 1 }), kana('いる', { a: 0 })],
       [kanji('入る')]
