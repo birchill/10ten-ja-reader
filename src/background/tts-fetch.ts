@@ -34,38 +34,42 @@ export async function fetchTtsClip(
 
   try {
     const url = `${TTS_BASE_URL}/${buildTtsFilename(request)}`;
-    let buffer: ArrayBuffer;
-    let moraTiming: MoraTimingData | undefined;
-    let contentLength: string | null = null;
+
+    let response: Response;
     try {
-      const response = await rejectWhenAborted(
+      response = await rejectWhenAborted(
         fetch(url, { signal: controller.signal }),
         controller.signal
       );
-
-      if (!response.ok) {
-        controller.abort();
-        if (response.status >= 500) {
-          void Bugsnag.notify('TTS clip fetch failed', {
-            severity: 'warning',
-            metadata: { status: response.status },
-          });
-        }
+    } catch (e) {
+      if (isNetworkFailure(e)) {
         return { ok: false };
       }
+      throw e;
+    }
 
-      moraTiming = parseMoraTimingHeaders(response, request.reading);
-      contentLength = response.headers.get('content-length');
+    if (!response.ok) {
+      controller.abort();
+      if (response.status >= 500) {
+        void Bugsnag.notify('TTS clip fetch failed', {
+          severity: 'warning',
+          metadata: { status: response.status },
+        });
+      }
+      return { ok: false };
+    }
 
+    const moraTiming = parseMoraTimingHeaders(response, request.reading);
+    const contentLength = response.headers.get('content-length');
+
+    let buffer: ArrayBuffer;
+    try {
       buffer = await rejectWhenAborted(
         response.arrayBuffer(),
         controller.signal
       );
     } catch (e) {
-      // The Fetch spec ties every TypeError from a fetch, or from reading its
-      // body, to a network failure. Match the error's type here, not
-      // engine-specific wording ("Failed to fetch", "Load failed", ...).
-      if (!isAbortError(e) && e instanceof TypeError) {
+      if (isNetworkFailure(e)) {
         return { ok: false };
       }
       throw e;
@@ -113,6 +117,13 @@ export function cancelTtsFetch(key: TtsFetchKey): void {
 
 function keyFor(key: TtsFetchKey): string {
   return `${key.tabId}:${key.frameId}:${key.requestId}`;
+}
+
+function isNetworkFailure(e: unknown): boolean {
+  // The Fetch spec ties every TypeError from a fetch, or from reading its
+  // body, to a network failure. Match the error's type, not engine-specific
+  // wording ("Failed to fetch", "Load failed", ...).
+  return !isAbortError(e) && e instanceof TypeError;
 }
 
 function parseMoraTimingHeaders(
@@ -167,11 +178,11 @@ function notifyTimingAnomalyOnce(
   metadata: Record<string, unknown>
 ): void {
   const anomaly = `${typeof error === 'string' ? error : error.message}|${JSON.stringify(metadata)}`;
-  if (reportedTimingAnomalies.has(anomaly)) {
+  if (
+    reportedTimingAnomalies.has(anomaly) ||
+    reportedTimingAnomalies.size >= MAX_TIMING_ANOMALY_REPORTS
+  ) {
     return;
-  }
-  if (reportedTimingAnomalies.size >= MAX_TIMING_ANOMALY_REPORTS) {
-    reportedTimingAnomalies.clear();
   }
   reportedTimingAnomalies.add(anomaly);
 
@@ -191,7 +202,11 @@ function parseCharTimingsMs(
   totalDurationMs: number,
   expectedCount: number
 ): Array<number> | undefined {
-  if (!Array.isArray(value) || value.length !== expectedCount) {
+  if (
+    !Array.isArray(value) ||
+    !value.length ||
+    value.length !== expectedCount
+  ) {
     return undefined;
   }
 

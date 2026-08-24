@@ -1,21 +1,28 @@
-import Bugsnag from '@birchill/bugsnag-zero';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { TtsClipRequest } from '../common/tts/tts-request';
 import { buildTtsFilename } from '../common/tts/tts-request';
 
-import type { TtsFetchKey } from './tts-fetch';
-import { cancelTtsFetch, fetchTtsClip } from './tts-fetch';
+import type * as TtsFetch from './tts-fetch';
 
 const request: TtsClipRequest = { kanji: '猫', reading: 'ねこ' };
-const key: TtsFetchKey = { tabId: 1, frameId: 0, requestId: 'clip-1' };
+const key: TtsFetch.TtsFetchKey = { tabId: 1, frameId: 0, requestId: 'clip-1' };
 
 let notifySpy: ReturnType<typeof vi.spyOn>;
+let fetchTtsClip: typeof TtsFetch.fetchTtsClip;
+let cancelTtsFetch: typeof TtsFetch.cancelTtsFetch;
 
-beforeEach(() => {
+beforeEach(async () => {
   vi.useFakeTimers();
+  vi.resetModules();
   vi.stubGlobal('fetch', vi.fn());
+
+  const Bugsnag = (await import('@birchill/bugsnag-zero')).default;
   notifySpy = vi.spyOn(Bugsnag, 'notify').mockResolvedValue(undefined);
+
+  const mod = await import('./tts-fetch');
+  fetchTtsClip = mod.fetchTtsClip;
+  cancelTtsFetch = mod.cancelTtsFetch;
 });
 
 afterEach(() => {
@@ -110,6 +117,42 @@ describe('fetchTtsClip', () => {
     expect(notifySpy).toHaveBeenCalledTimes(1);
   });
 
+  it('stops warning once it has reported its cap of distinct anomalies', async () => {
+    for (let i = 0; i < 40; i++) {
+      mockFetch(
+        makeResponse({
+          headers: {
+            'x-amz-meta-mora-timings': '[0,100]',
+            'x-amz-meta-audio-duration': `${i}x`,
+          },
+          buffer: new Uint8Array([1]).buffer,
+        })
+      );
+      await fetchTtsClip({ ...key, requestId: `clip-${i}` }, request);
+    }
+
+    expect(notifySpy).toHaveBeenCalledTimes(32);
+  });
+
+  it('drops an empty timing array, even when the reading is empty too', async () => {
+    mockFetch(
+      makeResponse({
+        headers: {
+          'x-amz-meta-mora-timings': '[]',
+          'x-amz-meta-audio-duration': '1',
+        },
+        buffer: new Uint8Array([1]).buffer,
+      })
+    );
+
+    const result = await fetchTtsClip(key, { reading: '' });
+
+    expect(result).toEqual({
+      ok: true,
+      audioBase64: Buffer.from(new Uint8Array([1])).toString('base64'),
+    });
+  });
+
   it('returns no clip, and stays silent, when the reading simply has no audio', async () => {
     mockFetch(makeResponse({ ok: false, status: 404 }));
 
@@ -169,6 +212,10 @@ describe('fetchTtsClip', () => {
   it('skips a TypeError from the body read silently, just like one from fetch() itself', async () => {
     mockFetch(
       makeResponse({
+        headers: {
+          'x-amz-meta-mora-timings': '[0,100]',
+          'x-amz-meta-audio-duration': '300',
+        },
         arrayBuffer: () => Promise.reject(new TypeError('Load failed')),
       })
     );
@@ -213,7 +260,7 @@ describe('fetchTtsClip', () => {
   });
 
   it('leaves a settled fetch`s signal alone when a cancel arrives after it', async () => {
-    const settledKey: TtsFetchKey = {
+    const settledKey: TtsFetch.TtsFetchKey = {
       tabId: 1,
       frameId: 0,
       requestId: 'settled-key',
@@ -227,7 +274,7 @@ describe('fetchTtsClip', () => {
   });
 
   it('cancels only the clip it was asked to, leaving a concurrent fetch running', async () => {
-    const other: TtsFetchKey = { ...key, requestId: 'clip-other' };
+    const other: TtsFetch.TtsFetchKey = { ...key, requestId: 'clip-other' };
     const call = mockFetch();
 
     const pending = fetchTtsClip(key, request);
