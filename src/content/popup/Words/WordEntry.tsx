@@ -119,16 +119,23 @@ export function WordEntry(props: WordEntryProps) {
           !r.i?.includes('sk')))
   );
 
-  if (!props.config.readingOnly) {
-    // If we have hidden all the kanji headwords, then we shouldn't show
-    // "usually kana" annotations on definitions.
-    if (!matchingKanji.length) {
-      entry.s = entry.s.map((s) => ({
-        ...s,
-        misc: s.misc?.filter((m) => m !== 'uk'),
-      }));
-    }
-  }
+  // If we have hidden all the kanji headwords, then we shouldn't show
+  // "usually kana" annotations on definitions.
+  //
+  // Note that we need to copy the entry here rather than updating it in place:
+  // the same WordResult object is handed to the copy-to-clipboard path (see
+  // getCopyEntryFromResult) so modifying it would drop the annotation from
+  // copied text too.
+  const definitionsEntry =
+    !props.config.readingOnly && !matchingKanji.length
+      ? {
+          ...entry,
+          s: entry.s.map((s) => ({
+            ...s,
+            misc: s.misc?.filter((m) => m !== 'uk'),
+          })),
+        }
+      : entry;
 
   return (
     <div
@@ -308,7 +315,7 @@ export function WordEntry(props: WordEntryProps) {
       </div>
 
       {!props.config.readingOnly && (
-        <Definitions entry={entry} options={props.config} />
+        <Definitions entry={definitionsEntry} options={props.config} />
       )}
     </div>
   );

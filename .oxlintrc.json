@@ -14,6 +14,14 @@
     "react/no-unknown-property": "off",
     "react-hooks/exhaustive-deps": "off",
 
+    // oxlint 1.79 split react/react-compiler into per-category rules and
+    // activated them (oxc #25500, #25830). react/immutability doesn't suit this
+    // codebase: the options UI writes settings through the Config store's
+    // setters, which the rule reports as mutating props. It also doesn't
+    // recognize preact/hooks' useRef, so it flags ref writes in effects and
+    // event handlers -- code that is perfectly legitimate.
+    "react/immutability": "off",
+
     "vitest/no-conditional-expect": "off",
     "vitest/no-identical-title": "error",
 

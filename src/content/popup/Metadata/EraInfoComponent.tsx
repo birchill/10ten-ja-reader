@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 
 import { useLocale } from '../../../common/i18n';
 import { classes } from '../../../utils/classes';
@@ -23,7 +23,7 @@ export function EraInfoComponent(props: Props) {
     lastTimeSpan
   );
 
-  useMemo(() => {
+  useEffect(() => {
     void getEraInfoTimeSpan(props.meta).then((newTimeSpan) => {
       lastTimeSpan = newTimeSpan;
       setTimeSpan(newTimeSpan);
