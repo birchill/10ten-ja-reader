@@ -37,12 +37,8 @@ function resolvePlayableKanji(
   kanji: WordResult['k'],
   app: number | undefined
 ): string | undefined {
-  if (app === undefined) {
-    return kanji.find((k) => !k.i?.includes('sK'))?.ent;
-  }
-
-  const index = kanji.findIndex(
-    (k, i) => app & (1 << i) && !k.i?.includes('sK')
-  );
-  return index >= 0 ? kanji[index]!.ent : undefined;
+  return kanji.find(
+    (k, i) =>
+      (app === undefined || (app & (1 << i)) !== 0) && !k.i?.includes('sK')
+  )?.ent;
 }
