@@ -30,7 +30,7 @@ describe('fetchTtsClip', () => {
     const moraTiming = { charTimingsMs: [0, 100], totalDurationMs: 200 };
     sendMessage.mockResolvedValue({
       ok: true,
-      audio: Buffer.from(bytes).toString('base64'),
+      audioBase64: Buffer.from(bytes).toString('base64'),
       moraTiming,
     } satisfies TtsFetchResult);
 
@@ -96,7 +96,7 @@ describe('fetchTtsClip', () => {
   it('removes its abort listener once the fetch settles', async () => {
     sendMessage.mockResolvedValue({
       ok: true,
-      audio: '',
+      audioBase64: '',
     } satisfies TtsFetchResult);
     const controller = new AbortController();
     const added = vi.spyOn(controller.signal, 'addEventListener');
