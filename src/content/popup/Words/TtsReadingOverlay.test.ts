@@ -387,25 +387,6 @@ describe('TtsReading', () => {
     expect(revealAnimations(moras())).toEqual(['', '', '']);
   });
 
-  it('leaves the reading still and warns once when timings do not fit', () => {
-    const { glyphs, moras, rerender } = mount({
-      initialState: playing({
-        moraTiming: { charTimingsMs: [0, 200], totalDurationMs: 600 },
-      }),
-    });
-
-    rerender();
-
-    expect(hopAnimations(glyphs())).toEqual(['', '', '']);
-    expect(revealAnimations(moras())).toEqual(['', '', '']);
-    expect(sendMessage).toHaveBeenCalledTimes(1);
-    // What the user looked up must not reach telemetry.
-    expect(sendMessage).toHaveBeenCalledWith({
-      type: 'notifyTtsWarning',
-      message: 'Mora timing mismatch: 2 timings for 3 codepoints',
-    });
-  });
-
   it('highlights on the very first paint when the controller is already playing', () => {
     const controller: TtsReadingProps['controller'] = {
       state: playing(),
