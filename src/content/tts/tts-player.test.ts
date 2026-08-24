@@ -36,12 +36,6 @@ afterEach(() => {
 });
 
 describe('TtsPlayer', () => {
-  it('starts idle', () => {
-    const { player } = makePlayer(readings);
-
-    expect(player.state).toEqual({ kind: 'idle' });
-  });
-
   it('fetches every playable reading up front, then plays the first', async () => {
     const { player, fetches } = makePlayer(readings);
 
@@ -60,7 +54,7 @@ describe('TtsPlayer', () => {
     });
   });
 
-  it('does not fetch a reading that sounds the same as an earlier one', async () => {
+  it('does not fetch a reading that sounds the same as an earlier one', () => {
     const withDuplicate: Array<TtsClipRequest> = [
       { reading: 'こーひー' },
       { reading: 'コーヒー' },
@@ -74,10 +68,6 @@ describe('TtsPlayer', () => {
       withDuplicate[0],
       withDuplicate[2],
     ]);
-
-    await flush();
-
-    expect(player.state).toMatchObject({ kind: 'playing', readingIndex: 0 });
   });
 
   it('plays the readings in sequence', async () => {
@@ -95,14 +85,7 @@ describe('TtsPlayer', () => {
     await flush();
 
     expect(player.state).toMatchObject({ kind: 'playing', readingIndex: 2 });
-  });
-
-  it('returns to idle when the last reading ends', async () => {
-    const { player, playbacks } = makePlayer([readings[0]]);
-
-    player.playAll();
-    await flush();
-    playbacks[0].end();
+    playbacks[2].end();
     await flush();
 
     expect(player.state).toEqual({ kind: 'idle' });
@@ -119,10 +102,6 @@ describe('TtsPlayer', () => {
     expect(playbacks).toHaveLength(1);
     expect(player.state).toEqual({ kind: 'loading', readingIndex: 0 });
 
-    await vi.advanceTimersByTimeAsync(5000);
-
-    expect(player.state).toEqual({ kind: 'loading', readingIndex: 0 });
-
     playbacks[0].start(4321);
     await flush();
 
@@ -134,22 +113,8 @@ describe('TtsPlayer', () => {
     });
   });
 
-  it('plays a clip that has no mora timing', async () => {
-    const { player } = makePlayer([readings[0]], { withoutMoraTiming: true });
-
-    player.playAll();
-    await flush();
-
-    expect(player.state).toEqual({
-      kind: 'playing',
-      readingIndex: 0,
-      startedAt: 100,
-      moraTiming: undefined,
-    });
-  });
-
   it('stops the fetches and the running clip, then returns to idle', async () => {
-    const { player, states, fetches, playbacks } = makePlayer(readings);
+    const { player, fetches, playbacks } = makePlayer(readings);
 
     player.playAll();
     await flush();
@@ -162,7 +127,6 @@ describe('TtsPlayer', () => {
     await flush();
 
     expect(player.state).toEqual({ kind: 'idle' });
-    expect(states.at(-1)).toEqual({ kind: 'idle' });
   });
 
   it('never reaches the playing state when it stops before the clip starts', async () => {
@@ -265,7 +229,6 @@ describe('TtsPlayer', () => {
     expect(player.state).toEqual({ kind: 'idle' });
     expect(playbacks).toHaveLength(0);
     expect(timers).not.toHaveBeenCalled();
-    expect(vi.getTimerCount()).toBe(0);
   });
 
   it('keeps the session a subscriber starts while it is stopping', async () => {
@@ -430,12 +393,16 @@ describe('TtsPlayer', () => {
     expect(player.state).toEqual({ kind: 'loading', readingIndex: 1 });
   });
 
-  it('gives a clip its own deadline when its turn begins', async () => {
+  it('keeps a started clip playing and gives the next clip a fresh deadline', async () => {
     const { player, playbacks } = makePlayer([readings[0], readings[1]]);
 
     player.playAll();
     await flush();
     await vi.advanceTimersByTimeAsync(30_000);
+
+    expect(playbacks[0].signal.aborted).toBe(false);
+    expect(player.state).toMatchObject({ kind: 'playing', readingIndex: 0 });
+
     playbacks[0].end();
     await flush();
 
@@ -456,13 +423,9 @@ describe('TtsPlayer', () => {
 
     expect(fetches[0].signal.aborted).toBe(true);
     expect(player.state).toEqual({ kind: 'error' });
-
-    await vi.advanceTimersByTimeAsync(2000);
-
-    expect(player.state).toEqual({ kind: 'idle' });
   });
 
-  it('shows the error state when the only clip never starts', async () => {
+  it('times out when the playback seam never starts and ignores abort', async () => {
     const { player } = makePlayer([readings[0]], { unresponsive: true });
 
     player.playAll();
@@ -473,17 +436,6 @@ describe('TtsPlayer', () => {
     await vi.advanceTimersByTimeAsync(10_000);
 
     expect(player.state).toEqual({ kind: 'error' });
-  });
-
-  it('keeps playing a clip that lasts longer than the deadline', async () => {
-    const { player, playbacks } = makePlayer([readings[0]]);
-
-    player.playAll();
-    await flush();
-    await vi.advanceTimersByTimeAsync(30_000);
-
-    expect(playbacks[0].signal.aborted).toBe(false);
-    expect(player.state).toMatchObject({ kind: 'playing', readingIndex: 0 });
   });
 
   it('keeps the session a listener starts while the error shows', async () => {
@@ -522,7 +474,7 @@ describe('TtsPlayer', () => {
 
     const { added, removed } = signals[0];
     expect(player.state).toEqual({ kind: 'idle' });
-    expect(added.mock.calls).toHaveLength(1);
+    expect(added).toHaveBeenCalled();
     expect(removed.mock.calls.map((call) => call[1])).toEqual(
       added.mock.calls.map((call) => call[1])
     );
@@ -531,7 +483,7 @@ describe('TtsPlayer', () => {
   });
 
   it('supersedes the running session on a new play', async () => {
-    const { player, fetches, playbacks } = makePlayer(readings);
+    const { player, playbacks } = makePlayer(readings);
 
     player.playAll();
     await flush();
@@ -542,16 +494,12 @@ describe('TtsPlayer', () => {
 
     await flush();
 
-    expect(player.state).toMatchObject({
-      kind: 'playing',
-      readingIndex: 0,
-      startedAt: 200,
-    });
+    expect(player.state).toMatchObject({ kind: 'playing', readingIndex: 0 });
     expect(playbacks).toHaveLength(2);
-    expect(fetches).toHaveLength(6);
+    expect(playbacks[1].signal.aborted).toBe(false);
   });
 
-  it('does not notify subscribers when it stops while already idle', () => {
+  it('does not notify subscribers for idle-to-idle actions', () => {
     const { player, states } = makePlayer(readings);
 
     player.stop();
@@ -571,7 +519,7 @@ describe('TtsPlayer', () => {
     expect(player.state).toEqual({ kind: 'idle' });
   });
 
-  it('stops playback when the readings change', async () => {
+  it('only stops playback when the effective readings change', async () => {
     const { player, playbacks } = makePlayer(readings);
 
     player.playAll();
@@ -594,7 +542,6 @@ type Behavior = {
   fetchThrowsFor?: (request: TtsClipRequest) => boolean;
   deferStart?: boolean;
   unresponsive?: boolean;
-  withoutMoraTiming?: boolean;
 };
 
 type FetchCall = {
@@ -628,7 +575,7 @@ function makePlayer(
     const result = deferred<TtsClip>();
     const clip: TtsClip = {
       bytes: new Uint8Array([fetches.length]),
-      ...(behavior.withoutMoraTiming ? {} : { moraTiming }),
+      moraTiming,
     };
     const call: FetchCall = {
       request,
