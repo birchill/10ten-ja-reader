@@ -30,7 +30,7 @@ describe('fetchTtsClip', () => {
     mockFetch(
       makeResponse({
         headers: {
-          'x-amz-meta-mora-timings': '[0,100,200]',
+          'x-amz-meta-mora-timings': '[0,100]',
           'x-amz-meta-audio-duration': '300',
         },
         buffer: bytes.buffer,
@@ -41,8 +41,8 @@ describe('fetchTtsClip', () => {
 
     expect(result).toEqual({
       ok: true,
-      audio: Buffer.from(bytes).toString('base64'),
-      moraTiming: { charTimingsMs: [0, 100, 200], totalDurationMs: 300 },
+      audioBase64: Buffer.from(bytes).toString('base64'),
+      moraTiming: { charTimingsMs: [0, 100], totalDurationMs: 300 },
     });
     expect(fetch).toHaveBeenCalledWith(
       `https://data.10ten.life/audio/${buildTtsFilename(request)}`,
@@ -58,7 +58,7 @@ describe('fetchTtsClip', () => {
 
     expect(result).toEqual({
       ok: true,
-      audio: Buffer.from(bytes).toString('base64'),
+      audioBase64: Buffer.from(bytes).toString('base64'),
     });
     expect(notifySpy).toHaveBeenCalledWith(
       expect.anything(),
@@ -66,15 +66,60 @@ describe('fetchTtsClip', () => {
     );
   });
 
-  it('returns the status without a clip when the response is not ok', async () => {
+  it('drops timings that do not count one entry per codepoint of the reading', async () => {
+    const bytes = new Uint8Array([9, 9]);
+    mockFetch(
+      makeResponse({
+        headers: {
+          'x-amz-meta-mora-timings': '[0,100,200]',
+          'x-amz-meta-audio-duration': '300',
+        },
+        buffer: bytes.buffer,
+      })
+    );
+
+    const result = await fetchTtsClip(key, request);
+
+    expect(result).toEqual({
+      ok: true,
+      audioBase64: Buffer.from(bytes).toString('base64'),
+    });
+    expect(notifySpy).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        severity: 'warning',
+        metadata: expect.objectContaining({ expectedCount: 2 }),
+      })
+    );
+  });
+
+  it('warns once for a repeated timing anomaly, however many clips hit it', async () => {
+    mockFetch(
+      makeResponse({
+        headers: {
+          'x-amz-meta-mora-timings': '[0,100,200,300,400]',
+          'x-amz-meta-audio-duration': '500',
+        },
+        buffer: new Uint8Array([7]).buffer,
+      })
+    );
+
+    await fetchTtsClip(key, request);
+    await fetchTtsClip({ ...key, requestId: 'clip-2' }, request);
+
+    expect(notifySpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns no clip, and stays silent, when the reading simply has no audio', async () => {
     mockFetch(makeResponse({ ok: false, status: 404 }));
 
     const result = await fetchTtsClip(key, request);
 
-    expect(result).toEqual({ ok: false, status: 404 });
+    expect(result).toEqual({ ok: false });
+    expect(notifySpy).not.toHaveBeenCalled();
   });
 
-  it('aborts the controller on a non-OK response, even if its body never finishes downloading', async () => {
+  it('warns, with the status, when our own audio service fails', async () => {
     const call = mockFetch(
       makeResponse({
         ok: false,
@@ -85,8 +130,15 @@ describe('fetchTtsClip', () => {
 
     const result = await fetchTtsClip(key, request);
 
-    expect(result).toEqual({ ok: false, status: 500 });
+    expect(result).toEqual({ ok: false });
     expect(call.signal?.aborted).toBe(true);
+    expect(notifySpy).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        severity: 'warning',
+        metadata: expect.objectContaining({ status: 500 }),
+      })
+    );
   });
 
   it('honors a cancel that arrives before its fetchTtsClip registers, without waiting on the network', async () => {
@@ -99,17 +151,27 @@ describe('fetchTtsClip', () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it('skips a TypeError from fetch() silently, regardless of its message (Chrome wording)', async () => {
-    vi.mocked(fetch).mockRejectedValue(new TypeError('Failed to fetch'));
+  it.each([
+    { engine: 'Chrome', message: 'Failed to fetch' },
+    { engine: 'Safari', message: 'Load failed' },
+  ])(
+    'skips a TypeError from fetch() silently, regardless of its message ($engine wording)',
+    async ({ message }) => {
+      vi.mocked(fetch).mockRejectedValue(new TypeError(message));
 
-    const result = await fetchTtsClip(key, request);
+      const result = await fetchTtsClip(key, request);
 
-    expect(result).toEqual({ ok: false });
-    expect(notifySpy).not.toHaveBeenCalled();
-  });
+      expect(result).toEqual({ ok: false });
+      expect(notifySpy).not.toHaveBeenCalled();
+    }
+  );
 
-  it('skips a TypeError from fetch() silently, regardless of its message (Safari wording)', async () => {
-    vi.mocked(fetch).mockRejectedValue(new TypeError('Load failed'));
+  it('skips a TypeError from the body read silently, just like one from fetch() itself', async () => {
+    mockFetch(
+      makeResponse({
+        arrayBuffer: () => Promise.reject(new TypeError('Load failed')),
+      })
+    );
 
     const result = await fetchTtsClip(key, request);
 
@@ -150,7 +212,7 @@ describe('fetchTtsClip', () => {
     await expect(pending).resolves.toEqual({ ok: false });
   });
 
-  it('records a harmless, bounded tombstone, but touches no live signal, when canceled after the fetch settles', async () => {
+  it('leaves a settled fetch`s signal alone when a cancel arrives after it', async () => {
     const settledKey: TtsFetchKey = {
       tabId: 1,
       frameId: 0,
@@ -162,6 +224,22 @@ describe('fetchTtsClip', () => {
     cancelTtsFetch(settledKey);
 
     expect(call.signal?.aborted).toBe(false);
+  });
+
+  it('cancels only the clip it was asked to, leaving a concurrent fetch running', async () => {
+    const other: TtsFetchKey = { ...key, requestId: 'clip-other' };
+    const call = mockFetch();
+
+    const pending = fetchTtsClip(key, request);
+    const otherPending = fetchTtsClip(other, request);
+    cancelTtsFetch(other);
+
+    await expect(otherPending).resolves.toEqual({ ok: false });
+    expect(call.signals[0]?.aborted).toBe(false);
+    expect(call.signals[1]?.aborted).toBe(true);
+
+    cancelTtsFetch(key);
+    await expect(pending).resolves.toEqual({ ok: false });
   });
 
   it('rejects a body over the 2MB cap before encoding it, and warns directly', async () => {
@@ -176,82 +254,41 @@ describe('fetchTtsClip', () => {
     );
   });
 
-  it('returns the clip without mora timing, and warns directly, when the duration header has trailing non-digit characters', async () => {
-    const bytes = new Uint8Array([9, 9]);
-    mockFetch(
-      makeResponse({
-        headers: {
-          'x-amz-meta-mora-timings': '[0,100]',
-          'x-amz-meta-audio-duration': '300ms',
-        },
-        buffer: bytes.buffer,
-      })
-    );
+  it.each([
+    { shape: 'trailing non-digit characters', rawDuration: '300ms' },
+    { shape: 'a fractional value', rawDuration: '1.5' },
+    { shape: 'a value past a safe integer', rawDuration: '9'.repeat(400) },
+  ])(
+    'returns the clip without mora timing, and warns directly, when the duration header has $shape',
+    async ({ rawDuration }) => {
+      const bytes = new Uint8Array([9, 9]);
+      mockFetch(
+        makeResponse({
+          headers: {
+            'x-amz-meta-mora-timings': '[0,100]',
+            'x-amz-meta-audio-duration': rawDuration,
+          },
+          buffer: bytes.buffer,
+        })
+      );
 
-    const result = await fetchTtsClip(key, request);
+      const result = await fetchTtsClip(key, request);
 
-    expect(result).toEqual({
-      ok: true,
-      audio: Buffer.from(bytes).toString('base64'),
-    });
-    expect(notifySpy).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({ severity: 'warning' })
-    );
-  });
-
-  it('returns the clip without mora timing, and warns directly, when the duration header is fractional', async () => {
-    const bytes = new Uint8Array([9, 9]);
-    mockFetch(
-      makeResponse({
-        headers: {
-          'x-amz-meta-mora-timings': '[0,100]',
-          'x-amz-meta-audio-duration': '1.5',
-        },
-        buffer: bytes.buffer,
-      })
-    );
-
-    const result = await fetchTtsClip(key, request);
-
-    expect(result).toEqual({
-      ok: true,
-      audio: Buffer.from(bytes).toString('base64'),
-    });
-    expect(notifySpy).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({ severity: 'warning' })
-    );
-  });
-
-  it('returns the clip without mora timing, and warns directly, when the duration header overflows a safe integer', async () => {
-    const bytes = new Uint8Array([9, 9]);
-    mockFetch(
-      makeResponse({
-        headers: {
-          'x-amz-meta-mora-timings': '[0,100]',
-          'x-amz-meta-audio-duration': '9'.repeat(400),
-        },
-        buffer: bytes.buffer,
-      })
-    );
-
-    const result = await fetchTtsClip(key, request);
-
-    expect(result).toEqual({
-      ok: true,
-      audio: Buffer.from(bytes).toString('base64'),
-    });
-    expect(notifySpy).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({ severity: 'warning' })
-    );
-  });
+      expect(result).toEqual({
+        ok: true,
+        audioBase64: Buffer.from(bytes).toString('base64'),
+      });
+      expect(notifySpy).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ severity: 'warning' })
+      );
+    }
+  );
 
   it.each([
-    { shape: 'a negative entry', rawTimings: '[0,-1,200]' },
-    { shape: 'a decreasing pair', rawTimings: '[0,200,100]' },
-    { shape: 'an entry past the total duration', rawTimings: '[0,100,400]' },
+    { shape: 'a negative entry', rawTimings: '[0,-1]' },
+    { shape: 'a decreasing pair', rawTimings: '[200,100]' },
+    { shape: 'an entry past the total duration', rawTimings: '[0,400]' },
     { shape: 'a non-numeric entry', rawTimings: '[0,"100"]' },
     { shape: 'no array at all', rawTimings: '{"0":100}' },
   ])(
@@ -272,7 +309,7 @@ describe('fetchTtsClip', () => {
 
       expect(result).toEqual({
         ok: true,
-        audio: Buffer.from(bytes).toString('base64'),
+        audioBase64: Buffer.from(bytes).toString('base64'),
       });
       expect(notifySpy).toHaveBeenCalledTimes(1);
       expect(notifySpy).toHaveBeenCalledWith(
@@ -283,23 +320,24 @@ describe('fetchTtsClip', () => {
   );
 
   it('keeps a timing sequence whose adjacent entries repeat, up to the total duration', async () => {
+    const longVowel: TtsClipRequest = { kanji: '学校', reading: 'がっこう' };
     const bytes = new Uint8Array([9, 9]);
     mockFetch(
       makeResponse({
         headers: {
-          'x-amz-meta-mora-timings': '[0,100,100,300]',
-          'x-amz-meta-audio-duration': '300',
+          'x-amz-meta-mora-timings': '[12,151,262,262]',
+          'x-amz-meta-audio-duration': '553',
         },
         buffer: bytes.buffer,
       })
     );
 
-    const result = await fetchTtsClip(key, request);
+    const result = await fetchTtsClip(key, longVowel);
 
     expect(result).toEqual({
       ok: true,
-      audio: Buffer.from(bytes).toString('base64'),
-      moraTiming: { charTimingsMs: [0, 100, 100, 300], totalDurationMs: 300 },
+      audioBase64: Buffer.from(bytes).toString('base64'),
+      moraTiming: { charTimingsMs: [12, 151, 262, 262], totalDurationMs: 553 },
     });
     expect(notifySpy).not.toHaveBeenCalled();
   });
@@ -335,9 +373,13 @@ function makeResponse(
 }
 
 function mockFetch(response?: Response) {
-  const call: { signal: AbortSignal | undefined } = { signal: undefined };
+  const call: {
+    signal: AbortSignal | undefined;
+    signals: Array<AbortSignal | undefined>;
+  } = { signal: undefined, signals: [] };
   vi.mocked(fetch).mockImplementation((_url, init) => {
     call.signal = (init as RequestInit | undefined)?.signal ?? undefined;
+    call.signals.push(call.signal);
     return response ? Promise.resolve(response) : neverSettles();
   });
   return call;

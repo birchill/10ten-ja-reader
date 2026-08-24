@@ -3,14 +3,15 @@ import Bugsnag from '@birchill/bugsnag-zero';
 import type { MoraTimingData, TtsClipRequest } from '../common/tts/tts-request';
 import { buildTtsFilename } from '../common/tts/tts-request';
 import { isAbortError } from '../utils/is-abort-error';
+import { rejectWhenAborted } from '../utils/reject-when-aborted';
 
 const TTS_BASE_URL = 'https://data.10ten.life/audio';
 const CLIP_FETCH_BUDGET_MS = 10_000;
 const MAX_CLIP_BYTES = 2 * 1024 * 1024;
 
 export type TtsFetchResult =
-  | { ok: true; audio: string; moraTiming?: MoraTimingData }
-  | { ok: false; status?: number };
+  | { ok: true; audioBase64: string; moraTiming?: MoraTimingData }
+  | { ok: false };
 
 export type TtsFetchKey = { tabId: number; frameId: number; requestId: string };
 
@@ -33,43 +34,52 @@ export async function fetchTtsClip(
 
   try {
     const url = `${TTS_BASE_URL}/${buildTtsFilename(request)}`;
-    let response: Response;
+    let buffer: ArrayBuffer;
+    let moraTiming: MoraTimingData | undefined;
+    let contentLength: string | null = null;
     try {
-      response = await abortable(
+      const response = await rejectWhenAborted(
         fetch(url, { signal: controller.signal }),
         controller.signal
       );
+
+      if (!response.ok) {
+        controller.abort();
+        if (response.status >= 500) {
+          void Bugsnag.notify('TTS clip fetch failed', {
+            severity: 'warning',
+            metadata: { status: response.status },
+          });
+        }
+        return { ok: false };
+      }
+
+      moraTiming = parseMoraTimingHeaders(response, request.reading);
+      contentLength = response.headers.get('content-length');
+
+      buffer = await rejectWhenAborted(
+        response.arrayBuffer(),
+        controller.signal
+      );
     } catch (e) {
-      // The Fetch spec ties every TypeError from fetch() itself to a
-      // network failure. Match the error's type here, not engine-specific
-      // wording ("Failed to fetch", "Load failed", ...).
+      // The Fetch spec ties every TypeError from a fetch, or from reading its
+      // body, to a network failure. Match the error's type here, not
+      // engine-specific wording ("Failed to fetch", "Load failed", ...).
       if (!isAbortError(e) && e instanceof TypeError) {
         return { ok: false };
       }
       throw e;
     }
 
-    if (!response.ok) {
-      controller.abort();
-      return { ok: false, status: response.status };
-    }
-
-    const moraTiming = parseMoraTimingHeaders(response);
-
-    const buffer = await abortable(response.arrayBuffer(), controller.signal);
     if (buffer.byteLength > MAX_CLIP_BYTES) {
       void Bugsnag.notify(`TTS clip exceeds the ${MAX_CLIP_BYTES}-byte cap`, {
         severity: 'warning',
-        metadata: {
-          byteLength: buffer.byteLength,
-          status: response.status,
-          contentLength: response.headers.get('content-length'),
-        },
+        metadata: { byteLength: buffer.byteLength, contentLength },
       });
       return { ok: false };
     }
 
-    return { ok: true, audio: encodeBase64(buffer), moraTiming };
+    return { ok: true, audioBase64: encodeBase64(buffer), moraTiming };
   } catch (e) {
     if (isAbortError(e)) {
       return { ok: false };
@@ -105,57 +115,67 @@ function keyFor(key: TtsFetchKey): string {
   return `${key.tabId}:${key.frameId}:${key.requestId}`;
 }
 
-function abortable<T>(promise: Promise<T>, signal: AbortSignal): Promise<T> {
-  if (signal.aborted) {
-    return Promise.reject(new DOMException('Aborted', 'AbortError'));
-  }
-
-  return new Promise<T>((resolve, reject) => {
-    const onAbort = () => reject(new DOMException('Aborted', 'AbortError'));
-    signal.addEventListener('abort', onAbort, { once: true });
-    void promise.then(resolve, reject).finally(() => {
-      signal.removeEventListener('abort', onAbort);
-    });
-  });
-}
-
 function parseMoraTimingHeaders(
-  response: Response
+  response: Response,
+  reading: string
 ): MoraTimingData | undefined {
   const rawTimings = response.headers.get('x-amz-meta-mora-timings');
   const rawDuration = response.headers.get('x-amz-meta-audio-duration');
 
   if (!rawTimings || !rawDuration) {
-    void Bugsnag.notify('TTS mora-timing headers missing', {
-      severity: 'warning',
-      metadata: { rawTimings, rawDuration },
+    notifyTimingAnomalyOnce('TTS mora-timing headers missing', {
+      rawTimings,
+      rawDuration,
     });
     return undefined;
   }
+
+  const expectedCount = [...reading].length;
 
   try {
     const totalDurationMs = parseWholeMs(rawDuration);
     if (totalDurationMs !== undefined) {
       const charTimingsMs = parseCharTimingsMs(
         JSON.parse(rawTimings),
-        totalDurationMs
+        totalDurationMs,
+        expectedCount
       );
       if (charTimingsMs !== undefined) {
         return { charTimingsMs, totalDurationMs };
       }
     }
-    void Bugsnag.notify('TTS mora-timing headers invalid', {
-      severity: 'warning',
-      metadata: { rawTimings, rawDuration },
+    notifyTimingAnomalyOnce('TTS mora-timing headers invalid', {
+      rawTimings,
+      rawDuration,
+      expectedCount,
     });
   } catch (e) {
-    void Bugsnag.notify(
+    notifyTimingAnomalyOnce(
       new Error('TTS mora-timing headers malformed', { cause: e }),
-      { severity: 'warning', metadata: { rawTimings, rawDuration } }
+      { rawTimings, rawDuration, expectedCount }
     );
   }
 
   return undefined;
+}
+
+const reportedTimingAnomalies = new Set<string>();
+const MAX_TIMING_ANOMALY_REPORTS = 32;
+
+function notifyTimingAnomalyOnce(
+  error: string | Error,
+  metadata: Record<string, unknown>
+): void {
+  const anomaly = `${typeof error === 'string' ? error : error.message}|${JSON.stringify(metadata)}`;
+  if (reportedTimingAnomalies.has(anomaly)) {
+    return;
+  }
+  if (reportedTimingAnomalies.size >= MAX_TIMING_ANOMALY_REPORTS) {
+    reportedTimingAnomalies.clear();
+  }
+  reportedTimingAnomalies.add(anomaly);
+
+  void Bugsnag.notify(error, { severity: 'warning', metadata });
 }
 
 function parseWholeMs(value: string): number | undefined {
@@ -168,9 +188,10 @@ function parseWholeMs(value: string): number | undefined {
 
 function parseCharTimingsMs(
   value: unknown,
-  totalDurationMs: number
+  totalDurationMs: number,
+  expectedCount: number
 ): Array<number> | undefined {
-  if (!Array.isArray(value)) {
+  if (!Array.isArray(value) || value.length !== expectedCount) {
     return undefined;
   }
 
