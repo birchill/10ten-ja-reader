@@ -251,10 +251,10 @@ export function WordEntry(props: WordEntryProps) {
                   >
                     <span class="tp:space-x-1">
                       <span>
-                        {ttsPlayback ? (
+                        {props.tts ? (
                           <TtsReading
-                            controller={ttsPlayback}
-                            entryIndex={props.entryIndex ?? 0}
+                            controller={props.tts.controller}
+                            entryIndex={props.tts.entryIndex}
                             readingIndex={index}
                             kana={kana}
                             accentDisplay={props.config.accentDisplay}
