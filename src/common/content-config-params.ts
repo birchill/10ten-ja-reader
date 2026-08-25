@@ -33,6 +33,9 @@ export type KeyboardKeys = {
 
   // The key(s) to entry copy mode.
   startCopy: Array<string>;
+
+  // The key(s) to play or stop the readings of the topmost entry.
+  playReadings: Array<string>;
 };
 
 export type AccentDisplay =
