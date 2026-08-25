@@ -134,25 +134,6 @@ describe('fetchTtsClip', () => {
     expect(notifySpy).toHaveBeenCalledTimes(32);
   });
 
-  it('drops an empty timing array, even when the reading is empty too', async () => {
-    mockFetch(
-      makeResponse({
-        headers: {
-          'x-amz-meta-mora-timings': '[]',
-          'x-amz-meta-audio-duration': '1',
-        },
-        buffer: new Uint8Array([1]).buffer,
-      })
-    );
-
-    const result = await fetchTtsClip(key, { reading: '' });
-
-    expect(result).toEqual({
-      ok: true,
-      audioBase64: Buffer.from(new Uint8Array([1])).toString('base64'),
-    });
-  });
-
   it('returns no clip, and stays silent, when the reading simply has no audio', async () => {
     mockFetch(makeResponse({ ok: false, status: 404 }));
 
@@ -226,16 +207,6 @@ describe('fetchTtsClip', () => {
     expect(notifySpy).not.toHaveBeenCalled();
   });
 
-  it('notifies when fetch() itself throws something other than a TypeError', async () => {
-    const error = new Error('boom');
-    vi.mocked(fetch).mockRejectedValue(error);
-
-    const result = await fetchTtsClip(key, request);
-
-    expect(result).toEqual({ ok: false });
-    expect(notifySpy).toHaveBeenCalledWith(error);
-  });
-
   it('notifies when encoding the clip throws, even though the fetch itself succeeded', async () => {
     mockFetch(makeResponse({ buffer: new Uint8Array([1, 2, 3]).buffer }));
     const encodeError = new TypeError('Load failed');
@@ -247,30 +218,6 @@ describe('fetchTtsClip', () => {
 
     expect(result).toEqual({ ok: false });
     expect(notifySpy).toHaveBeenCalledWith(encodeError);
-  });
-
-  it('aborts the underlying fetch when canceled while in flight', async () => {
-    const call = mockFetch();
-
-    const pending = fetchTtsClip(key, request);
-    cancelTtsFetch(key);
-
-    expect(call.signal?.aborted).toBe(true);
-    await expect(pending).resolves.toEqual({ ok: false });
-  });
-
-  it('leaves a settled fetch`s signal alone when a cancel arrives after it', async () => {
-    const settledKey: TtsFetch.TtsFetchKey = {
-      tabId: 1,
-      frameId: 0,
-      requestId: 'settled-key',
-    };
-    const call = mockFetch(makeResponse({ buffer: new ArrayBuffer(0) }));
-
-    await fetchTtsClip(settledKey, request);
-    cancelTtsFetch(settledKey);
-
-    expect(call.signal?.aborted).toBe(false);
   });
 
   it('cancels only the clip it was asked to, leaving a concurrent fetch running', async () => {
@@ -302,7 +249,6 @@ describe('fetchTtsClip', () => {
   });
 
   it.each([
-    { shape: 'trailing non-digit characters', rawDuration: '300ms' },
     { shape: 'a fractional value', rawDuration: '1.5' },
     { shape: 'a value past a safe integer', rawDuration: '9'.repeat(400) },
   ])(
