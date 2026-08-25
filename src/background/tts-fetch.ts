@@ -8,6 +8,8 @@ import { rejectWhenAborted } from '../utils/reject-when-aborted';
 const TTS_BASE_URL = 'https://data.10ten.life/audio';
 const CLIP_FETCH_BUDGET_MS = 10_000;
 const MAX_CLIP_BYTES = 2 * 1024 * 1024;
+const MAX_CANCELLED_KEYS = 50;
+const MAX_TIMING_ANOMALY_REPORTS = 32;
 
 export type TtsFetchResult =
   | { ok: true; audioBase64: string; moraTiming?: MoraTimingData }
@@ -16,14 +18,16 @@ export type TtsFetchResult =
 export type TtsFetchKey = { tabId: number; frameId: number; requestId: string };
 
 const pendingFetches = new Map<string, AbortController>();
+// Remember cancels that arrive before their matching fetch message.
+// (separate runtime messages are not assumed to arrive in order)
 const cancelledKeys = new Set<string>();
-const MAX_CANCELLED_KEYS = 50;
 
 export async function fetchTtsClip(
   key: TtsFetchKey,
   request: TtsClipRequest
 ): Promise<TtsFetchResult> {
   const mapKey = keyFor(key);
+  // Remove an early cancel and skip its network request.
   if (cancelledKeys.delete(mapKey)) {
     return { ok: false };
   }
@@ -106,6 +110,7 @@ export function cancelTtsFetch(key: TtsFetchKey): void {
     return;
   }
 
+  // The fetch may not have registered yet, so remember this cancel for it.
   cancelledKeys.add(mapKey);
   if (cancelledKeys.size > MAX_CANCELLED_KEYS) {
     const oldestKey = cancelledKeys.values().next().value;
@@ -171,7 +176,6 @@ function parseMoraTimingHeaders(
 }
 
 const reportedTimingAnomalies = new Set<string>();
-const MAX_TIMING_ANOMALY_REPORTS = 32;
 
 function notifyTimingAnomalyOnce(
   error: string | Error,
