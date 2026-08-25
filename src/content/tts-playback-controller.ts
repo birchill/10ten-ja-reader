@@ -70,6 +70,10 @@ export class TtsPlaybackController {
     this.#enqueue(() => this.#applyToggle(entryIndex));
   }
 
+  toggleTopEntry() {
+    this.toggle(0);
+  }
+
   stop() {
     this.#enqueue(() => this.#applyStop());
   }

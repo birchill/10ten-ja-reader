@@ -1690,9 +1690,6 @@ export class ContentHandler {
       return;
     }
 
-    // Call this before toggle, in the same turn as the key or message event.
-    // A later call could miss the user-activation window that unlocks audio.
-    preparePlayback();
     this.#ttsPlayback?.toggleTopEntry();
   }
 

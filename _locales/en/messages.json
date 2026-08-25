@@ -1709,6 +1709,7 @@
     "description": "Note that it is important that down comes before up"
   },
   "options_popup_pin_popup": { "message": "Pin popup" },
+  "options_popup_play_readings": { "message": "Play readings" },
   "options_popup_start_copy": { "message": "Enter copy mode" },
   "options_popup_style_heading": {
     "message": "Popup style",

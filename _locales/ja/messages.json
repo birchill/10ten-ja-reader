@@ -1711,6 +1711,7 @@
     "description": "Note that it is important that down comes before up"
   },
   "options_popup_pin_popup": { "message": "ポップアップをピン留めする" },
+  "options_popup_play_readings": { "message": "読み方を再生する" },
   "options_popup_start_copy": { "message": "コピーモードを有効にする" },
   "options_popup_style_heading": {
     "message": "ポップアップ外観",
