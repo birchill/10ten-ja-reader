@@ -44,8 +44,8 @@ function sendFetch(
   >({ type: 'fetchTtsClip', request, requestId });
 }
 
-function sendCancel(requestId: string): Promise<void> {
-  return browser.runtime
+async function sendCancel(requestId: string): Promise<void> {
+  await browser.runtime
     .sendMessage<BackgroundRequest, void>({ type: 'cancelTtsFetch', requestId })
     .catch(() => {});
 }
