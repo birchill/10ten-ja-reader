@@ -64,7 +64,13 @@ export async function fetchTtsClip(
     }
 
     const moraTiming = parseMoraTimingHeaders(response, request.reading);
+
     const contentLength = response.headers.get('content-length');
+    if (declaresOversizedClip(contentLength)) {
+      controller.abort();
+      notifyOversizedClip({ contentLength });
+      return { ok: false };
+    }
 
     let buffer: ArrayBuffer;
     try {
@@ -80,10 +86,7 @@ export async function fetchTtsClip(
     }
 
     if (buffer.byteLength > MAX_CLIP_BYTES) {
-      void Bugsnag.notify(`TTS clip exceeds the ${MAX_CLIP_BYTES}-byte cap`, {
-        severity: 'warning',
-        metadata: { byteLength: buffer.byteLength, contentLength },
-      });
+      notifyOversizedClip({ byteLength: buffer.byteLength, contentLength });
       return { ok: false };
     }
 
@@ -231,6 +234,21 @@ function parseCharTimingsMs(
   }
 
   return timings;
+}
+
+function declaresOversizedClip(contentLength: string | null): boolean {
+  return (
+    !!contentLength &&
+    /^\d+$/.test(contentLength) &&
+    Number(contentLength) > MAX_CLIP_BYTES
+  );
+}
+
+function notifyOversizedClip(metadata: Record<string, unknown>): void {
+  void Bugsnag.notify(`TTS clip exceeds the ${MAX_CLIP_BYTES}-byte cap`, {
+    severity: 'warning',
+    metadata,
+  });
 }
 
 function encodeBase64(buffer: ArrayBuffer): string {
