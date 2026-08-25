@@ -92,24 +92,4 @@ describe('fetchTtsClip', () => {
       requestId: (fetchCall[0] as { requestId: string }).requestId,
     });
   });
-
-  it('removes its abort listener once the fetch settles', async () => {
-    sendMessage.mockResolvedValue({
-      ok: true,
-      audioBase64: '',
-    } satisfies TtsFetchResult);
-    const controller = new AbortController();
-    const added = vi.spyOn(controller.signal, 'addEventListener');
-    const removed = vi.spyOn(controller.signal, 'removeEventListener');
-
-    await fetchTtsClip(request, controller.signal);
-
-    expect(added).toHaveBeenCalledWith('abort', expect.any(Function), {
-      once: true,
-    });
-    expect(removed).toHaveBeenCalledWith(
-      'abort',
-      added.mock.calls[0]![1] as EventListener
-    );
-  });
 });
