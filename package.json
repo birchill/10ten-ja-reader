@@ -34,7 +34,6 @@
     "changeset": "changeset",
     "changeset-version": "changeset version && pnpm postprocess-changeset-changelog && pnpm sync-release-version",
     "check-keys": "tsx scripts/check-keys",
-    "check-safari-build": "tsx scripts/check-safari-build",
     "cosmos": "node --import=./cosmos-import.js node_modules/react-cosmos/bin/cosmos.js",
     "cosmos-export": "node --import=./cosmos-import.js node_modules/react-cosmos/bin/cosmos-export.js",
     "postinstall": "if-env RELEASE_BUILD=1 || husky",
