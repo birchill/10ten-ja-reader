@@ -343,12 +343,12 @@ export default class AllTabManager implements TabManager {
   }) {
     if (tabId in this.#tabs) {
       const tab = this.#tabs[tabId];
-      if (frameId === 0) {
-        tab.src = src;
-      }
       // If we have navigated the root frame, blow away all the child frames
       if (frameId === 0 && tab.src !== src && tab.src !== '') {
         tab.frames = {};
+      }
+      if (frameId === 0) {
+        tab.src = src;
       }
     } else {
       this.#tabs[tabId] = { src: frameId === 0 ? src : '', frames: {} };
