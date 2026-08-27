@@ -47,7 +47,6 @@
 */
 import type { MajorDataSeries } from '@birchill/jpdict-idb';
 import * as s from 'superstruct';
-import type { Runtime } from 'webextension-polyfill';
 import browser from 'webextension-polyfill';
 
 import { BackgroundMessageSchema } from '../background/background-message';
@@ -2713,14 +2712,7 @@ declare global {
   // Ensure the content script is not loaded twice or that an incompatible
   // version of the script is not used.
   //
-  // This is only needed when we are injecting the script via executeScript
-  // when running in "activeTab" mode.
-  //
-  // Furthermore, with regards to incompatible versions, as far as I can tell
-  // Firefox will remove old versions of injected scripts when it reloads an
-  // add-on. I'm not sure if that behavior is reliable across all browsers,
-  // however, (update: it's not) so for now we try our best to ensure we have
-  // the correct version of the script here.
+  // Extension updates can inject a new version without unloading the old one.
   if (window.readerScriptVer === __VERSION__) {
     return;
   } else if (
@@ -2738,19 +2730,6 @@ declare global {
   }
 
   let contentHandler: ContentHandler | null = null;
-
-  // Port to the background page.
-  //
-  // This is only used when we are running in "activeTab" mode. It serves to:
-  //
-  // - Provide an extra means to ensure the tab is removed from the list of
-  //   enabled tabs when the tab is destroyed (in case we fail to get a pagehide
-  //   event), and
-  //
-  // - Ensure the background page is kept alive so long as we have an enabled
-  //   tab when the background page is running as an event page.
-  //
-  let port: Runtime.Port | undefined;
 
   window.readerScriptVer = __VERSION__;
   window.removeReaderScript = () => {
@@ -2771,26 +2750,12 @@ declare global {
   // regular YouTube page) has the content script injected and should be treated
   // as the top-most window for the purposes of showing the popup.
   let isEffectiveTopMostWindow = false;
-  function isTopMostWindow() {
-    return isEffectiveTopMostWindow || window.self === window.top;
-  }
 
   browser.runtime.onMessage.addListener(onMessage);
 
-  // Check if we should be enabled or not.
-  //
-  // We don't need to do this in activeTab mode since the background page will
-  // send us an 'enable' message after injecting the script.
-  //
-  // However, when the content script is injected using content_scripts the
-  // background script might not have been initialized yet in which case this
-  // will fail. However, presumably once the background script has initialized
-  // it will call us if we need to be enabled.
-  if (!__ACTIVE_TAB_ONLY__) {
-    browser.runtime.sendMessage({ type: 'enable?' }).catch(() => {
-      // Ignore
-    });
-  }
+  browser.runtime.sendMessage({ type: 'enable?' }).catch(() => {
+    // Ignore
+  });
 
   // Poll the background page until it finishes updating
   void (async function checkIfUpdating() {
@@ -2821,10 +2786,7 @@ declare global {
         );
         console.assert(request.frame === '*');
 
-        enable({
-          tabId: request.id,
-          config: request.config as ContentConfigParams,
-        });
+        enable(request.config as ContentConfigParams);
         break;
 
       case 'disable':
@@ -2847,13 +2809,7 @@ declare global {
     return 'ok';
   }
 
-  function enable({
-    tabId,
-    config,
-  }: {
-    tabId?: number;
-    config: ContentConfigParams;
-  }) {
+  function enable(config: ContentConfigParams) {
     if (contentHandler) {
       contentHandler.setConfig(config);
       if (isEffectiveTopMostWindow) {
@@ -2868,19 +2824,6 @@ declare global {
       removeGdocsStyles();
 
       contentHandler = new ContentHandler(config);
-    }
-
-    // If we are running in "activeTab" mode we will get passed our tab ID
-    // so we can set up a Port which will allow the background script to
-    // know when we disappear so it can update the browser action status.
-    //
-    // We only need to do that if we're the root-most frame, however.
-    if (typeof tabId !== 'undefined' && isTopMostWindow() && !port) {
-      try {
-        port = browser.runtime.connect(undefined, { name: `tab-${tabId}` });
-      } catch (e) {
-        console.error(e);
-      }
     }
 
     browser.runtime
@@ -2920,11 +2863,6 @@ declare global {
     if (contentHandler) {
       contentHandler.detach();
       contentHandler = null;
-    }
-
-    if (port) {
-      port.disconnect();
-      port = undefined;
     }
 
     window.removeEventListener('pageshow', onPageShow);
