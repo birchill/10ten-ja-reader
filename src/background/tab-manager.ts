@@ -1,5 +1,3 @@
-import type { Tabs } from 'webextension-polyfill';
-
 import type { ContentConfigParams } from '../common/content-config-params';
 
 import type {
@@ -9,11 +7,8 @@ import type {
 
 export interface TabManager {
   init(config: ContentConfigParams): Promise<void>;
-  getEnabledState(): Promise<Array<EnabledState>>;
-  toggleTab(
-    tab: Tabs.Tab | undefined,
-    config: ContentConfigParams
-  ): Promise<void>;
+  isEnabled(): boolean;
+  toggle(config: ContentConfigParams): Promise<void>;
   updateConfig(config: ContentConfigParams): Promise<void>;
   sendMessageToFrame<T extends Omit<IndividualFrameMessage, 'frame'>>(params: {
     tabId: number;
@@ -29,13 +24,6 @@ export interface TabManager {
     frameId: number;
   }): string | undefined;
   addListener(listener: EnabledChangedCallback): void;
-  removeListener(listener: EnabledChangedCallback): void;
 }
 
-export type EnabledChangedCallback = (params: {
-  enabled: boolean;
-  tabId?: number | undefined;
-  anyEnabled: boolean;
-}) => void;
-
-export type EnabledState = { enabled: boolean; tabId: number | undefined };
+export type EnabledChangedCallback = (enabled: boolean) => void;

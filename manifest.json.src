@@ -52,9 +52,6 @@
   },
   /*#endif*/
   "permissions": [
-    /*#if active_tab_only*/
-    "activeTab",
-    /*#endif*/
     "alarms",
     /*#if needs_clipboard_write*/
     "clipboardWrite",
@@ -68,9 +65,6 @@
     /*#if mail_extension*/
     "menus",
     "messagesModify",
-    /*#endif*/
-    /*#if mv3&&active_tab_only*/
-    "scripting",
     /*#endif*/
     "storage",
     "unlimitedStorage"
@@ -138,7 +132,6 @@
     /*#endif*/
     "page": "options.html"
   },
-  /*#if !active_tab_only*/
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*", "file:///*"],
@@ -162,7 +155,6 @@
       "run_at": "document_start"
     }
   ],
-  /*#endif*/
   /*#if mv3*/
   "web_accessible_resources": [{
     "resources": [
