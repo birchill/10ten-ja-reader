@@ -196,7 +196,6 @@ export default (env) => {
   } else if (env && env.target === 'safari') {
     configs.push(
       getExtConfig({
-        activeTabOnly: true,
         // Safari defaults to loading JS as Latin so make sure we add a UTF-8 BOM
         addBom: true,
         artifactsDir: 'dist-safari-package',

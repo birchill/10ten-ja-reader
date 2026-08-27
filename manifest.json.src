@@ -156,8 +156,10 @@
       "matches": ["https://docs.google.com/*"],
       "js": ["10ten-ja-gdocs-bootstrap.js"],
       "all_frames": true,
-      "run_at": "document_start",
-      "world": "MAIN"
+      /*#if !is_safari*/
+      "world": "MAIN",
+      /*#endif*/
+      "run_at": "document_start"
     }
   ],
   /*#endif*/
