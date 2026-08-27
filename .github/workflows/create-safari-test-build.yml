@@ -54,6 +54,9 @@ jobs:
       - name: Build extension code
         run: pnpm build:safari
 
+      - name: Check Safari extension configuration
+        run: pnpm check-safari-build
+
       - name: Install signing certificate and profile
         env:
           CERT_BASE64: ${{ secrets.APP_STORE_CERT_BASE64 }}

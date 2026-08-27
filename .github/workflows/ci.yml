@@ -44,6 +44,8 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm build:firefox
           pnpm build:chrome
+          pnpm build:safari
+          pnpm check-safari-build
           pnpm build:thunderbird
 
       - name: Run tests
