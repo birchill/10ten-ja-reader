@@ -52,8 +52,8 @@ importers:
         specifier: 9.1.1
         version: 9.1.1
       '@bugsnag/cli':
-        specifier: 3.10.4
-        version: 3.10.4
+        specifier: 3.10.5
+        version: 3.10.5
       '@changesets/cli':
         specifier: 3.0.1
         version: 3.0.1
@@ -299,8 +299,8 @@ packages:
     resolution: {integrity: sha512-ctxtJ/eA+t+6q2++vj5j7FYX3nRu311q1wfYH3xjlLOsczhlhxAg2FWNUXhpGvAw3BWo1xBcvOV6/YLc2r5FJw==}
     hasBin: true
 
-  '@bugsnag/cli@3.10.4':
-    resolution: {integrity: sha512-VDz+wHtZDFQxJQi013FXvMb8VjtRtITEJYh3HjnmELbiePt4spR7JUzHJ9sqMb4NGUlAaJMAI2GQCKZ49wK7FA==}
+  '@bugsnag/cli@3.10.5':
+    resolution: {integrity: sha512-bqU1r9gCvknz1+29LLq0EjFCfZcixWOSU3Smmy/T6TDlMlr3lMUI2Xh69az7xASbGcSB4nQBWc6vdOzHD3KRaA==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -5603,7 +5603,7 @@ snapshots:
     dependencies:
       css-tree: 3.2.1
 
-  '@bugsnag/cli@3.10.4':
+  '@bugsnag/cli@3.10.5':
     dependencies:
       undici: 6.25.0
       yaml: 2.9.0
