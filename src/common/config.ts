@@ -57,6 +57,7 @@ type KanjiReferenceFlagsV2 = { [key in ReferenceAbbreviation]?: boolean };
 interface Settings {
   accentDisplay?: AccentDisplay;
   autoExpand?: Array<AutoExpandableEntry>;
+  autoSpeak?: boolean;
   bunproDisplay?: boolean;
   contextMenuEnable?: boolean;
   copyHeadwords?: 'common' | 'regular';
@@ -1173,6 +1174,24 @@ export class Config {
     this.readingOnly = !this.#settings.readingOnly;
   }
 
+  // autoSpeak: Defaults to false
+
+  get autoSpeak(): boolean {
+    return !!this.#settings.autoSpeak;
+  }
+
+  set autoSpeak(value: boolean) {
+    if (
+      typeof this.#settings.autoSpeak !== 'undefined' &&
+      this.#settings.autoSpeak === value
+    ) {
+      return;
+    }
+
+    this.#settings.autoSpeak = value;
+    void browser.storage.sync.set({ autoSpeak: value });
+  }
+
   // showKanjiComponents: Defaults to true
 
   get showKanjiComponents(): boolean {
@@ -1392,6 +1411,7 @@ export class Config {
       preferredUnits: this.preferredUnits,
       puckState: this.puckState,
       readingOnly: this.readingOnly,
+      autoSpeak: this.autoSpeak,
       showKanjiComponents: this.showKanjiComponents,
       showPriority: this.showPriority,
       showPuck: this.showPuck,
