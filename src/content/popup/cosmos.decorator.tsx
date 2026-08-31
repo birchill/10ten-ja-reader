@@ -21,6 +21,7 @@ export default function PopupDecorator({
 
   const [fontSize] = useFixtureSelect('font size', {
     options: ['xs', 'small', 'normal', 'large', 'xl'],
+    defaultValue: 'normal',
   });
 
   // This is here so that we can test that components do not change when the
