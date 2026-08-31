@@ -150,7 +150,10 @@ export const WordTable = (props: WordTableProps) => {
                 }
 
                 // Don't trigger copy mode if we clicked a nested link
-                if (evt.target instanceof HTMLAnchorElement) {
+                if (
+                  evt.target instanceof HTMLElement &&
+                  evt.target.closest('A')
+                ) {
                   return;
                 }
 
