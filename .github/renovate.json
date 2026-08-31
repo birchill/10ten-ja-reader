@@ -28,6 +28,11 @@
     {
       "matchPackageNames": ["actions/node-versions"],
       "allowedVersions": "24.x"
+    },
+    {
+      "matchPackageNames": ["react-cosmos"],
+      "allowedVersions": "!/^(7\\.4\\.0)$/",
+      "description": "Skip broken React Cosmos 7.4.0 pending react-cosmos/react-cosmos#1771"
     }
   ]
 }
