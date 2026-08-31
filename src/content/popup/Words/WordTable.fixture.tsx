@@ -203,6 +203,59 @@ const entryData: Array<[string, Array<WordResult>]> = [
       },
     ],
   ],
+  [
+    // The two cases where Bunpro's page URL isn't the headword: a slug, and a
+    // fuzzy match where the term we link to is Bunpro's, not ours. The
+    // 'default' entry above covers the third case, where it is the headword.
+    'bunpro links',
+    [
+      {
+        id: 1000160,
+        k: [
+          {
+            ent: 'Ｔシャツ',
+            p: ['s1'],
+            match: true,
+            // Served from /vocabs/Tシャツ-dup, half-width and all.
+            bv: { l: 5, slug: 'Tシャツ-dup' },
+            matchRange: [0, 4],
+          },
+        ],
+        r: [{ ent: 'ティーシャツ', romaji: 'tiishatsu', a: 0, match: true }],
+        s: [
+          {
+            g: [{ str: 'T-shirt' }, { str: 'tee shirt' }],
+            pos: ['n'],
+            match: true,
+          },
+        ],
+        matchLen: 4,
+      },
+      {
+        id: 1610740,
+        k: [
+          {
+            ent: '違いない',
+            p: ['i1'],
+            match: true,
+            // Matched fuzzily against Bunpro's に違いない, so that is what the
+            // link goes to -- /grammar_points/違いない is not a page.
+            bg: { l: 3, src: 'に違いない' },
+            matchRange: [0, 4],
+          },
+        ],
+        r: [{ ent: 'ちがいない', romaji: 'chigainai', a: 4, match: true }],
+        s: [
+          {
+            g: [{ str: 'sure' }, { str: 'no mistaking it' }],
+            pos: ['exp', 'adj-i'],
+            match: true,
+          },
+        ],
+        matchLen: 4,
+      },
+    ],
+  ],
 ];
 
 export default Object.fromEntries(

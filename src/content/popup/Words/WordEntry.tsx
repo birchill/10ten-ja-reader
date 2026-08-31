@@ -13,6 +13,8 @@ import { serializeReasonChains } from '../serialize-reasons';
 import { Definitions } from './Definitions';
 import { HeadwordInfo } from './HeadwordInfo';
 import { Reading } from './Reading';
+import type { BunproDeckType } from './bunpro-url';
+import { getBunproUrl } from './bunpro-url';
 
 type SelectState = 'unselected' | 'selected' | 'flash';
 
@@ -220,10 +222,14 @@ export function WordEntry(props: WordEntryProps) {
                         <WaniKanjiLevelTag level={kanji.wk} ent={kanji.ent} />
                       )}
                     {props.config.bunproDisplay && kanji.bv && (
-                      <BunproTag data={kanji.bv} type="vocab" />
+                      <BunproTag data={kanji.bv} ent={kanji.ent} type="vocab" />
                     )}
                     {props.config.bunproDisplay && kanji.bg && (
-                      <BunproTag data={kanji.bg} type="grammar" />
+                      <BunproTag
+                        data={kanji.bg}
+                        ent={kanji.ent}
+                        type="grammar"
+                      />
                     )}
                   </span>
                 </Fragment>
@@ -272,10 +278,10 @@ export function WordEntry(props: WordEntryProps) {
                       )}
                     </span>
                     {props.config.bunproDisplay && kana.bv && (
-                      <BunproTag data={kana.bv} type="vocab" />
+                      <BunproTag data={kana.bv} ent={kana.ent} type="vocab" />
                     )}
                     {props.config.bunproDisplay && kana.bg && (
-                      <BunproTag data={kana.bg} type="grammar" />
+                      <BunproTag data={kana.bg} ent={kana.ent} type="grammar" />
                     )}
                   </span>
                 </Fragment>
@@ -367,32 +373,51 @@ function WaniKanjiLevelTag({ level, ent }: { level: number; ent: string }) {
 
 function BunproTag({
   data,
+  ent,
   type,
 }: {
-  data: { l: number; src?: string };
-  type: 'vocab' | 'grammar';
+  data: { l: number; src?: string; slug?: string };
+  ent: string;
+  type: BunproDeckType;
 }) {
   const { t } = useLocale();
+  const { interactive } = usePopupOptions();
 
   const label = t(
     type === 'vocab' ? 'popup_bp_vocab_tag' : 'popup_bp_grammar_tag',
     ['N' + data.l]
   );
 
+  // The term the link goes to, which is what the tooltip should name -- for a
+  // fuzzy match that is Bunpro's term, not the headword we matched it against.
+  const term = data.src ?? ent;
+
   return (
-    <span
+    <a
       class={classes(
         'tp:text-2xs tp:text-(--color-bp)',
         'tp:mx-1 tp:px-1 tp:py-2 tp:leading-1',
-        'tp:inline-block tp:whitespace-nowrap tp:-translate-y-1',
-        'tp:rounded-sm tp:border tp:border-solid tp:border-(--color-bp)'
+        'tp:inline-block tp:no-underline tp:underline-offset-2 tp:whitespace-nowrap tp:-translate-y-1',
+        'tp:rounded-sm tp:border tp:border-solid tp:border-(--color-bp)',
+        ...(interactive
+          ? ['tp:hover:bg-(--hover-bg-color)']
+          : ['tp:pointer-events-none'])
       )}
-      style={{ '--color-bp': `var(--bunpro-${type})` }}
+      style={{
+        '--color-bp': `var(--bunpro-${type})`,
+        '--hover-bg-color': 'color(from var(--color-bp) srgb r g b / 0.1)',
+      }}
+      href={getBunproUrl({ type, slug: data.slug, src: data.src, ent })}
+      target="_blank"
+      rel="noreferrer"
+      title={t('content_bp_link_title', term)}
     >
-      <span>{label}</span>
+      <span class={classes(interactive && 'tp:underline tp:decoration-dotted')}>
+        {label}
+      </span>
       {data.src && (
         <span class="tp:text-(--bunpro-src) tp:ml-0.5">{data.src}</span>
       )}
-    </span>
+    </a>
   );
 }

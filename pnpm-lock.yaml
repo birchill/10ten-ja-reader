@@ -15,8 +15,8 @@ importers:
         specifier: 0.3.1
         version: 0.3.1(superstruct@2.0.2)
       '@birchill/jpdict-idb':
-        specifier: 3.3.0
-        version: 3.3.0
+        specifier: 3.4.0
+        version: 3.4.0
       '@birchill/normal-jp':
         specifier: 1.8.0
         version: 1.8.0
@@ -280,11 +280,11 @@ packages:
     peerDependencies:
       superstruct: '>0.16.0 <3.0.0'
 
-  '@birchill/jpdict-idb@3.3.0':
-    resolution: {integrity: sha512-r8IEWT0BO6mNxklq4I62dDX1vkOpBTMWFGsHGDosTMmYOI519u8amuvk7ouLxR3m93KR/RoF819IxNWyl4472w==}
+  '@birchill/jpdict-idb@3.4.0':
+    resolution: {integrity: sha512-iNfVuwHSFF4EiiaLbhxLLO7dGQ4xJuGulLGPWh39U91Gf8dMPtFZniir4Br0WVbx3syY7fEANH42hO3ClQmVtA==}
 
-  '@birchill/json-equalish@1.1.2':
-    resolution: {integrity: sha512-oXsOtXbuxai0iq8bXZKa0S2AkGEEhigu2WcZUbYwRbv4EtHJvT6jqSg5kNtWeI+6frv7ixIbJbuWP6AbNtj7Sw==}
+  '@birchill/json-equalish@2.0.1':
+    resolution: {integrity: sha512-uLqkHRvvZz5mCUjp4YP0LEYX4GPCfJuIWPsuZtXFzuXTetvSJBhzxIHTaZcipbl1JRUPUm+Z8rRzu64FAVH3ww==}
 
   '@birchill/kanji-component-string-utils@2.0.0':
     resolution: {integrity: sha512-Rc8+GspPfTmN/TEZaibp0UrkqDDa15fY5ssV/FAT1wnD5PFq6VWxOQUKhKbV4dej+smTtZxw29kMbkzghmLCHw==}
@@ -5688,15 +5688,15 @@ snapshots:
     dependencies:
       superstruct: 2.0.2
 
-  '@birchill/jpdict-idb@3.3.0':
+  '@birchill/jpdict-idb@3.4.0':
     dependencies:
-      '@birchill/json-equalish': 1.1.2
+      '@birchill/json-equalish': 2.0.1
       '@birchill/kanji-component-string-utils': 2.0.0
       '@birchill/normal-jp': 1.8.0
       idb: 8.0.3
       superstruct: 2.0.2
 
-  '@birchill/json-equalish@1.1.2': {}
+  '@birchill/json-equalish@2.0.1': {}
 
   '@birchill/kanji-component-string-utils@2.0.0': {}
 

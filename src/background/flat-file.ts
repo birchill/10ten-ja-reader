@@ -304,7 +304,8 @@ function toDictionaryWordResult({
 }
 
 type WithExtraMetadata<T> = Overwrite<
-  T,
+  // bvl / bgl are folded into bv / bg as `slug`, as jpdict-idb does.
+  Omit<T, 'bvl' | 'bgl'>,
   {
     wk: WordResult['k'][0]['wk'];
     bv: WordResult['k'][0]['bv'];
@@ -332,9 +333,10 @@ function mergeMeta<MetaType extends RawKanjiMeta | RawReadingMeta, MergedType>(
     // We need to extract any such levels and store them in the `wk` field
     // instead.
     //
-    // Likewise for Bunpro levels which need to be combined with an `bv` /
-    // `bg` fields since these contain the original source text for a fuzzy
-    // match.
+    // Likewise for Bunpro levels which need to be combined with the `bv` /
+    // `bg` fields, which contain the original source text for a fuzzy match,
+    // and the `bvl` / `bgl` fields, which contain the slug to use when linking
+    // to Bunpro.
     let wk: number | undefined;
     let bv: number | undefined;
     let bg: number | undefined;
@@ -382,16 +384,23 @@ function mergeMeta<MetaType extends RawKanjiMeta | RawReadingMeta, MergedType>(
     if (typeof bv === 'number') {
       extendedMeta!.bv = Object.assign(
         { l: bv },
-        meta?.bv ? { src: meta?.bv } : undefined
+        meta?.bv ? { src: meta?.bv } : undefined,
+        meta?.bvl ? { slug: meta?.bvl } : undefined
       );
     }
 
     if (typeof bg === 'number') {
       extendedMeta!.bg = Object.assign(
         { l: bg },
-        meta?.bg ? { src: meta?.bg } : undefined
+        meta?.bg ? { src: meta?.bg } : undefined,
+        meta?.bgl ? { slug: meta?.bgl } : undefined
       );
     }
+
+    // The slugs have been folded in above so drop the raw fields rather than
+    // let them through to the result.
+    delete meta?.bvl;
+    delete meta?.bgl;
 
     result.push(merge(key, extendedMeta));
   }

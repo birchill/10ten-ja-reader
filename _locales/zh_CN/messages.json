@@ -31,6 +31,11 @@
     "message": "词典更新失败",
     "description": "Tooltip for toolbar button when we failed to update."
   },
+  "content_bp_link_title": {
+    "message": "显示 ' $content$ ' 的Bunpro页面",
+    "description": "Tooltip for Bunpro vocab and grammar tags linking to Bunpro pages.",
+    "placeholders": { "content": { "content": "$1", "example": "に相違ない" } }
+  },
   "content_copied_entry": {
     "message": "已复制词条",
     "description": "Overlay shown after copying an entry to the clipboard."
