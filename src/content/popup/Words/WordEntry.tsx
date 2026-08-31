@@ -416,7 +416,9 @@ function BunproTag({
         {label}
       </span>
       {data.src && (
-        <span class="tp:text-(--bunpro-src) tp:ml-0.5">{data.src}</span>
+        <span class="tp:text-(--bunpro-src) tp:ml-0.5" lang="ja">
+          {data.src}
+        </span>
       )}
     </a>
   );
