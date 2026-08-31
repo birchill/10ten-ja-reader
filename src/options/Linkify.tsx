@@ -41,6 +41,7 @@ export function Linkify(props: Props) {
           part
         ) : (
           <a
+            class="options-link"
             key={part.keyword}
             href={part.href}
             target="_blank"

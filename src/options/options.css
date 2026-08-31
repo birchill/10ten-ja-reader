@@ -213,23 +213,11 @@ body {
 }
 
 /*
-  * Link styles
-  */
+ * Link styles
+ */
 
-.options a {
+.options .options-link,
+.options .options-link:visited {
   color: #0996f8;
   text-decoration-style: dotted;
-}
-
-.options a:visited {
-  color: #0996f8;
-}
-
-/*
- * We have to set the link color for the popup preview explicitly, otherwise
- * the WaniKani level tag will be affected by the above link styles.
- */
-.options #popup-preview a,
-.options #popup-preview a:visited {
-  color: inherit;
 }
