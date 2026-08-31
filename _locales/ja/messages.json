@@ -31,6 +31,11 @@
     "message": "辞書データの更新を失敗しました",
     "description": "Tooltip for toolbar button when we failed to update."
   },
+  "content_bp_link_title": {
+    "message": "Bunproで「 $content$ 」のページを表示",
+    "description": "Tooltip for Bunpro vocab and grammar tags linking to Bunpro pages.",
+    "placeholders": { "content": { "content": "$1", "example": "に相違ない" } }
+  },
   "content_copied_entry": {
     "message": "項目をコピーしました",
     "description": "Overlay shown after copying an entry to the clipboard."
