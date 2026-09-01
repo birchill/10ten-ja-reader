@@ -916,8 +916,10 @@ export class LookupPuck {
       return;
     }
 
+    event.preventDefault();
+
     // We only care about detecting the start of a second tap
-    if (this.#clickState.kind !== 'firstclick') {
+    if (event.detail < 2 || this.#clickState.kind !== 'firstclick') {
       return;
     }
 
@@ -934,8 +936,6 @@ export class LookupPuck {
         }
       }, clickAndHoldHysteresis),
     };
-
-    event.preventDefault();
 
     this.#beginDelayedClickAndHoldAnimation();
 
@@ -967,13 +967,14 @@ export class LookupPuck {
       return;
     }
 
+    event.preventDefault();
+
     // We only care about detecting the end of the second tap in a double-tap
     // gesture.
-    if (this.#clickState.kind !== 'secondpointerdown') {
+    if (event.detail < 2 || this.#clickState.kind !== 'secondpointerdown') {
       return;
     }
 
-    event.preventDefault();
     event.stopPropagation();
 
     this.#stopDraggingPuck();
