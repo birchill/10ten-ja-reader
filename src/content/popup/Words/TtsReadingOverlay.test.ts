@@ -75,7 +75,12 @@ describe('TtsReading', () => {
     publish(playing({ readingIndex: 1 }));
     expect(hopAnimations(glyphs())).toEqual(['', '', '']);
 
-    publish({ kind: 'loading', activeEntryIndex: 0, readingIndex: 0 });
+    publish({
+      kind: 'loading',
+      activeEntryIndex: 0,
+      readingIndex: 0,
+      audioStarted: false,
+    });
     expect(hopAnimations(glyphs())).toEqual(['', '', '']);
 
     publish(playing());
