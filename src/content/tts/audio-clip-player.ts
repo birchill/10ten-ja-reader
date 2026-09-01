@@ -1,4 +1,5 @@
 import { rejectWhenAborted } from '../../utils/reject-when-aborted';
+import { withResolvers } from '../../utils/with-resolvers';
 
 import type { PlayClip, StartInfo } from './tts-player';
 
@@ -31,8 +32,8 @@ function resumeTracked(context: AudioContext): Promise<void> {
 }
 
 export const playClip: PlayClip = (clip, signal) => {
-  const started = deferred<StartInfo>();
-  const ended = deferred<void>();
+  const started = withResolvers<StartInfo>();
+  const ended = withResolvers<void>();
   let source: AudioBufferSourceNode | undefined;
   let settled = false;
 
@@ -108,13 +109,3 @@ export const playClip: PlayClip = (clip, signal) => {
     }
   }
 };
-
-function deferred<T>() {
-  let resolve!: (value: T) => void;
-  let reject!: (reason?: unknown) => void;
-  const promise = new Promise<T>((resolvePromise, rejectPromise) => {
-    resolve = resolvePromise;
-    reject = rejectPromise;
-  });
-  return { promise, resolve, reject };
-}

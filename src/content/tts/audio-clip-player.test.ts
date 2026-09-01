@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { TtsClip } from '../../common/tts/tts-request';
+import { withResolvers } from '../../utils/with-resolvers';
 
 import type { PlayClip } from './tts-player';
 
@@ -12,8 +13,8 @@ let calls: Array<string>;
 let lastSource: FakeSourceNode | undefined;
 let lastContext: FakeAudioContext | undefined;
 let contextInstances: number;
-let resumeDeferred: ReturnType<typeof deferred<void>>;
-let decodeDeferred: ReturnType<typeof deferred<AudioBuffer>>;
+let resumeDeferred: ReturnType<typeof withResolvers<void>>;
+let decodeDeferred: ReturnType<typeof withResolvers<AudioBuffer>>;
 let staysAudioSuspended: boolean;
 let preparePlayback: () => void;
 let playClip: PlayClip;
@@ -26,8 +27,8 @@ beforeEach(async () => {
   lastContext = undefined;
   contextInstances = 0;
   staysAudioSuspended = false;
-  resumeDeferred = deferred<void>();
-  decodeDeferred = deferred<AudioBuffer>();
+  resumeDeferred = withResolvers<void>();
+  decodeDeferred = withResolvers<AudioBuffer>();
 
   vi.stubGlobal('AudioContext', FakeAudioContext);
 
@@ -221,14 +222,4 @@ class FakeSourceNode {
 
 function flush() {
   return vi.advanceTimersByTimeAsync(0);
-}
-
-function deferred<T>() {
-  let resolve!: (value: T) => void;
-  let reject!: (reason?: unknown) => void;
-  const promise = new Promise<T>((resolvePromise, rejectPromise) => {
-    resolve = resolvePromise;
-    reject = rejectPromise;
-  });
-  return { promise, resolve, reject };
 }
