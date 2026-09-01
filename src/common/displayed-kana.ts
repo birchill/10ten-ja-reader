@@ -3,8 +3,9 @@ import type { WordResult } from '../background/search-result';
 export function getDisplayedKana(entry: WordResult): WordResult['r'] {
   const matchedOnKana = entry.r.some((r) => r.matchRange);
 
-  // Include the regular kana headword too if every match is irregular or
-  // search-only (example: ふいんき also includes ふんいき).
+  // Normally include only matching kana headwords. If every match is irregular
+  // or search-only, also include regular headwords for reference (for example,
+  // ふんいき alone, but both ふいんき and the more correct ふんいき).
   const matchedOnIrregularKana =
     matchedOnKana &&
     entry.r.every(
