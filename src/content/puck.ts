@@ -916,6 +916,9 @@ export class LookupPuck {
       return;
     }
 
+    // Keep this before the second-tap guard. WebKit bug 313688 exposes the
+    // first tap's mouse events, whose default action can zoom the page:
+    // https://bugs.webkit.org/show_bug.cgi?id=313688
     event.preventDefault();
 
     // We only care about detecting the start of a second tap
