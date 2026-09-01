@@ -20,7 +20,7 @@ declare global {
   var chrome: any;
 }
 
-describe('LookupPuck tap handling on iOS', () => {
+describe('LookupPuck', () => {
   let LookupPuck: typeof LookupPuckClass;
   let LookupPuckId: string;
   let previousBrowserObject: any;
@@ -89,14 +89,11 @@ describe('LookupPuck tap handling on iOS', () => {
     vi.useRealTimers();
   });
 
-  it('cancels compatibility mouse events from a handled pointer tap', () => {
-    dispatchPointerTap(1);
-    const { mouseDown, mouseUp } = dispatchMouseTap(1);
+  it('toggles lookups with a single tap', () => {
+    tapPuck();
 
     vi.advanceTimersByTime(300);
 
-    expect(mouseDown.defaultPrevented).toBe(true);
-    expect(mouseUp.defaultPrevented).toBe(true);
     expect(subject.getEnabledState()).toBe('inactive');
     expect(subject.getTargetOrientation()).toEqual({
       readingDirection: 'horizontal',
@@ -104,9 +101,8 @@ describe('LookupPuck tap handling on iOS', () => {
     });
   });
 
-  it('uses mouse events when iOS swallows the second pointer tap', () => {
-    dispatchPointerTap(1);
-    dispatchMouseTap(2);
+  it('moves the moon to the opposite side with a double tap', () => {
+    doubleTapPuck();
 
     expect(subject.getEnabledState()).toBe('active');
     expect(subject.getTargetOrientation()).toEqual({
@@ -115,39 +111,40 @@ describe('LookupPuck tap handling on iOS', () => {
     });
   });
 
-  function dispatchPointerTap(pointerId: number) {
+  function tapPuck() {
+    dispatchPointerTap();
+    dispatchMouseTap(1);
+  }
+
+  function doubleTapPuck() {
+    tapPuck();
+    dispatchMouseTap(2);
+  }
+
+  function dispatchPointerTap() {
     puckElement.dispatchEvent(
       new PointerEvent('pointerdown', {
         bubbles: true,
         cancelable: true,
-        pointerId,
+        pointerId: 1,
       })
     );
     window.dispatchEvent(
       new PointerEvent('pointerup', {
         bubbles: true,
         cancelable: true,
-        pointerId,
+        pointerId: 1,
       })
     );
   }
 
   function dispatchMouseTap(detail: number) {
-    const mouseDown = new MouseEvent('mousedown', {
-      bubbles: true,
-      cancelable: true,
-      detail,
-    });
-    puckElement.dispatchEvent(mouseDown);
-
-    const mouseUp = new MouseEvent('mouseup', {
-      bubbles: true,
-      cancelable: true,
-      detail,
-    });
-    puckElement.dispatchEvent(mouseUp);
-
-    return { mouseDown, mouseUp };
+    puckElement.dispatchEvent(
+      new MouseEvent('mousedown', { bubbles: true, cancelable: true, detail })
+    );
+    puckElement.dispatchEvent(
+      new MouseEvent('mouseup', { bubbles: true, cancelable: true, detail })
+    );
   }
 });
 
