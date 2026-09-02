@@ -8,7 +8,7 @@ app.
 
 ## [Unreleased]
 
-## 1.28.0
+## [1.28.0] - 2026-09-02
 
 - Avoid looking up text when the cursor is far off the end of the line ([#2813](https://github.com/birchill/10ten-ja-reader/issues/2813)).
 - Increased the maximum length of text we look up from 16 to 20 characters so
