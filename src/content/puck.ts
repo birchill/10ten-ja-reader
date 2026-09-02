@@ -916,8 +916,13 @@ export class LookupPuck {
       return;
     }
 
+    // Keep this before the second-tap guard. WebKit bug 313688 exposes the
+    // first tap's mouse events, whose default action can zoom the page:
+    // https://bugs.webkit.org/show_bug.cgi?id=313688
+    event.preventDefault();
+
     // We only care about detecting the start of a second tap
-    if (this.#clickState.kind !== 'firstclick') {
+    if (event.detail < 2 || this.#clickState.kind !== 'firstclick') {
       return;
     }
 
@@ -934,8 +939,6 @@ export class LookupPuck {
         }
       }, clickAndHoldHysteresis),
     };
-
-    event.preventDefault();
 
     this.#beginDelayedClickAndHoldAnimation();
 
@@ -967,13 +970,14 @@ export class LookupPuck {
       return;
     }
 
+    event.preventDefault();
+
     // We only care about detecting the end of the second tap in a double-tap
     // gesture.
-    if (this.#clickState.kind !== 'secondpointerdown') {
+    if (event.detail < 2 || this.#clickState.kind !== 'secondpointerdown') {
       return;
     }
 
-    event.preventDefault();
     event.stopPropagation();
 
     this.#stopDraggingPuck();
