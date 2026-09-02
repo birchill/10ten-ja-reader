@@ -218,6 +218,10 @@ body.platform-iphone .carousel .slides .slide:nth-child(5) .img {
 }
 
 body.platform-iphone .carousel .slides .slide:nth-child(6) .img {
+  background-image: url(iphone-6-permission.png);
+}
+
+body.platform-iphone .carousel .slides .slide:nth-child(7) .img {
   background-image: url(iphone-6.png);
 }
 
@@ -249,6 +253,10 @@ body.platform-iphone-pro .carousel .slides .slide:nth-child(5) .img {
 }
 
 body.platform-iphone-pro .carousel .slides .slide:nth-child(6) .img {
+  background-image: url(iphone-pro-6-permission.png);
+}
+
+body.platform-iphone-pro .carousel .slides .slide:nth-child(7) .img {
   background-image: url(iphone-pro-6.png);
 }
 
@@ -280,6 +288,10 @@ body.platform-ipad .carousel .slides .slide:nth-child(5) .img {
 }
 
 body.platform-ipad .carousel .slides .slide:nth-child(6) .img {
+  background-image: url(ipad-6-permission.png);
+}
+
+body.platform-ipad .carousel .slides .slide:nth-child(7) .img {
   background-image: url(ipad-6.png);
 }
 
