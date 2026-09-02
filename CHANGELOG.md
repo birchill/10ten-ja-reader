@@ -8,6 +8,29 @@ app.
 
 ## [Unreleased]
 
+## 1.28.0
+
+- Avoid looking up text when the cursor is far off the end of the line ([#2813](https://github.com/birchill/10ten-ja-reader/issues/2813)).
+- Increased the maximum length of text we look up from 16 to 20 characters so
+  that longer entries such as 東京ディズニーランド・ステーション駅 are recognized
+  ([#3077](https://github.com/birchill/10ten-ja-reader/issues/3077)).
+- Made the Bunpro vocab and grammar tags link to their page on Bunpro, as the
+  WaniKani tag already does ([#3098](https://github.com/birchill/10ten-ja-reader/issues/3098)).
+- Bound the number of ー expansions generated while looking up text so that long
+  runs of katakana no longer make lookups very slow.
+- (Firefox) Enable settings button on popup for Firefox for Android >= 153
+- Recognize CJK extension characters (e.g. 𱁬 and 𰻞𰻞麺) in scanned Japanese text ([#2958](https://github.com/birchill/10ten-ja-reader/issues/2958)).
+- Show the popup above dialogs, popovers, and other content in the top layer
+  ([#2843](https://github.com/birchill/10ten-ja-reader/issues/2843)).
+- Fixed text lookup for text nodes that are direct children of shadow roots,
+  including scanning across adjacent inline content.
+- (Safari) Fixed tap and double-tap handling for the lookup puck on recent iOS 26
+  releases ([#3020](https://github.com/birchill/10ten-ja-reader/issues/3020)).
+- Fixed copying an entry whose kanji headwords are all hidden dropping the
+  "usually kana" annotation from the copied text.
+- (Firefox) Fixed textarea lookup in Firefox on Linux ([#3008](https://github.com/birchill/10ten-ja-reader/issues/3008)).
+- Fixed some readability issues with the blue theme ([#3101](https://github.com/birchill/10ten-ja-reader/issues/3101)).
+
 ## [1.27.2] - 2026-05-08
 
 - Fixed the popup not appearing for bullet-list text in Google Docs
