@@ -244,8 +244,12 @@ export function WordEntry(props: WordEntryProps) {
               'tp:text-xl',
               'tp:text-(--reading-highlight)',
               'tp:group-data-selected:text-(--selected-reading-highlight)',
+              'tp:group-data-selected:[--hi-contrast-pitch-accent:var(--selected-hi-contrast-pitch-accent)]',
               interactive &&
-                'tp:group-hover:text-(--selected-reading-highlight)'
+                classes(
+                  'tp:group-hover:text-(--selected-reading-highlight)',
+                  'tp:group-hover:[--hi-contrast-pitch-accent:var(--selected-hi-contrast-pitch-accent)]'
+                )
             )}
             lang="ja"
           >
@@ -399,13 +403,22 @@ function BunproTag({
         'tp:mx-1 tp:px-1 tp:py-2 tp:leading-1',
         'tp:inline-block tp:no-underline tp:underline-offset-2 tp:whitespace-nowrap tp:-translate-y-1',
         'tp:rounded-sm tp:border tp:border-solid tp:border-(--color-bp)',
+        'tp:no-overlay:group-data-selected:text-(--selected-color-bp)',
+        'tp:no-overlay:group-data-selected:border-(--selected-color-bp)',
         ...(interactive
-          ? ['tp:hover:bg-(--hover-bg-color)']
+          ? [
+              'tp:hover:bg-(--hover-bg-color)',
+              'tp:group-hover:text-(--selected-color-bp)',
+              'tp:group-hover:border-(--selected-color-bp)',
+            ]
           : ['tp:pointer-events-none'])
       )}
       style={{
         '--color-bp': `var(--bunpro-${type})`,
-        '--hover-bg-color': 'color(from var(--color-bp) srgb r g b / 0.1)',
+        '--selected-color-bp': `var(--selected-bunpro, var(--bunpro-${type}))`,
+        '--selected-color-bp-src': 'var(--selected-bunpro, var(--bunpro-src))',
+        '--hover-bg-color':
+          'color(from var(--selected-color-bp) srgb r g b / 0.1)',
       }}
       href={getBunproUrl({ type, slug: data.slug, src: data.src, ent })}
       target="_blank"
@@ -416,7 +429,14 @@ function BunproTag({
         {label}
       </span>
       {data.src && (
-        <span class="tp:text-(--bunpro-src) tp:ml-0.5" lang="ja">
+        <span
+          class={classes(
+            'tp:text-(--bunpro-src) tp:ml-0.5',
+            'tp:no-overlay:group-data-selected:text-(--selected-color-bp-src)',
+            interactive && 'tp:group-hover:text-(--selected-color-bp-src)'
+          )}
+          lang="ja"
+        >
           {data.src}
         </span>
       )}
