@@ -40,6 +40,7 @@
   --reading-label: hsl(49, 9.1%, 42%);
   --okurigana-color: hsl(356, 73%, 40%);
   --hi-contrast-pitch-accent: var(--primary-highlight);
+  --selected-hi-contrast-pitch-accent: var(--hi-contrast-pitch-accent);
   --cell-highlight-bg: hsl(50, 50%, 90%);
   --cell-highlight-fg: hsl(12, 4.2%, 20%);
   --cell-bg-hover: hsl(50.4, 35.2%, 86.1%);
@@ -117,6 +118,7 @@
   --bunpro-vocab: #b4d1ed;
   --bunpro-grammar: #ffc6c4;
   --bunpro-src: #cde1ef;
+  --selected-bunpro: var(--selected-highlight);
 
   --title-bg: var(--cell-highlight-bg);
   --title-fg: var(--text-color);
@@ -124,6 +126,7 @@
   --reading-label: #e7ffe7;
   --okurigana-color: #a8cfef;
   --hi-contrast-pitch-accent: white;
+  --selected-hi-contrast-pitch-accent: var(--selected-reading-highlight);
   --cell-highlight-bg: #17588e;
   --cell-highlight-fg: var(--primary-highlight);
   --cell-bg-hover: hsl(206.3, 86%, 28%);
@@ -176,6 +179,7 @@
   --reading-label: #e7ffe7;
   --okurigana-color: #ede8e6;
   --hi-contrast-pitch-accent: white;
+  --selected-hi-contrast-pitch-accent: var(--hi-contrast-pitch-accent);
   --cell-highlight-bg: #504c4b;
   --cell-highlight-fg: #f0ecea;
   --cell-bg-hover: hsl(12, 4.4%, 22.2%);
@@ -242,6 +246,7 @@
   --reading-label: #1b5e20;
   --okurigana-color: #706c6b;
   --hi-contrast-pitch-accent: var(--primary-highlight);
+  --selected-hi-contrast-pitch-accent: var(--hi-contrast-pitch-accent);
   --cell-highlight-bg: #cae6fc;
   --cell-highlight-fg: var(--primary-highlight);
   --cell-bg-hover: hsl(206.4, 65.8%, 85.1%);
@@ -294,6 +299,7 @@
   --reading-label: #1b5e20;
   --okurigana-color: #fc7600;
   --hi-contrast-pitch-accent: var(--primary-highlight);
+  --selected-hi-contrast-pitch-accent: var(--hi-contrast-pitch-accent);
   --cell-highlight-bg: #fffde5;
   --cell-highlight-fg: #3e3a39;
   --cell-bg-hover: rgb(255, 254, 247);
