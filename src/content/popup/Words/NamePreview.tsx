@@ -1,6 +1,7 @@
 import { useRef } from 'preact/hooks';
 
 import type { NamePreview as QueryNamePreview } from '../../query';
+import type { TtsPlaybackHandle } from '../../tts-playback-controller';
 
 import { NameEntry } from '../Names/NameEntry';
 import type { CopyState } from '../copy-state';
@@ -12,11 +13,15 @@ export function NamePreview({
   selectedIndex,
   copyState,
   onStartCopy,
+  ttsPlayback,
+  ttsEntryIndexOffset = 0,
 }: {
   namePreview: QueryNamePreview;
   selectedIndex?: number;
   copyState: CopyState;
   onStartCopy?: StartCopyCallback;
+  ttsPlayback?: TtsPlaybackHandle;
+  ttsEntryIndexOffset?: number;
 }) {
   const namesPreview = useRef<HTMLDivElement>(null);
   const lastPointerType = useRef('touch');
@@ -34,9 +39,15 @@ export function NamePreview({
 
         return (
           <NameEntry
-            key={name.id}
+            key={index}
             entry={name}
             selectState={selectState}
+            tts={
+              ttsPlayback && {
+                controller: ttsPlayback,
+                entryIndex: ttsEntryIndexOffset + index,
+              }
+            }
             onPointerUp={(evt) => {
               lastPointerType.current = evt.pointerType;
             }}

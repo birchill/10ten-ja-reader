@@ -12,6 +12,8 @@
   --selected-def-color: #1a1d1f;
   --selected-tag-color: #1a1d1f;
   --selected-tag-border: rgba(0, 0, 0, 0.3);
+
+  --tts-error-badge-color: #f87171;
 }
 
 /*
@@ -26,6 +28,7 @@
   --shadow-color: rgba(0, 0, 0, 0.2);
 
   --primary-highlight: hsl(356, 73%, 40%);
+  --tts-highlight: var(--primary-highlight);
   --reading-highlight: hsl(52, 8.5%, 35%);
   --conj-color: hsl(356, 55%, 41%);
 
@@ -111,6 +114,7 @@
   --shadow-color: rgba(0, 0, 0, 0.2);
 
   --primary-highlight: #bcdffe;
+  --tts-highlight: var(--primary-highlight);
   --reading-highlight: #c0ffc0;
   --conj-color: #fff394;
 
@@ -151,6 +155,8 @@
 
   --expand-button-rgb: 144, 173, 197;
   --expand-button-color: rgb(var(--expand-button-rgb));
+
+  --tts-error-badge-color: #fecaca;
 }
 
 /*
@@ -165,6 +171,7 @@
   --shadow-color: rgba(255, 255, 255, 0.2);
 
   --primary-highlight: #4bbffb;
+  --tts-highlight: var(--primary-highlight);
   --reading-highlight: #7beb7e;
   --conj-color: #c1a4a0;
 
@@ -213,6 +220,8 @@
 
   --tag-blue-bg: #2698fb88;
   --tag-blue-border: rgba(255, 255, 255, 0.3);
+
+  --tts-error-badge-color: #fecaca;
 }
 
 .window.theme-black .w-def .w-misc {
@@ -232,6 +241,7 @@
   --shadow-color: rgba(0, 0, 0, 0.2);
 
   --primary-highlight: #17588e;
+  --tts-highlight: var(--primary-highlight);
   --reading-highlight: #2e7d32;
   --conj-color: #817470;
 
@@ -285,6 +295,7 @@
   --shadow-color: rgba(0, 0, 0, 0.2);
 
   --primary-highlight: #17588e;
+  --tts-highlight: var(--primary-highlight);
   --reading-highlight: #2e7d32;
   --conj-color: #fc7600;
 

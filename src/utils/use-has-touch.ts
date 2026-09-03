@@ -1,21 +1,10 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useMemo } from 'preact/hooks';
 
 import { isTouchDevice } from './device';
+import { useMediaQuery } from './use-media-query';
 
 export function useHasTouch(): boolean {
-  const mql = useMemo(() => window.matchMedia('(any-pointer:coarse)'), []);
-  const [hasCoarsePointer, setHasCoarsePointer] = useState(mql.matches);
-
-  useEffect(() => {
-    const onMqlChange = (evt: MediaQueryListEvent) => {
-      setHasCoarsePointer(evt.matches);
-    };
-
-    mql.addEventListener('change', onMqlChange);
-    return () => {
-      mql.removeEventListener('change', onMqlChange);
-    };
-  }, []);
+  const hasCoarsePointer = useMediaQuery('(any-pointer:coarse)');
 
   return useMemo(() => isTouchDevice(), [hasCoarsePointer]);
 }
