@@ -149,19 +149,19 @@
 
 @keyframes tts-mora-highlight-a {
   to {
-    color: var(--primary-highlight);
+    color: var(--tts-highlight);
   }
 }
 
 @keyframes tts-mora-highlight-b {
   to {
-    color: var(--primary-highlight);
+    color: var(--tts-highlight);
   }
 }
 
 @keyframes tts-mora-unhighlight {
   from {
-    color: var(--primary-highlight);
+    color: var(--tts-highlight);
   }
 }
 
