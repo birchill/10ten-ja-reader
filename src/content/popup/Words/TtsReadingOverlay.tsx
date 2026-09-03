@@ -359,6 +359,6 @@ function solidAccentClasses(
   // popup resets `border-width`, so `border-style` on its own resurrects the
   // browser's default `medium` width and pads the mora out by 3px a side.
   return borders
-    ? classes('tp:border-solid tp:border-(--primary-highlight)', borders)
+    ? classes('tp:border-solid tp:border-(--tts-highlight)', borders)
     : undefined;
 }

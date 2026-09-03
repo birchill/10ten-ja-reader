@@ -104,8 +104,8 @@ describe('TtsReading browser rendering', () => {
 
     subject.publish(playing(performance.now() - 660));
     await nextFrame();
-    expect(getComputedStyle(subject.glyphs()[0]).color).not.toBe(
-      inheritedColor
+    expect(getComputedStyle(subject.glyphs()[0]).color).toBe(
+      'rgb(220, 20, 60)'
     );
 
     subject.publish({ kind: 'idle' });
@@ -176,7 +176,7 @@ function mount(
     'inset: 40px auto auto 40px',
     'font: 32px/1.4 sans-serif',
     'color: rgb(96, 96, 96)',
-    '--primary-highlight: rgb(220, 20, 60)',
+    '--tts-highlight: rgb(220, 20, 60)',
     '--hi-contrast-pitch-accent: rgb(0, 0, 0)',
   ].join(';');
   document.body.append(container);

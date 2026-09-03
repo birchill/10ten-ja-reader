@@ -37,7 +37,7 @@ const STARTED_AT = 1000;
 // A mora may only name a border style where it draws a line: nothing resets
 // `border-width` in this popup, so a bare `border-style` would pad the mora out
 // with the browser's default `medium` width.
-const SOLID = 'tp:border-solid tp:border-(--primary-highlight)';
+const SOLID = 'tp:border-solid tp:border-(--tts-highlight)';
 
 // たべる: three single-codepoint moras, each running 200ms.
 const evenTiming: MoraTimingData = {
