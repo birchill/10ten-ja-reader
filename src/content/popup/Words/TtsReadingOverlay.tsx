@@ -24,7 +24,7 @@ export type TtsReadingProps = {
   controller: Pick<TtsPlaybackController, 'subscribe' | 'state'>;
   entryIndex: number;
   readingIndex: number;
-  kana: WordResult['r'][0];
+  kana: Pick<WordResult['r'][0], 'ent' | 'a'>;
   accentDisplay: AccentDisplay;
 };
 
