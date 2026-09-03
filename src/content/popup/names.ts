@@ -16,6 +16,7 @@ type RenderNamesOptions = Pick<
   | 'interactive'
   | 'meta'
   | 'onStartCopy'
+  | 'playReadingsShortcuts'
   | 'preferredUnits'
   | 'ttsPlayback'
 >;
@@ -40,7 +41,11 @@ export function renderNamesEntries({
     container: containerElement,
     vnode: h(
       PopupOptionsProvider,
-      { interactive: options.interactive, fontSize: options.fontSize },
+      {
+        interactive: options.interactive,
+        fontSize: options.fontSize,
+        playReadingsShortcuts: options.playReadingsShortcuts,
+      },
       h(NameTable, {
         entries,
         matchLen,
