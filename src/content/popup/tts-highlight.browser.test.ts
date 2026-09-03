@@ -47,9 +47,14 @@ describe('TTS highlight colors', () => {
     expect(getComputedStyle(button).color).toBe('rgb(255, 255, 255)');
     expect(getComputedStyle(spokenReading).color).toBe('rgb(188, 223, 254)');
 
+    const supportsHover = matchMedia('(hover: hover)').matches;
     await page.elementLocator(button).hover();
 
-    expect(getComputedStyle(button).color).toBe('rgb(68, 110, 160)');
-    expect(getComputedStyle(spokenReading).color).toBe('rgb(68, 110, 160)');
+    expect(getComputedStyle(button).color).toBe(
+      supportsHover ? 'rgb(68, 110, 160)' : 'rgb(255, 255, 255)'
+    );
+    expect(getComputedStyle(spokenReading).color).toBe(
+      supportsHover ? 'rgb(68, 110, 160)' : 'rgb(188, 223, 254)'
+    );
   });
 });
