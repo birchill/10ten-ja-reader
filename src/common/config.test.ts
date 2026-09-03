@@ -215,6 +215,7 @@ describe('Config', () => {
       startCopy: ['c'],
     });
     expect(config.noTextHighlight).toEqual(false);
+    expect(config.playReadings).toEqual(false);
     expect(config.popupStyle).toEqual('default');
     expect(config.posDisplay).toEqual('expl');
     expect(config.readingOnly).toEqual(false);
