@@ -12,6 +12,8 @@ import {
 import { useLocale } from '../../../common/i18n';
 import { classes } from '../../../utils/classes';
 
+import { PLAY_PATH, STOP_PATH } from '../play-stop-paths';
+
 export type Props = {
   onClick?: (trigger: 'touch' | 'mouse') => void;
   st: string;
@@ -229,11 +231,7 @@ export function KanjiStrokeAnimation(props: Props) {
               fill="none"
             />
             <path
-              d={
-                isPlaying
-                  ? 'M20 12.5v6a4 4 0 01-4 4l-12 0c0 0 0 0 0 0a4 4 90 01-4-4v-12a4 4 90 014-4c0 0 0 0 0 0l12 0a4 4 0 014 4z'
-                  : 'M20 12.5v0a2 2 0 01-1 1.7l-16.1 8.1c-.3.1-.6.2-.9.2a2 2 90 01-2-2v-16a2 2 90 012-2c.3 0 .7.1 1 .2l16 8.1a2 2 0 011 1.7z'
-              }
+              d={isPlaying ? STOP_PATH : PLAY_PATH}
               class="tp:transition-[d] tp:duration-500"
               transform="scale(0.9)"
               transform-origin="10px 12.5px"
