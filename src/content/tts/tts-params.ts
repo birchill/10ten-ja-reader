@@ -1,4 +1,4 @@
-import type { WordResult } from '../../background/search-result';
+import type { NameResult, WordResult } from '../../background/search-result';
 import { getDisplayedKana } from '../../common/displayed-kana';
 import type { TtsClipRequest } from '../../common/tts/tts-request';
 
@@ -6,6 +6,13 @@ export function resolveTtsParams(entry: WordResult): Array<TtsClipRequest> {
   return getDisplayedKana(entry).map((kana) =>
     resolveReadingParams(kana, entry.k)
   );
+}
+
+export function resolveNameTtsParams(
+  entry: Pick<NameResult, 'k' | 'r'>
+): Array<TtsClipRequest> {
+  const kanji = entry.k?.[0];
+  return entry.r.map((reading) => ({ reading, ...(kanji ? { kanji } : {}) }));
 }
 
 function resolveReadingParams(

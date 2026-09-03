@@ -112,6 +112,9 @@ export interface ContentConfigParams {
   // Prevents highlighting text on hover
   noTextHighlight: boolean;
 
+  // Whether or not the popup can play readings as audio.
+  playReadings: boolean;
+
   // If the popup should be interactive (e.g. response to mouse clicks)
   popupInteractive: boolean;
 

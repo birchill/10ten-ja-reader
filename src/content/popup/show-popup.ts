@@ -17,6 +17,7 @@ import type { DisplayMode } from '../popup-state';
 import type { QueryResult } from '../query';
 import { toScreenCoords } from '../scroll-offset';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from '../svg';
+import type { TtsPlaybackHandle } from '../tts-playback-controller';
 
 import type { CopyState } from './copy-state';
 import {
@@ -79,6 +80,7 @@ export type ShowPopupOptions = {
   showRomaji: boolean;
   switchDictionaryKeys: ReadonlyArray<string>;
   tabDisplay: 'top' | 'left' | 'right' | 'none';
+  ttsPlayback?: TtsPlaybackHandle;
   waniKaniVocabDisplay: 'hide' | 'show-matches';
 };
 
