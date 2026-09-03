@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { TtsPlaybackState } from '../../tts-playback-controller';
 
 import { LOADING_DEFER_MS } from '../hooks/use-deferred-loading';
+import { PopupOptionsProvider } from '../options-context';
 import { STOP_PATH } from '../play-stop-paths';
 
 import { TtsPlayButton, type TtsPlayButtonProps } from './TtsPlayButton';
@@ -55,6 +56,25 @@ describe('TtsPlayButton', () => {
     act(() => publish(playing()));
     expect(button.getAttribute('aria-label')).toBe(
       'content_stop_readings_label'
+    );
+  });
+
+  it('includes the configured shortcut in its tooltip', () => {
+    const { button, publish } = mount({}, ['p']);
+
+    expect(button.getAttribute('aria-label')).toBe(
+      'content_play_readings_label'
+    );
+    expect(button.getAttribute('title')).toBe(
+      'content_play_readings_label (p)'
+    );
+
+    act(() => publish(playing()));
+    expect(button.getAttribute('aria-label')).toBe(
+      'content_stop_readings_label'
+    );
+    expect(button.getAttribute('title')).toBe(
+      'content_stop_readings_label (p)'
     );
   });
 
@@ -166,7 +186,10 @@ describe('TtsPlayButton', () => {
   });
 });
 
-function mount(overrides: Partial<TtsPlayButtonProps> = {}) {
+function mount(
+  overrides: Partial<TtsPlayButtonProps> = {},
+  playReadingsShortcuts?: ReadonlyArray<string>
+) {
   let listener: ((state: TtsPlaybackState) => void) | undefined;
   let currentState: TtsPlaybackState = { kind: 'idle' };
 
@@ -189,7 +212,14 @@ function mount(overrides: Partial<TtsPlayButtonProps> = {}) {
   const container = document.createElement('div');
   document.body.append(container);
   act(() => {
-    render(h(TtsPlayButton, props), container);
+    render(
+      h(
+        PopupOptionsProvider,
+        { interactive: true, playReadingsShortcuts },
+        h(TtsPlayButton, props)
+      ),
+      container
+    );
   });
 
   const glyph = () => container.querySelectorAll('svg')[0]!;

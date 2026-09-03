@@ -67,6 +67,7 @@ export type ShowPopupOptions = {
   onSwitchDictionary?: (newDict: MajorDataSeries | 'next' | 'prev') => void;
   onTogglePin?: () => void;
   pinShortcuts?: ReadonlyArray<string>;
+  playReadingsShortcuts?: ReadonlyArray<string>;
   pointerType: 'cursor' | 'puck';
   posDisplay: PartOfSpeechDisplay;
   positionMode: PopupPositionMode;
