@@ -20,22 +20,7 @@ afterEach(() => {
 
 describe('TtsPlayButton browser rendering', () => {
   it('keeps its glyph size when Cosmos loads the options styles', () => {
-    const container = document.createElement('div');
-    container.className = 'theme-light window bundled-fonts';
-    container.style.setProperty('--base-font-size', '14px');
-    document.body.append(container);
-
-    const controller = {
-      state: { kind: 'idle' } as TtsPlaybackState,
-      subscribe: () => () => {},
-      toggle: () => {},
-    };
-    act(() => {
-      render(h(TtsPlayButton, { controller, entryIndex: 0 }), container);
-    });
-
-    const button = container.querySelector('button')!;
-    const glyph = button.querySelector('svg')!;
+    const { button, glyph } = mountButton({ kind: 'idle' });
 
     expect(getComputedStyle(button).boxSizing).toBe('content-box');
     expect(button.getBoundingClientRect().width).toBeCloseTo(40, 1);
@@ -52,4 +37,36 @@ describe('TtsPlayButton browser rendering', () => {
 
     expect(getComputedStyle(child).boxSizing).toBe('border-box');
   });
+
+  it('attaches a legible error badge to the glyph corner', () => {
+    const { button, glyph } = mountButton({
+      kind: 'error',
+      activeEntryIndex: 0,
+    });
+    const badge = button.querySelector('.tts-error-badge')!;
+    const glyphRect = glyph.getBoundingClientRect();
+    const badgeRect = badge.getBoundingClientRect();
+
+    expect(badgeRect.width).toBeCloseTo(10, 1);
+    expect(badgeRect.height).toBeCloseTo(10, 1);
+    expect(badgeRect.x + badgeRect.width / 2).toBeCloseTo(glyphRect.right, 1);
+    expect(badgeRect.y + badgeRect.height / 2).toBeCloseTo(glyphRect.top, 1);
+  });
 });
+
+function mountButton(state: TtsPlaybackState) {
+  const container = document.createElement('div');
+  container.className = 'theme-light window bundled-fonts';
+  container.style.setProperty('--base-font-size', '14px');
+  document.body.append(container);
+
+  const controller = { state, subscribe: () => () => {}, toggle: () => {} };
+  act(() => {
+    render(h(TtsPlayButton, { controller, entryIndex: 0 }), container);
+  });
+
+  const button = container.querySelector('button')!;
+  const glyph = button.querySelector('svg')!;
+
+  return { button, glyph };
+}

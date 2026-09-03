@@ -58,6 +58,7 @@ export function TtsPlayButton(props: TtsPlayButtonProps) {
   const discInsetBlock =
     'calc((var(--tts-glyph) + 2 * var(--tts-pad-y) - 22 / 14 * var(--base-font-size)) / 2)';
   const glyphSize = 'calc((14 / 14) * var(--base-font-size))';
+  const errorBadgeSize = 'calc((10 / 14) * var(--base-font-size))';
   // vertical-align: middle centres on half the local font's x-height, not on
   // the text's own visual centre, so the disc sits low without this.
   const verticalNudge = 'calc(-0.123 * var(--base-font-size))';
@@ -77,6 +78,7 @@ export function TtsPlayButton(props: TtsPlayButtonProps) {
           '--tts-disc-inset': discInset,
           '--tts-disc-inset-y': discInsetBlock,
           '--tts-glyph': glyphSize,
+          '--tts-error-badge-size': errorBadgeSize,
           '--tts-nudge': verticalNudge,
         }}
         class={classes(
@@ -142,9 +144,11 @@ export function TtsPlayButton(props: TtsPlayButtonProps) {
             viewBox="0 0 20 20"
             class={classes(
               'tts-error-badge',
-              'tp:absolute tp:top-0 tp:right-0',
-              'tp:w-[calc((7/14)*var(--base-font-size))]',
-              'tp:h-[calc((7/14)*var(--base-font-size))]',
+              'tp:absolute',
+              'tp:top-[calc(var(--tts-pad-y)-var(--tts-error-badge-size)/2)]',
+              'tp:right-[calc(var(--tts-pad)-var(--tts-error-badge-size)/2)]',
+              'tp:w-(--tts-error-badge-size)',
+              'tp:h-(--tts-error-badge-size)',
               'tp:text-(--tts-error-badge-color)',
               shouldAnimate && 'tp:animate-[tts-badge-in_0.1s]'
             )}
