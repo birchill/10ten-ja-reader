@@ -160,7 +160,7 @@ body {
   overflow: hidden;
 }
 
-* {
+.options * {
   box-sizing: border-box;
 }
 
