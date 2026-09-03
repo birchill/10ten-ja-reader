@@ -451,6 +451,17 @@ export class ContentHandler {
           this.#puck?.setHandedness(value);
           break;
 
+        case 'playReadings':
+          // Stop before the popup rebuilds without the button that controls
+          // playback, or the audio would keep playing with no way to stop it.
+          if (!value) {
+            this.#ttsPlayback?.stop();
+          }
+          if (this.isTopMostWindow()) {
+            this.updatePopup();
+          }
+          break;
+
         case 'popupInteractive':
           if (this.isTopMostWindow()) {
             // We can't use updatePopup here since it will try to re-use the
