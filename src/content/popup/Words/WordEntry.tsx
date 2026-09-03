@@ -7,6 +7,8 @@ import { useLocale } from '../../../common/i18n';
 import { highPriorityLabels } from '../../../common/priority-labels';
 import { classes } from '../../../utils/classes';
 
+import type { TtsPlaybackHandle } from '../../tts-playback-controller';
+
 import { Star } from '../Icons/Star';
 import { usePopupOptions } from '../options-context';
 import { serializeReasonChains } from '../serialize-reasons';
@@ -14,6 +16,7 @@ import { serializeReasonChains } from '../serialize-reasons';
 import { Definitions } from './Definitions';
 import { HeadwordInfo } from './HeadwordInfo';
 import { Reading } from './Reading';
+import { TtsPlayButton } from './TtsPlayButton';
 import type { BunproDeckType } from './bunpro-url';
 import { getBunproUrl } from './bunpro-url';
 
@@ -35,6 +38,7 @@ export type WordEntryProps = {
   entry: WordResult;
   config: WordEntryConfig;
   selectState: SelectState;
+  tts?: { controller: TtsPlaybackHandle; entryIndex: number };
   onPointerUp?: (evt: PointerEvent) => void;
   onClick?: (evt: MouseEvent) => void;
 };
@@ -124,6 +128,7 @@ export function WordEntry(props: WordEntryProps) {
         // Ensure any selection colors are applied before fading in the
         // overlay
         'tp:no-overlay:data-selected:bg-(--selected-bg)',
+        'tp:no-overlay:data-selected:[--tts-highlight:var(--selected-highlight)]',
         'tp:no-overlay:data-selected:rounded-xs',
         // Run the flash animation, but not until the overlay has
         // disappeared.
@@ -131,6 +136,7 @@ export function WordEntry(props: WordEntryProps) {
         ...(interactive
           ? [
               'tp:hover:bg-(--hover-bg)',
+              'tp:hover:[--tts-highlight:var(--selected-highlight)]',
               'tp:hover:rounded-xs',
               'tp:hover:cursor-pointer',
               // Fade _out_ the color change
@@ -294,6 +300,13 @@ export function WordEntry(props: WordEntryProps) {
           >
             {`(${serializeReasonChains(entry.reasonChains, t)})`}
           </span>
+        )}
+
+        {interactive && props.tts && (
+          <TtsPlayButton
+            controller={props.tts.controller}
+            entryIndex={props.tts.entryIndex}
+          />
         )}
       </div>
 

@@ -5,7 +5,10 @@ import { useLocale } from '../../../common/i18n';
 import { getDob } from '../../../utils/age';
 import { classes } from '../../../utils/classes';
 
+import type { TtsPlaybackHandle } from '../../tts-playback-controller';
+
 import { Tag } from '../Tag';
+import { TtsPlayButton } from '../Words/TtsPlayButton';
 import { usePopupOptions } from '../options-context';
 
 type SelectState = 'unselected' | 'selected' | 'flash';
@@ -15,6 +18,7 @@ type Props = {
   selectState: SelectState;
   onPointerUp?: (evt: PointerEvent) => void;
   onClick?: () => void;
+  tts?: { controller: TtsPlaybackHandle; entryIndex: number };
 };
 
 export function NameEntry(props: Props) {
@@ -34,12 +38,14 @@ export function NameEntry(props: Props) {
         // overlay
         'tp:no-overlay:data-selected:text-(--selected-highlight)',
         'tp:no-overlay:data-selected:bg-(--selected-bg)',
+        'tp:no-overlay:data-selected:[--tts-highlight:var(--selected-highlight)]',
         // Run the flash animation, but not until the overlay has
         // disappeared.
         'tp:no-overlay:data-flash:animate-flash',
         ...(interactive
           ? [
               'tp:hover:bg-(--hover-bg)',
+              'tp:hover:[--tts-highlight:var(--selected-highlight)]',
               'tp:hover:cursor-pointer',
               // Fade _out_ the color change
               'tp:transition-colors tp:interactive:duration-100',
@@ -65,6 +71,12 @@ export function NameEntry(props: Props) {
         >
           {kana}
         </span>
+        {interactive && props.tts && (
+          <TtsPlayButton
+            controller={props.tts.controller}
+            entryIndex={props.tts.entryIndex}
+          />
+        )}
       </div>
       <div>
         {props.entry.tr.map((tr) => (

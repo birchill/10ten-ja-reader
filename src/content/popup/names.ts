@@ -5,7 +5,20 @@ import { html } from '../../utils/builder';
 
 import { NameTable } from './Names/NameTable';
 import { mountPopupComponent } from './mount';
+import { PopupOptionsProvider } from './options-context';
 import type { ShowPopupOptions } from './show-popup';
+
+type RenderNamesOptions = Pick<
+  ShowPopupOptions,
+  | 'copyState'
+  | 'fontSize'
+  | 'fxData'
+  | 'interactive'
+  | 'meta'
+  | 'onStartCopy'
+  | 'preferredUnits'
+  | 'ttsPlayback'
+>;
 
 export function renderNamesEntries({
   entries,
@@ -17,7 +30,7 @@ export function renderNamesEntries({
   entries: Array<NameResult>;
   matchLen: number;
   more: boolean;
-  options: ShowPopupOptions;
+  options: RenderNamesOptions;
   popupHost: Element;
 }): HTMLElement {
   const containerElement = html('div', { class: 'entry-data' });
@@ -25,16 +38,21 @@ export function renderNamesEntries({
   mountPopupComponent({
     popupHost,
     container: containerElement,
-    vnode: h(NameTable, {
-      entries,
-      matchLen,
-      more,
-      fxData: options.fxData,
-      preferredUnits: options.preferredUnits,
-      meta: options.meta,
-      copyState: options.copyState,
-      onStartCopy: options.onStartCopy,
-    }),
+    vnode: h(
+      PopupOptionsProvider,
+      { interactive: options.interactive, fontSize: options.fontSize },
+      h(NameTable, {
+        entries,
+        matchLen,
+        more,
+        fxData: options.fxData,
+        preferredUnits: options.preferredUnits,
+        meta: options.meta,
+        copyState: options.copyState,
+        onStartCopy: options.onStartCopy,
+        ttsPlayback: options.ttsPlayback,
+      })
+    ),
   });
 
   return containerElement;

@@ -201,10 +201,22 @@
   "content_names_tag_surname": { "message": "姓氏" },
   "content_names_tag_unclass": { "message": "人物" },
   "content_names_tag_work": { "message": "作品" },
+  "content_play_readings_error": {
+    "message": "无法播放读音",
+    "description": "Screen reader announcement made when a word entry's reading audio fails to play"
+  },
+  "content_play_readings_label": {
+    "message": "播放读音",
+    "description": "Accessible label and title for the button that plays a word entry's readings as audio"
+  },
   "content_sk_match_src": {
     "message": "来自 ' $src$ '",
     "description": "The text used to show the sK/sk (search only) text that was used to look up the entry",
     "placeholders": { "src": { "content": "$1", "example": "御久しぶり" } }
+  },
+  "content_stop_readings_label": {
+    "message": "停止读音",
+    "description": "Accessible label and title for the play-readings button while it is loading or playing audio"
   },
   "content_stroke_animation_play": {
     "message": "播放笔顺动画",

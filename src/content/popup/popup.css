@@ -86,6 +86,33 @@
   }
 }
 
+@utility scan-line {
+  mask-image: linear-gradient(
+    white 40%,
+    transparent 48%,
+    transparent 52%,
+    white 60%
+  );
+  mask-repeat: no-repeat;
+  mask-size: auto 240%;
+}
+
+@keyframes scan-up {
+  0% {
+    mask-position: 0 0%;
+  }
+
+  100% {
+    mask-position: 0 100%;
+  }
+}
+
+@keyframes tts-badge-in {
+  from {
+    opacity: 0;
+  }
+}
+
 /*
  * TODO Convert the following to more Tailwind-like utilities.
  */
