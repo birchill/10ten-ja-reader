@@ -3,8 +3,7 @@ import * as url from 'node:url';
 
 // Normalizes the CHANGELOG.md output from `changeset version` to match this
 // repo's existing changelog format: remove Changesets' change-type section
-// headings, and keep the new release block directly after the Unreleased
-// section.
+// headings, and keep the new release block before the previous release.
 //
 // The version heading is deliberately left in its plain `## <version>` form so
 // that the Changesets action can locate the new release's section when building
@@ -21,8 +20,8 @@ const CHANGESET_SECTION_HEADINGS = new Set([
 /**
  * Rewrites the raw `changeset version` changelog into this repo's flat format:
  * strips the change-type section headings, collapses the release notes into a
- * single contiguous bullet list, and positions the new release block directly
- * after the Unreleased section.
+ * single contiguous bullet list, and positions the new release block before
+ * the previous release.
  *
  * @param {{ changeLog: string; version: string }} options
  * @returns {string}
@@ -31,7 +30,7 @@ export function postprocessChangelog({ changeLog, version }) {
   const lines = changeLog
     .split(/\r\n|\r|\n/g)
     .filter((line) => !CHANGESET_SECTION_HEADINGS.has(line));
-  return `${moveReleaseBlockAfterUnreleased({ lines, version })
+  return `${moveReleaseBlockBeforePreviousRelease({ lines, version })
     .join('\n')
     .replace(/\n{3,}/g, '\n\n')
     .trimEnd()}\n`;
@@ -58,7 +57,7 @@ function main() {
   }
 }
 
-function moveReleaseBlockAfterUnreleased({ lines, version }) {
+function moveReleaseBlockBeforePreviousRelease({ lines, version }) {
   const releaseStart = lines.findIndex((line) =>
     isVersionHeading({ line, version })
   );
@@ -74,23 +73,19 @@ function moveReleaseBlockAfterUnreleased({ lines, version }) {
     ...lines.slice(0, releaseStart),
     ...lines.slice(releaseEnd),
   ];
-  const unreleasedIndex = withoutReleaseBlock.findIndex(isUnreleasedHeading);
-  if (unreleasedIndex === -1) {
+  const previousReleaseIndex = withoutReleaseBlock.findIndex(isReleaseHeading);
+  if (previousReleaseIndex === -1) {
     return lines;
   }
 
-  const nextVersionIndex = withoutReleaseBlock.findIndex(
-    (line, index) => index > unreleasedIndex && line.startsWith('## ')
-  );
-  const insertIndex =
-    nextVersionIndex === -1 ? withoutReleaseBlock.length : nextVersionIndex;
-
   return [
-    ...trimTrailingBlankLines(withoutReleaseBlock.slice(0, insertIndex)),
+    ...trimTrailingBlankLines(
+      withoutReleaseBlock.slice(0, previousReleaseIndex)
+    ),
     '',
     ...releaseBlock,
     '',
-    ...trimLeadingBlankLines(withoutReleaseBlock.slice(insertIndex)),
+    ...trimLeadingBlankLines(withoutReleaseBlock.slice(previousReleaseIndex)),
   ];
 }
 
@@ -159,8 +154,8 @@ function isVersionHeading({ line, version }) {
   return new RegExp(`^## ${escapeRegExp(version)}\\s*$`).test(line);
 }
 
-function isUnreleasedHeading(line) {
-  return /^##\s+(?:\[Unreleased\]|Unreleased)\s*$/.test(line);
+function isReleaseHeading(line) {
+  return /^##\s+\[?\d/.test(line);
 }
 
 function trimBlankLines(lines) {

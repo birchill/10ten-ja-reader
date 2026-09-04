@@ -11,12 +11,14 @@ describe('postprocessChangelog', () => {
   it('strips the change-type heading and keeps the version heading', () => {
     const changeLog = `# Changelog
 
-## [Unreleased]
-
 ## 1.28.0
 ### Minor Changes
 
 - Only note
+
+## [1.27.3] - 2026-06-08
+
+- Earlier point
 `;
 
     const result = postprocessChangelog({ changeLog, version: '1.28.0' });
@@ -27,8 +29,6 @@ describe('postprocessChangelog', () => {
 
   it('keeps notes within a section adjacent', () => {
     const changeLog = `# Changelog
-
-## [Unreleased]
 
 ## 1.28.0
 ### Minor Changes
@@ -53,8 +53,6 @@ describe('postprocessChangelog', () => {
     // would otherwise leave a blank line where the boundary used to be.
     const changeLog = `# Changelog
 
-## [Unreleased]
-
 ## 1.29.0
 ### Minor Changes
 
@@ -63,6 +61,10 @@ describe('postprocessChangelog', () => {
 ### Patch Changes
 
 - A patch note
+
+## [1.28.0] - 2026-06-08
+
+- Earlier point
 `;
 
     const result = postprocessChangelog({ changeLog, version: '1.29.0' });
@@ -75,14 +77,16 @@ describe('postprocessChangelog', () => {
   it('preserves indented continuation lines of multi-line notes', () => {
     const changeLog = `# Changelog
 
-## [Unreleased]
-
 ## 1.29.0
 ### Minor Changes
 
 - Added support for X
   ([#123](https://example/123)).
 - Second note
+
+## [1.28.0] - 2026-06-08
+
+- Earlier point
 `;
 
     const result = postprocessChangelog({ changeLog, version: '1.29.0' });
@@ -97,8 +101,6 @@ describe('postprocessChangelog', () => {
     // notes out with blank lines, the flat format must still hold.
     const changeLog = `# Changelog
 
-## [Unreleased]
-
 ## 1.28.0
 ### Minor Changes
 
@@ -108,6 +110,10 @@ describe('postprocessChangelog', () => {
 
 
 - Second note
+
+## [1.27.3] - 2026-06-08
+
+- Earlier point
 `;
 
     const result = postprocessChangelog({ changeLog, version: '1.28.0' });
@@ -116,11 +122,9 @@ describe('postprocessChangelog', () => {
     expect(result).not.toMatch(/- First note\n\n- Second note/);
   });
 
-  it('moves the release block to directly after the Unreleased section', () => {
+  it('moves the release block before the previous release', () => {
     // `changeset version` appends the new block; it must end up above older ones.
     const changeLog = `# Changelog
-
-## [Unreleased]
 
 ## [1.27.2] - 2026-05-08
 
@@ -134,27 +138,27 @@ describe('postprocessChangelog', () => {
 
     const result = postprocessChangelog({ changeLog, version: '1.28.0' });
 
-    const unreleasedIndex = result.indexOf('## [Unreleased]');
     const newReleaseIndex = result.indexOf('## 1.28.0');
     const olderIndex = result.indexOf('## [1.27.2]');
-    expect(unreleasedIndex).toBeLessThan(newReleaseIndex);
     expect(newReleaseIndex).toBeLessThan(olderIndex);
   });
 
   it('ends with a single trailing newline', () => {
     const changeLog = `# Changelog
 
-## [Unreleased]
-
 ## 1.28.0
 ### Minor Changes
 
 - Note
+
+## [1.27.3] - 2026-06-08
+
+- Earlier point
 `;
 
     const result = postprocessChangelog({ changeLog, version: '1.28.0' });
 
-    expect(result.endsWith('- Note\n')).toBe(true);
+    expect(result.endsWith('\n')).toBe(true);
     expect(result.endsWith('\n\n')).toBe(false);
   });
 });
