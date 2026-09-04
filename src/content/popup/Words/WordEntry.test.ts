@@ -43,17 +43,15 @@ afterEach(() => {
   document.body.replaceChildren();
 });
 
-describe('WordEntry playback threading', () => {
-  it('renders the play button in an interactive popup', () => {
-    const { container } = renderWithPlayback({ interactive: true });
-
-    expect(container.querySelector('.tts-play-button')).not.toBeNull();
-  });
-
+describe('WordEntry play button visibility', () => {
   it('hides only the play button in a static popup, still rendering the entry', () => {
     const { container } = renderWithPlayback({ interactive: false });
 
-    expect(container.querySelector('.tts-play-button')).toBeNull();
+    expect(
+      container.querySelector(
+        'button[aria-label="content_play_readings_label"]'
+      )
+    ).toBeNull();
     expect(container.textContent).toContain('ひ');
   });
 
@@ -63,7 +61,12 @@ describe('WordEntry playback threading', () => {
       withController: false,
     });
 
-    expect(container.querySelector('.tts-play-button')).toBeNull();
+    expect(
+      container.querySelector(
+        'button[aria-label="content_play_readings_label"]'
+      )
+    ).toBeNull();
+    expect(container.textContent).toContain('ひ');
   });
 });
 

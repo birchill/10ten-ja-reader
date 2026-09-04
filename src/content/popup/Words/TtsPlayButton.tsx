@@ -36,31 +36,28 @@ export function TtsPlayButton(props: TtsPlayButtonProps) {
     isActive ? 'content_stop_readings_label' : 'content_play_readings_label'
   );
 
-  // Do not use --cell-highlight-bg for this color. On the yellow and black
-  // themes, --cell-highlight-bg sits close to --hover-bg. A disc in that
-  // color would not show on a hovered row.
+  // Do not use --cell-highlight-bg; on yellow and black themes it blends
+  // into a hovered row.
   const discBackground =
     'color-mix(in srgb, var(--text-color) 12%, transparent)';
 
   const hitAreaPadding = 'calc((13 / 14) * var(--base-font-size))';
-  // Keep the block padding well under the inline one: the hit box is not
-  // clipped to the row, so matching the 13px would reach past the
-  // half-leading and swallow clicks meant for the first definition line.
+  // Keep vertical padding smaller so the hit area does not overlap the first
+  // definition.
   const hitAreaPaddingBlock =
     'max(calc((6 / 14) * var(--base-font-size)), calc((24px - var(--base-font-size)) / 2))';
-  // `tp:space-x-4` puts its 14px on the *preceding* sibling's inline-end, not
-  // on this element, so that gap and the uncancelled 13px padding both stack in
-  // front of the glyph. `tp:-ms` negates this, leaving 13 + 14 - 15 == 12px.
+  // The 14px row gap and 13px padding add 27px before the icon. Pull back
+  // 15px to leave 12px.
   const marginInlineStart = 'calc((15 / 14) * var(--base-font-size))';
   const discInset = 'calc((9 / 14) * var(--base-font-size))';
-  // The disc has to stay round while the block padding is smaller than the
-  // inline one, so its inset cannot be shared between the two axes.
+  // Use a separate vertical inset so asymmetric button padding still produces
+  // a round disc.
   const discInsetBlock =
     'calc((var(--tts-glyph) + 2 * var(--tts-pad-y) - 22 / 14 * var(--base-font-size)) / 2)';
   const glyphSize = 'calc((14 / 14) * var(--base-font-size))';
   const errorBadgeSize = 'calc((10 / 14) * var(--base-font-size))';
-  // vertical-align: middle centres on half the local font's x-height, not on
-  // the text's own visual centre, so the disc sits low without this.
+  // Without this optical adjustment, vertical-align: middle makes the disc
+  // look too low.
   const verticalNudge = 'calc(-0.123 * var(--base-font-size))';
 
   return (
@@ -114,9 +111,8 @@ export function TtsPlayButton(props: TtsPlayButtonProps) {
           class={classes(
             'tp:relative tp:w-(--tts-glyph) tp:h-(--tts-glyph)',
             'tp:group-active/tts:scale-[0.92]',
-            // The pointer sits on the button right after the click that
-            // started loading, so the hover opacity has to stand down or the
-            // dim below is the one thing the user never sees.
+            // Do not apply hover opacity while loading; the pointer remains over
+            // the button and would hide the dimmed state.
             dimForLoading
               ? 'tp:opacity-30'
               : 'tp:opacity-60 tp:group-hover/tts:opacity-100',

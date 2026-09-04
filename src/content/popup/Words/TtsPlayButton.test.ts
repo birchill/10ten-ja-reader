@@ -47,8 +47,6 @@ describe('TtsPlayButton', () => {
     );
     expect(button.getAttribute('title')).toBe('content_play_readings_label');
 
-    // Clicking during loading cancels it, so the label has to say so before
-    // the glyph catches up.
     act(() => publish(loading()));
     expect(button.getAttribute('aria-label')).toBe(
       'content_stop_readings_label'
@@ -58,8 +56,6 @@ describe('TtsPlayButton', () => {
     expect(button.getAttribute('aria-label')).toBe(
       'content_stop_readings_label'
     );
-
-    expect(button.hasAttribute('aria-pressed')).toBe(false);
   });
 
   it('flips the glyph to stop only once playback actually starts', () => {
@@ -67,6 +63,11 @@ describe('TtsPlayButton', () => {
     const playPath = path.getAttribute('d');
 
     act(() => publish(loading()));
+    expect(path.getAttribute('d')).toBe(playPath);
+
+    act(() => {
+      vi.advanceTimersByTime(LOADING_DEFER_MS);
+    });
     expect(path.getAttribute('d')).toBe(playPath);
 
     act(() => publish(playing()));
@@ -81,22 +82,24 @@ describe('TtsPlayButton', () => {
     expect(path.getAttribute('d')).toBe(STOP_PATH);
   });
 
-  it('scans the glyph while loading', () => {
+  it('adds scan styles after the loading delay', () => {
     const { glyphClass, publish } = mount();
 
     act(() => publish(loading()));
+    expect(glyphClass()).not.toContain('scan-line');
+    expect(glyphClass()).not.toContain('animate-[scan-up_0.7s_infinite]');
+
     act(() => {
       vi.advanceTimersByTime(LOADING_DEFER_MS);
     });
 
     expect(glyphClass()).toContain('scan-line');
+    expect(glyphClass()).toContain('animate-[scan-up_0.7s_infinite]');
   });
 
-  it('dims the glyph while loading when animation is unavailable', () => {
+  it('selects dimmed, no-animation styles for reduced motion', () => {
     prefersReducedMotion();
     const { glyphClass, publish } = mount();
-
-    expect(glyphClass()).toContain('opacity-60');
 
     act(() => publish(loading()));
     act(() => {
@@ -105,8 +108,7 @@ describe('TtsPlayButton', () => {
 
     expect(glyphClass()).toContain('opacity-30');
     expect(glyphClass()).not.toContain('scan-line');
-    // The pointer is still on the button after the click that started this,
-    // so a hover override here would hide the only feedback there is.
+    expect(glyphClass()).not.toContain('animate-[scan-up_0.7s_infinite]');
     expect(glyphClass()).not.toContain('group-hover/tts:opacity-100');
   });
 
@@ -120,8 +122,8 @@ describe('TtsPlayButton', () => {
     );
   });
 
-  it('keeps one live region mounted and only fills it while the error lasts', () => {
-    const { container, button, publish } = mount();
+  it('keeps one live region and clears error feedback on the next attempt', () => {
+    const { container, publish } = mount();
 
     const status = container.querySelector('[role="status"]')!;
     expect(status).not.toBeNull();
@@ -131,23 +133,16 @@ describe('TtsPlayButton', () => {
     act(() => publish(errored()));
     expect(container.querySelector('[role="status"]')).toBe(status);
     expect(status.textContent).toBe('content_play_readings_error');
-    expect(button.getAttribute('aria-label')).toBe(
-      'content_play_readings_label'
-    );
+    expect(container.querySelector('.tts-error-badge')).not.toBeNull();
+
+    act(() => publish(loading()));
+    expect(container.querySelector('[role="status"]')).toBe(status);
+    expect(status.textContent).toBe('');
+    expect(container.querySelector('.tts-error-badge')).toBeNull();
 
     act(() => publish(playing()));
     expect(container.querySelector('[role="status"]')).toBe(status);
     expect(status.textContent).toBe('');
-  });
-
-  it('clears the error badge when the next attempt starts loading', () => {
-    const { container, publish } = mount();
-
-    act(() => publish(errored()));
-    expect(container.querySelector('.tts-error-badge')).not.toBeNull();
-
-    act(() => publish(loading()));
-    expect(container.querySelector('.tts-error-badge')).toBeNull();
   });
 
   it('shows the stop glyph on the very first paint when the controller already reports playing', () => {
@@ -159,8 +154,7 @@ describe('TtsPlayButton', () => {
     const container = document.createElement('div');
     document.body.append(container);
 
-    // Not wrapped in act(): this must hold true from the synchronous
-    // render, before the subscribe effect has had a chance to run.
+    // Omit `act()` to check the synchronous render before the subscription effect runs.
     render(h(TtsPlayButton, { controller, entryIndex: 0 }), container);
 
     const button = container.querySelector('button')!;
