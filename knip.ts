@@ -5,9 +5,8 @@ const config: KnipConfig = {
     // A utility we used to generate all the icon variations once that might yet
     // be useful again some day.
     'scripts/generate-icons.ts',
-    // This file is conditionally included in some configurations in a way knip
-    // can't be expected to follow. Hopefully we'll eventually remove this
-    // quirk and use the same tab manager everywhere.
+    // No current build uses activeTab mode, but keep this manager as a starting
+    // point for a possible opt-in, least-privilege permission mode.
     'src/background/active-tab-manager.ts',
     // Included by popups.html until we set up a better way of doing component
     // tests.
