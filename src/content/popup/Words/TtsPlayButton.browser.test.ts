@@ -19,7 +19,7 @@ afterEach(() => {
 });
 
 describe('TtsPlayButton browser rendering', () => {
-  it('keeps its glyph size when Cosmos loads the options styles', () => {
+  it('keeps its glyph size when options and popup styles load together', () => {
     const { button, glyph } = mountButton({ kind: 'idle' });
 
     expect(getComputedStyle(button).boxSizing).toBe('content-box');
@@ -38,7 +38,7 @@ describe('TtsPlayButton browser rendering', () => {
     expect(getComputedStyle(child).boxSizing).toBe('border-box');
   });
 
-  it('attaches a legible error badge to the glyph corner', () => {
+  it("renders a 10px error badge at the glyph's top-right corner", () => {
     const { button, glyph } = mountButton({
       kind: 'error',
       activeEntryIndex: 0,

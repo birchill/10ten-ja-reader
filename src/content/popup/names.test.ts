@@ -40,7 +40,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-it('renders a play button when direct names render in an interactive popup', () => {
+it('renders a play button in a standalone name popup', () => {
   const popupHost = document.createElement('div');
   const controller: TtsPlaybackHandle = {
     state: { kind: 'idle' },
@@ -64,13 +64,15 @@ it('renders a play button when direct names render in an interactive popup', () 
       popupHost,
     });
 
-    expect(names.querySelector('.tts-play-button')).not.toBeNull();
+    expect(
+      names.querySelector('button[aria-label="content_play_readings_label"]')
+    ).not.toBeNull();
   } finally {
     unmountPopupComponents(popupHost);
   }
 });
 
-it('hides playback controls when direct names render in a static popup', () => {
+it('hides playback controls in a static standalone name popup', () => {
   const popupHost = document.createElement('div');
   const controller: TtsPlaybackHandle = {
     state: { kind: 'idle' },
@@ -95,7 +97,9 @@ it('hides playback controls when direct names render in a static popup', () => {
     });
 
     expect(names.textContent).toContain('さとう');
-    expect(names.querySelector('.tts-play-button')).toBeNull();
+    expect(
+      names.querySelector('button[aria-label="content_play_readings_label"]')
+    ).toBeNull();
   } finally {
     unmountPopupComponents(popupHost);
   }

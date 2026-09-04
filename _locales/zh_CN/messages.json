@@ -203,11 +203,11 @@
   "content_names_tag_work": { "message": "作品" },
   "content_play_readings_error": {
     "message": "无法播放读音",
-    "description": "Screen reader announcement made when a word entry's reading audio fails to play"
+    "description": "Screen reader announcement when an entry's reading audio fails to play"
   },
   "content_play_readings_label": {
     "message": "播放读音",
-    "description": "Accessible label and title for the button that plays a word entry's readings as audio"
+    "description": "Button label and title for playing an entry's readings"
   },
   "content_sk_match_src": {
     "message": "来自 ' $src$ '",
@@ -216,7 +216,7 @@
   },
   "content_stop_readings_label": {
     "message": "停止读音",
-    "description": "Accessible label and title for the play-readings button while it is loading or playing audio"
+    "description": "Button label and title for stopping reading audio while it loads or plays"
   },
   "content_stroke_animation_play": {
     "message": "播放笔顺动画",

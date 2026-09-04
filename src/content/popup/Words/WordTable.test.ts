@@ -44,7 +44,7 @@ afterEach(() => {
 });
 
 describe('WordTable row click vs. the play button', () => {
-  it('tapping the play button does not start copy mode, but the rest of the row still does', () => {
+  it('clicking the play button does not start copy mode, but the rest of the row still does', () => {
     const onStartCopy =
       vi.fn<(index: number, trigger: 'touch' | 'mouse') => void>();
     const toggles: Array<number> = [];
@@ -75,11 +75,20 @@ describe('WordTable row click vs. the play button', () => {
       );
     });
 
-    const button = container.querySelector('.tts-play-button') as HTMLElement;
+    const button = container.querySelector<HTMLButtonElement>(
+      'button[aria-label="content_play_readings_label"]'
+    );
     expect(button).not.toBeNull();
 
     act(() => {
-      button.dispatchEvent(
+      button!.dispatchEvent(
+        new PointerEvent('pointerup', {
+          bubbles: true,
+          cancelable: true,
+          pointerType: 'mouse',
+        })
+      );
+      button!.dispatchEvent(
         new MouseEvent('click', { bubbles: true, cancelable: true })
       );
     });
@@ -90,14 +99,21 @@ describe('WordTable row click vs. the play button', () => {
     const kanaText = container.querySelector('[lang="ja"]') as HTMLElement;
     act(() => {
       kanaText.dispatchEvent(
+        new PointerEvent('pointerup', {
+          bubbles: true,
+          cancelable: true,
+          pointerType: 'mouse',
+        })
+      );
+      kanaText.dispatchEvent(
         new MouseEvent('click', { bubbles: true, cancelable: true })
       );
     });
 
-    expect(onStartCopy).toHaveBeenCalledTimes(1);
+    expect(onStartCopy).toHaveBeenCalledWith(0, 'mouse');
   });
 
-  it('uses stable controller indices when the name preview is rendered first', () => {
+  it('clicking the name preview then the word uses word-first playback indices', () => {
     const onStartCopy =
       vi.fn<(index: number, trigger: 'touch' | 'mouse') => void>();
     const toggles: Array<number> = [];
@@ -129,12 +145,19 @@ describe('WordTable row click vs. the play button', () => {
     });
 
     const buttons = Array.from(
-      container.querySelectorAll('.tts-play-button')
-    ) as Array<HTMLButtonElement>;
-    expect(buttons).toHaveLength(2);
+      container.querySelectorAll<HTMLButtonElement>(
+        'button[aria-label="content_play_readings_label"]'
+      )
+    );
+    const nameButton = buttons.find((button) =>
+      button.parentElement?.textContent?.includes('さとう')
+    )!;
+    const wordButton = buttons.find((button) =>
+      button.parentElement?.textContent?.includes('ひ')
+    )!;
 
-    act(() => buttons[0]!.click());
-    act(() => buttons[1]!.click());
+    act(() => nameButton.click());
+    act(() => wordButton.click());
 
     expect(toggles).toEqual([1, 0]);
     expect(onStartCopy).not.toHaveBeenCalled();

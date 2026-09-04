@@ -43,7 +43,7 @@ afterEach(() => {
 });
 
 describe('NameTable row click vs. the play button', () => {
-  it('plays the selected name without starting copy mode, while the row still copies', () => {
+  it('plays the clicked name without starting copy mode, while the row still copies', () => {
     const onStartCopy =
       vi.fn<(index: number, trigger: 'touch' | 'mouse') => void>();
     const toggles: Array<number> = [];
@@ -61,7 +61,10 @@ describe('NameTable row click vs. the play button', () => {
     act(() => {
       render(
         h(NameTable, {
-          entries: [createName(1), createName(2)],
+          entries: [
+            createName(1, '佐藤', 'さとう', 'Sato'),
+            createName(2, '田中', 'たなか', 'Tanaka'),
+          ],
           matchLen: 2,
           more: false,
           fxData: undefined,
@@ -74,32 +77,53 @@ describe('NameTable row click vs. the play button', () => {
       );
     });
 
-    const buttons = Array.from(
-      container.querySelectorAll('.tts-play-button')
-    ) as Array<HTMLButtonElement>;
+    const buttons = container.querySelectorAll<HTMLButtonElement>(
+      'button[aria-label="content_play_readings_label"]'
+    );
     expect(buttons).toHaveLength(2);
 
-    act(() => buttons[1]!.click());
+    const japaneseRows = Array.from(container.querySelectorAll('[lang="ja"]'));
+    const secondName = japaneseRows.find((row) =>
+      row.textContent?.includes('たなか')
+    )!;
+    const secondButton = secondName.querySelector<HTMLButtonElement>(
+      'button[aria-label="content_play_readings_label"]'
+    )!;
+    act(() => secondButton.click());
     expect(toggles).toEqual([1]);
     expect(onStartCopy).not.toHaveBeenCalled();
 
-    const rows = container.querySelectorAll('[lang="ja"]');
+    const firstName = japaneseRows.find((row) =>
+      row.textContent?.includes('さとう')
+    )!;
     act(() => {
-      rows[0]!.dispatchEvent(
+      firstName.dispatchEvent(
+        new PointerEvent('pointerup', {
+          bubbles: true,
+          cancelable: true,
+          pointerType: 'mouse',
+        })
+      );
+      firstName.dispatchEvent(
         new MouseEvent('click', { bubbles: true, cancelable: true })
       );
     });
 
-    expect(onStartCopy).toHaveBeenCalledWith(0, 'touch');
+    expect(onStartCopy).toHaveBeenCalledWith(0, 'mouse');
   });
 });
 
-function createName(id: number): NameResult {
+function createName(
+  id: number,
+  kanji: string,
+  reading: string,
+  translation: string
+): NameResult {
   return {
     id,
-    k: ['佐藤'],
-    r: ['さとう'],
-    tr: [{ det: ['Sato'], type: ['surname'] }],
+    k: [kanji],
+    r: [reading],
+    tr: [{ det: [translation], type: ['surname'] }],
     matchLen: 2,
   };
 }
