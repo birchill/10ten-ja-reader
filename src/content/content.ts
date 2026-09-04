@@ -1690,7 +1690,7 @@ export class ContentHandler {
       return;
     }
 
-    this.#ttsPlayback?.toggleTopEntry();
+    this.#ttsPlaybackController?.toggleTopEntry();
   }
 
   enterCopyMode({
@@ -2402,7 +2402,7 @@ export class ContentHandler {
         }),
       },
       contentType: this.#currentTargetProps?.contentType || 'text',
-      hasPlayableReadings: !!this.#ttsPlayback?.hasEntries,
+      hasPlayableReadings: !!this.#ttsPlaybackController?.hasEntries,
       display: this.getNextDisplay(displayMode),
     };
 
