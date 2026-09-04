@@ -452,12 +452,10 @@ export class ContentHandler {
           break;
 
         case 'playReadings':
-          // Stop before the popup rebuilds without the button that controls
-          // playback, or the audio would keep playing with no way to stop it.
-          if (!value) {
-            this.#ttsPlaybackController?.stop();
-          }
           if (this.isTopMostWindow()) {
+            if (!value) {
+              this.#ttsPlaybackController?.stop();
+            }
             this.updatePopup();
           }
           break;
