@@ -26,6 +26,7 @@ export type TtsPlaybackState =
 
 type TtsPlaybackListener = (state: TtsPlaybackState) => void;
 
+// The part of the controller we hand to the popup.
 export type TtsPlaybackHandle = Pick<
   TtsPlaybackController,
   'subscribe' | 'toggle' | 'state'
@@ -82,8 +83,9 @@ export class TtsPlaybackController {
   };
 
   #drainWhenIdle() {
-    // The drain that already runs picks this change up and publishes only at
-    // quiescence.
+    // We are inside #drain: an action or a listener called back in. Its loop
+    // reads #actions and the player again each pass, so it sees this change.
+    // A nested drain would publish mid-action and clear #activeEntry.
     if (this.#draining) {
       return;
     }
@@ -132,8 +134,8 @@ export class TtsPlaybackController {
       action();
     } catch (error) {
       console.error('[10ten-ja-reader] Reading playback action failed', error);
-      // Leave nothing half-started: the queue behind us still has to drain,
-      // and a session we cannot finish must not keep the UI showing Stop.
+      // Do not rethrow: the rest of #actions must still run. Stop the player
+      // too, or a half-started entry leaves its button showing Stop.
       this.#applyStop();
     }
   }
@@ -206,7 +208,7 @@ export class TtsPlaybackController {
     try {
       // Must run while the click is on the stack: `playClip` rejects without
       // it, and WebKit ignores a resume() once the gesture is over. Play
-      // anyway on failure so it surfaces as an error badge, not a dead button.
+      // anyway on failure so the user sees an error badge, not a dead button.
       preparePlayback();
     } catch (error) {
       console.warn(
@@ -228,8 +230,8 @@ export class TtsPlaybackController {
   }
 
   #isRunningEntry(entryIndex: number): boolean {
-    // Test the player, not the published state: while actions drain, the
-    // published state can be older than the session the player holds.
+    // Read the player, not #state. #drain updates #state only once #actions is
+    // empty, so during a drain #state can lag behind the player.
     const { kind } = this.#player.state;
     return (
       this.#activeEntry?.index === entryIndex &&
@@ -274,8 +276,8 @@ function sameState(a: TtsPlaybackState, b: TtsPlaybackState): boolean {
 }
 
 function entryKey(entry: TtsEntry): string {
-  // Do not key playback on this instead of the row position. Two rows can
-  // carry the same id (several deinflection paths reaching one entry) and the
-  // same audio, so only the position tells them apart.
+  // This key is not unique, so #activeEntry must keep the row index too. Two
+  // rows can have the same id (one entry reached by several deinflection
+  // paths) and the same audio. Only the row index tells them apart.
   return `${entry.id}\n${entry.requests.map(buildTtsFilename).join('\n')}`;
 }
