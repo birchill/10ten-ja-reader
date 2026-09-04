@@ -48,7 +48,7 @@
 import Bugsnag from '@birchill/bugsnag-zero';
 import { AbortError, allDataSeries } from '@birchill/jpdict-idb';
 import * as s from 'superstruct';
-import type { Runtime, Tabs } from 'webextension-polyfill';
+import type { Runtime } from 'webextension-polyfill';
 import browser from 'webextension-polyfill';
 
 import '../../manifest.json.src';
@@ -68,7 +68,6 @@ import { setDefaultToolbarIcon, updateBrowserAction } from './browser-action';
 import { calculateEraDateTimeSpan } from './calculate-date';
 import { registerMenuListeners, updateContextMenus } from './context-menus';
 import { FxFetcher } from './fx-fetcher';
-import { isCurrentTabEnabled } from './is-current-tab-enabled';
 import type { JpdictStateWithFallback } from './jpdict';
 import {
   cancelUpdateDb,
@@ -96,50 +95,39 @@ startBugsnag();
 const tabManager = new TabManager();
 const fxFetcher = new FxFetcher();
 
-tabManager.addListener(
-  async ({
-    enabled,
-    tabId,
-    anyEnabled,
-  }: {
-    enabled: boolean;
-    tabId?: number | undefined;
-    anyEnabled: boolean;
-  }) => {
-    try {
-      await config.ready;
-    } catch (e) {
-      void Bugsnag.notify(e || '(No error)');
-      return;
-    }
-
-    // Update browser action with enabled state
-    updateBrowserAction({
-      enabled,
-      jpdictState,
-      tabId,
-      toolbarIcon: config.toolbarIcon,
-    });
-
-    // Update context menus
-    await updateContextMenus({
-      tabEnabled: enabled,
-      toggleMenuEnabled: config.contextMenuEnable,
-      showPuck: config.computedShowPuck === 'show',
-    });
-
-    // If we have enabled a tab, make sure we update our FX data.
-    //
-    // We don't do this unless a tab is enabled because some users may have the
-    // add-on installed but never enabled and we shouldn't download FX data each
-    // day in that case.
-    if (anyEnabled) {
-      await fxFetcher.scheduleNextUpdate();
-    } else {
-      await fxFetcher.cancelScheduledUpdate();
-    }
+tabManager.addListener(async (enabled: boolean) => {
+  try {
+    await config.ready;
+  } catch (e) {
+    void Bugsnag.notify(e || '(No error)');
+    return;
   }
-);
+
+  // Update browser action with enabled state
+  updateBrowserAction({
+    enabled,
+    jpdictState,
+    toolbarIcon: config.toolbarIcon,
+  });
+
+  // Update context menus
+  await updateContextMenus({
+    tabEnabled: enabled,
+    toggleMenuEnabled: config.contextMenuEnable,
+    showPuck: config.computedShowPuck === 'show',
+  });
+
+  // If the extension is enabled, make sure we update our FX data.
+  //
+  // We don't do this unless the extension is enabled because some users may
+  // have it installed but never enabled, and we shouldn't download FX data
+  // each day in that case.
+  if (enabled) {
+    await fxFetcher.scheduleNextUpdate();
+  } else {
+    await fxFetcher.cancelScheduledUpdate();
+  }
+});
 
 //
 // Setup config
@@ -151,28 +139,11 @@ config.addChangeListener(async (changes) => {
   // Update toolbar icon as needed
   if (changes.hasOwnProperty('toolbarIcon')) {
     const toolbarIcon = changes.toolbarIcon.newValue as 'default' | 'sky';
-
-    // Update all the different windows separately since they may have differing
-    // enabled states.
-    const enabledStates = await tabManager.getEnabledState();
-
-    // If we are targetting individual tabs, however, first update the default
-    // icon for all tabs.
-    if (
-      !enabledStates.length ||
-      typeof enabledStates[0].tabId !== 'undefined'
-    ) {
-      setDefaultToolbarIcon(config.toolbarIcon);
-    }
-
-    for (const tabState of enabledStates) {
-      updateBrowserAction({
-        enabled: tabState.enabled,
-        jpdictState,
-        tabId: tabState.tabId,
-        toolbarIcon,
-      });
-    }
+    updateBrowserAction({
+      enabled: tabManager.isEnabled(),
+      jpdictState,
+      toolbarIcon,
+    });
   }
 
   // Update context menus as needed
@@ -191,9 +162,8 @@ config.addChangeListener(async (changes) => {
     typeof showPuck !== 'undefined'
   ) {
     try {
-      const tabEnabled = await isCurrentTabEnabled(tabManager);
       await updateContextMenus({
-        tabEnabled,
+        tabEnabled: tabManager.isEnabled(),
         toggleMenuEnabled:
           typeof toggleMenuEnabled === 'undefined'
             ? config.contextMenuEnable
@@ -230,10 +200,8 @@ void config.ready.then(async () => {
   // a number of other things.
   await tabManager.init(config.contentConfig);
 
-  const tabEnabled = await isCurrentTabEnabled(tabManager);
-
   await updateContextMenus({
-    tabEnabled,
+    tabEnabled: tabManager.isEnabled(),
     toggleMenuEnabled: config.contextMenuEnable,
     showPuck: config.computedShowPuck === 'show',
   });
@@ -281,17 +249,11 @@ async function onDbStatusUpdated(state: JpdictStateWithFallback) {
 
   jpdictState = state;
 
-  // Update all the different windows separately since they may have differing
-  // enabled states.
-  const enabledStates = await tabManager.getEnabledState();
-  for (const tabState of enabledStates) {
-    updateBrowserAction({
-      enabled: tabState.enabled,
-      jpdictState: state,
-      tabId: tabState.tabId,
-      toolbarIcon: config.toolbarIcon,
-    });
-  }
+  updateBrowserAction({
+    enabled: tabManager.isEnabled(),
+    jpdictState: state,
+    toolbarIcon: config.toolbarIcon,
+  });
 
   notifyDbListeners();
 
@@ -450,9 +412,9 @@ async function searchOther({
 // Browser event handlers
 //
 
-async function toggle(tab?: Tabs.Tab) {
+async function toggle() {
   await config.ready;
-  await tabManager.toggleTab(tab, config.contentConfig);
+  await tabManager.toggle(config.contentConfig);
 }
 
 if (__MV3__) {

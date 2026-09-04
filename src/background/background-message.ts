@@ -21,7 +21,6 @@ export const BackgroundMessageSchema = discriminator('type', {
   enable: s.type({
     // We don't validate the contents of the config object yet
     config: s.type({}),
-    id: s.optional(s.number()),
     frame: s.literal('*'),
   }),
   dbUpdated: s.type({ frame: s.literal('*') }),
