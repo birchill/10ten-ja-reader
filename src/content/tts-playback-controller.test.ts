@@ -1,6 +1,3 @@
-import { h } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
-import { act } from 'preact/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type {
@@ -9,15 +6,10 @@ import type {
   TtsClipRequest,
 } from '../common/tts/tts-request';
 
-import { mountPopupComponent, unmountPopupComponents } from './popup/mount';
 import type { TtsEntry, TtsPlaybackState } from './tts-playback-controller';
 import { TtsPlaybackController } from './tts-playback-controller';
 import { preparePlayback } from './tts/audio-clip-player';
 import type { FetchClip, PlayClip, StartInfo } from './tts/tts-player';
-
-/**
- * @vitest-environment jsdom
- */
 
 vi.mock('./tts/audio-clip-player', () => ({
   preparePlayback: vi.fn<() => void>(),
@@ -31,21 +23,17 @@ beforeEach(() => {
 afterEach(() => {
   vi.useRealTimers();
   vi.restoreAllMocks();
-  document.body.replaceChildren();
 });
 
 describe('TtsPlaybackController', () => {
   it('fetches and marks only the entry it is playing', async () => {
-    const { controller, fetches, buttons, statuses } = await setUp([
-      entryA,
-      entryB,
-    ]);
+    const { controller, fetches, statuses } = setUp([entryA, entryB]);
 
     await flush();
 
     expect(fetches).toEqual([]);
 
-    await press(buttons[1]);
+    controller.toggle(1);
 
     expect(statuses()).toEqual(['idle', 'loading']);
 
@@ -61,25 +49,25 @@ describe('TtsPlaybackController', () => {
   });
 
   it('stops the playing entry when another entry starts', async () => {
-    const { buttons, statuses, playbacks } = await setUp([entryA, entryB]);
+    const { controller, statuses, playbacks } = setUp([entryA, entryB]);
 
-    await press(buttons[0]);
+    controller.toggle(0);
     await flush();
-    await press(buttons[1]);
+    controller.toggle(1);
     await flush();
 
     expect(playbacks[0].signal.aborted).toBe(true);
     expect(statuses()).toEqual(['idle', 'playing']);
   });
 
-  it('starts the pressed entry while another entry is still loading', async () => {
-    const { controller, buttons, fetches, playbacks, statuses } = await setUp(
+  it('starts the newly toggled entry while another entry is still loading', async () => {
+    const { controller, fetches, playbacks, statuses } = setUp(
       [entryA, entryB],
       { deferFetch: true }
     );
 
-    await press(buttons[0]);
-    await press(buttons[1]);
+    controller.toggle(0);
+    controller.toggle(1);
 
     expect(fetches[0].signal.aborted).toBe(true);
     expect(fetches[1].request).toEqual(entryB.requests[0]);
@@ -96,47 +84,43 @@ describe('TtsPlaybackController', () => {
     });
   });
 
-  it('stops the playing entry when its own button is pressed again', async () => {
-    const { controller, buttons, statuses, playbacks } = await setUp([
-      entryA,
-      entryB,
-    ]);
+  it('stops the playing entry when it is toggled again', async () => {
+    const { controller, statuses, playbacks } = setUp([entryA, entryB]);
 
-    await press(buttons[0]);
+    controller.toggle(0);
     await flush();
-    await press(buttons[0]);
+    controller.toggle(0);
 
     expect(playbacks[0].signal.aborted).toBe(true);
     expect(statuses()).toEqual(['idle', 'idle']);
     expect(controller.state).toEqual({ kind: 'idle' });
   });
 
-  it('stops a loading entry when its own button is pressed again', async () => {
-    const { controller, buttons, fetches, playbacks } = await setUp(
-      [entryA, entryB],
-      { deferFetch: true }
-    );
+  it('stops a loading entry when it is toggled again', () => {
+    const { controller, fetches, playbacks } = setUp([entryA, entryB], {
+      deferFetch: true,
+    });
 
-    await press(buttons[0]);
-    await press(buttons[0]);
+    controller.toggle(0);
+    controller.toggle(0);
 
     expect(fetches[0].signal.aborted).toBe(true);
     expect(playbacks).toEqual([]);
     expect(controller.state).toEqual({ kind: 'idle' });
   });
 
-  it('plays the entry again when it is pressed while the error shows', async () => {
+  it('plays the entry again when it is toggled while the error shows', async () => {
     let attempts = 0;
-    const { buttons, fetches, statuses } = await setUp([entryA, entryB], {
+    const { controller, fetches, statuses } = setUp([entryA, entryB], {
       failFor: () => ++attempts === 1,
     });
 
-    await press(buttons[1]);
+    controller.toggle(1);
     await flush();
 
     expect(statuses()).toEqual(['idle', 'error']);
 
-    await press(buttons[1]);
+    controller.toggle(1);
     await flush();
 
     expect(fetches).toHaveLength(2);
@@ -144,7 +128,7 @@ describe('TtsPlaybackController', () => {
   });
 
   it('reports that audio has started once the first reading plays', async () => {
-    const { controller, buttons, playbacks } = await setUp([
+    const { controller, playbacks } = setUp([
       { id: 4, requests: twoReadings },
       entryB,
     ]);
@@ -155,7 +139,7 @@ describe('TtsPlaybackController', () => {
       }
     });
 
-    await press(buttons[0]);
+    controller.toggle(0);
     await flush();
 
     expect(loadingStates).toEqual([false]);
@@ -167,49 +151,42 @@ describe('TtsPlaybackController', () => {
   });
 
   it('still attempts playback when preparing the audio context throws', async () => {
-    const { buttons, statuses } = await setUp([entryA, entryB]);
+    const { controller, statuses } = setUp([entryA, entryB]);
     const warnings = vi.spyOn(console, 'warn').mockImplementation(() => {});
     vi.mocked(preparePlayback).mockImplementationOnce(() => {
       throw new Error('no audio context');
     });
 
-    await press(buttons[0]);
+    controller.toggle(0);
     await flush();
 
     expect(warnings).toHaveBeenCalled();
     expect(statuses()).toEqual(['playing', 'idle']);
 
-    await press(buttons[1]);
+    controller.toggle(1);
     await flush();
 
     expect(statuses()).toEqual(['idle', 'playing']);
   });
 
   it('keeps playing when the entries are set again with the same keys', async () => {
-    const { controller, buttons, statuses } = await setUp([entryA, entryB]);
+    const { controller, statuses } = setUp([entryA, entryB]);
 
-    await press(buttons[1]);
+    controller.toggle(1);
     await flush();
 
-    await act(() => {
-      controller.setEntries([{ ...entryA }, { ...entryB }]);
-    });
+    controller.setEntries([{ ...entryA }, { ...entryB }]);
 
     expect(statuses()).toEqual(['idle', 'playing']);
   });
 
   it('keeps playing when the entry it is playing moves to another index', async () => {
-    const { controller, buttons, statuses, playbacks } = await setUp([
-      entryA,
-      entryB,
-    ]);
+    const { controller, statuses, playbacks } = setUp([entryA, entryB]);
 
-    await press(buttons[1]);
+    controller.toggle(1);
     await flush();
 
-    await act(() => {
-      controller.setEntries([entryB]);
-    });
+    controller.setEntries([entryB]);
 
     expect(playbacks[0].signal.aborted).toBe(false);
     expect(statuses()).toEqual(['playing', 'idle']);
@@ -220,46 +197,36 @@ describe('TtsPlaybackController', () => {
   });
 
   it('stops when the audio of the entry it is playing changes', async () => {
-    const { controller, buttons, statuses, playbacks } = await setUp([
-      entryA,
-      entryB,
-    ]);
+    const { controller, statuses, playbacks } = setUp([entryA, entryB]);
 
-    await press(buttons[1]);
+    controller.toggle(1);
     await flush();
 
-    await act(() => {
-      controller.setEntries([entryA, { id: entryB.id, requests: twoReadings }]);
-    });
+    controller.setEntries([entryA, { id: entryB.id, requests: twoReadings }]);
 
     expect(playbacks[0].signal.aborted).toBe(true);
     expect(statuses()).toEqual(['idle', 'idle']);
   });
 
   it('stops when the entry it is playing disappears', async () => {
-    const { controller, buttons, statuses, playbacks } = await setUp([
-      entryA,
-      entryB,
-    ]);
+    const { controller, statuses, playbacks } = setUp([entryA, entryB]);
 
-    await press(buttons[1]);
+    controller.toggle(1);
     await flush();
 
-    await act(() => {
-      controller.setEntries([]);
-    });
+    controller.setEntries([]);
 
     expect(playbacks[0].signal.aborted).toBe(true);
     expect(statuses()).toEqual(['idle', 'idle']);
   });
 
   it('fetches the clips again when an entry is played after it finished', async () => {
-    const { buttons, fetches, playbacks, statuses } = await setUp([
+    const { controller, fetches, playbacks, statuses } = setUp([
       { id: 4, requests: twoReadings },
       entryB,
     ]);
 
-    await press(buttons[0]);
+    controller.toggle(0);
     await flush();
     playbacks[0].end();
     await flush();
@@ -269,32 +236,32 @@ describe('TtsPlaybackController', () => {
     expect(fetches).toHaveLength(2);
     expect(statuses()).toEqual(['idle', 'idle']);
 
-    await press(buttons[0]);
+    controller.toggle(0);
     await flush();
 
     expect(fetches).toHaveLength(4);
     expect(statuses()).toEqual(['playing', 'idle']);
   });
 
-  it('shows the current state on an island that mounts while a reading plays', async () => {
-    const { buttons, mountIsland } = await setUp([entryA, entryB]);
+  it('tells a listener the current state when it subscribes while a reading plays', async () => {
+    const { controller, subscribeProbe } = setUp([entryA, entryB]);
 
-    await press(buttons[1]);
+    controller.toggle(1);
     await flush();
-    const late = await mountIsland(1);
+    const late = subscribeProbe(1);
 
-    expect(late.dataset.status).toBe('playing');
+    expect(late.status()).toBe('playing');
   });
 
-  it('stops notifying an island that was unmounted', async () => {
-    const { controller, root, deliveries } = await setUp([entryA, entryB]);
+  it('stops notifying a listener that unsubscribed', async () => {
+    const { controller, deliveries, unsubscribeAll } = setUp([entryA, entryB]);
 
     expect(deliveries).toEqual([
       { entryIndex: 0, kind: 'idle' },
       { entryIndex: 1, kind: 'idle' },
     ]);
 
-    unmountPopupComponents(root);
+    unsubscribeAll();
     controller.toggle(0);
     await flush();
 
@@ -302,7 +269,7 @@ describe('TtsPlaybackController', () => {
   });
 
   it('keeps playing when a listener throws', async () => {
-    const { controller, buttons, statuses } = await setUp([entryA, entryB]);
+    const { controller, statuses } = setUp([entryA, entryB]);
     const errors = vi.spyOn(console, 'error').mockImplementation(() => {});
     const seen: Array<string> = [];
     controller.subscribe(() => {
@@ -310,7 +277,7 @@ describe('TtsPlaybackController', () => {
     });
     controller.subscribe((state) => seen.push(state.kind));
 
-    await press(buttons[0]);
+    controller.toggle(0);
     await flush();
 
     expect(statuses()).toEqual(['playing', 'idle']);
@@ -319,18 +286,16 @@ describe('TtsPlaybackController', () => {
   });
 
   it('stops when a stop arrives while it starts an entry', async () => {
-    const { controller, buttons, fetches, playbacks, statuses } = await setUp(
+    const { controller, fetches, playbacks, statuses } = setUp(
       [entryA, entryB],
       { deferFetch: true }
     );
 
-    await press(buttons[0]);
+    controller.toggle(0);
 
     expect(statuses()).toEqual(['loading', 'idle']);
 
-    await act(() => {
-      controller.stop();
-    });
+    controller.stop();
     await flush();
 
     expect(fetches[0].signal.aborted).toBe(true);
@@ -340,7 +305,7 @@ describe('TtsPlaybackController', () => {
   });
 
   it('prepares audio playback synchronously on start, and not on stop', async () => {
-    const { controller } = await setUp([entryA, entryB]);
+    const { controller } = setUp([entryA, entryB]);
 
     expect(preparePlayback).not.toHaveBeenCalled();
 
@@ -350,25 +315,18 @@ describe('TtsPlaybackController', () => {
     expect(preparePlayback).toHaveBeenCalledTimes(1);
 
     await flush();
-    await act(() => {
-      controller.toggle(0);
-    });
+    controller.toggle(0);
 
     expect(preparePlayback).toHaveBeenCalledTimes(1);
   });
 
   it('stops playback on stop()', async () => {
-    const { controller, buttons, statuses, playbacks } = await setUp([
-      entryA,
-      entryB,
-    ]);
+    const { controller, statuses, playbacks } = setUp([entryA, entryB]);
 
-    await press(buttons[0]);
+    controller.toggle(0);
     await flush();
 
-    await act(() => {
-      controller.stop();
-    });
+    controller.stop();
 
     expect(playbacks[0].signal.aborted).toBe(true);
     expect(statuses()).toEqual(['idle', 'idle']);
@@ -391,9 +349,7 @@ describe('TtsPlaybackController', () => {
     });
     controller.setEntries([entryA]);
 
-    await act(() => {
-      controller.toggle(0);
-    });
+    controller.toggle(0);
     await flush();
 
     expect(controller.state).toMatchObject({ kind: 'playing', startedAt: 123 });
@@ -431,10 +387,7 @@ type FetchCall = {
 
 type PlaybackCall = { clip: TtsClip; signal: AbortSignal; end: () => void };
 
-async function setUp(
-  entries: ReadonlyArray<TtsEntry>,
-  behavior: Behavior = {}
-) {
+function setUp(entries: ReadonlyArray<TtsEntry>, behavior: Behavior = {}) {
   const fetches: Array<FetchCall> = [];
   const playbacks: Array<PlaybackCall> = [];
 
@@ -480,100 +433,50 @@ async function setUp(
   const controller = new TtsPlaybackController({ fetchClip, playClip });
   controller.setEntries(entries);
 
-  const root = document.createElement('div');
-  document.body.append(root);
   const deliveries: Array<{ entryIndex: number; kind: string }> = [];
-  const buttons = [
-    await mountIsland({ root, controller, entryIndex: 0, deliveries }),
-    await mountIsland({ root, controller, entryIndex: 1, deliveries }),
+  const probes = [
+    subscribeProbe({ controller, entryIndex: 0, deliveries }),
+    subscribeProbe({ controller, entryIndex: 1, deliveries }),
   ];
 
   return {
     controller,
     fetches,
     playbacks,
-    buttons,
     deliveries,
-    root,
-    mountIsland: (entryIndex: number) =>
-      mountIsland({ root, controller, entryIndex, deliveries }),
-    statuses: () => buttons.map((button) => button.dataset.status),
+    subscribeProbe: (entryIndex: number) =>
+      subscribeProbe({ controller, entryIndex, deliveries }),
+    unsubscribeAll: () => {
+      for (const probe of probes) {
+        probe.unsubscribe();
+      }
+    },
+    statuses: () => probes.map((probe) => probe.status()),
   };
 }
 
-async function mountIsland({
-  root,
+function subscribeProbe({
   controller,
   entryIndex,
   deliveries,
 }: {
-  root: HTMLElement;
   controller: TtsPlaybackController;
   entryIndex: number;
   deliveries: Array<{ entryIndex: number; kind: string }>;
-}): Promise<HTMLButtonElement> {
-  const island = root.appendChild(document.createElement('div'));
-
-  await act(() => {
-    mountPopupComponent({
-      popupHost: root,
-      container: island,
-      vnode: h(PlayProbe, {
-        controller,
-        entryIndex,
-        onState: (state: TtsPlaybackState) =>
-          deliveries.push({ entryIndex, kind: state.kind }),
-      }),
-    });
-  });
-
-  return island.querySelector('button')!;
-}
-
-function PlayProbe({
-  controller,
-  entryIndex,
-  onState,
-}: {
-  controller: TtsPlaybackController;
-  entryIndex: number;
-  onState: (state: TtsPlaybackState) => void;
 }) {
-  const [state, setState] = useState<TtsPlaybackState>({ kind: 'idle' });
-  useEffect(
-    () =>
-      controller.subscribe((next) => {
-        onState(next);
-        setState(next);
-      }),
-    [controller]
-  );
-
-  const status =
-    state.kind !== 'idle' && state.activeEntryIndex === entryIndex
-      ? state.kind
-      : 'idle';
-
-  return h('button', {
-    'data-status': status,
-    onClick: () => controller.toggle(entryIndex),
+  let state: TtsPlaybackState = { kind: 'idle' };
+  const unsubscribe = controller.subscribe((next) => {
+    deliveries.push({ entryIndex, kind: next.kind });
+    state = next;
   });
-}
 
-function press(button: HTMLButtonElement) {
-  return act(() => {
-    button.click();
-  });
-}
-
-function flush() {
-  return advance(0);
-}
-
-function advance(ms: number) {
-  return act(async () => {
-    await vi.advanceTimersByTimeAsync(ms);
-  });
+  return {
+    status: () =>
+      state.kind !== 'idle' && state.activeEntryIndex === entryIndex
+        ? state.kind
+        : 'idle',
+    unsubscribe,
+  };
 }
 
 function deferred<T>() {
@@ -584,4 +487,8 @@ function deferred<T>() {
     reject = rejectPromise;
   });
   return { promise, resolve, reject };
+}
+
+function flush() {
+  return vi.advanceTimersByTimeAsync(0);
 }
