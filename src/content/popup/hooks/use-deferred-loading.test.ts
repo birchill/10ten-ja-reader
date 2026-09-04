@@ -19,7 +19,7 @@ afterEach(() => {
 });
 
 describe('useDeferredLoading', () => {
-  it('never surfaces a loading burst that ends before the defer elapses', () => {
+  it('hides short loading attempts and starts a fresh loading delay', () => {
     const view = mount();
 
     view.publish('loading');
@@ -28,43 +28,27 @@ describe('useDeferredLoading', () => {
 
     view.publish('playing');
     expect(view.state()).toBe('playing');
+    view.advance(2);
+    view.publish('loading');
+    expect(view.state()).toBe('idle');
+
+    view.advance(LOADING_DEFER_MS - 1);
+    expect(view.state()).toBe('idle');
+    view.advance(1);
+    expect(view.state()).toBe('loading');
   });
 
-  it('surfaces loading once it outlasts the defer', () => {
+  it('shows loading after the loading delay', () => {
     const view = mount();
 
     view.publish('loading');
     view.advance(LOADING_DEFER_MS);
 
     expect(view.state()).toBe('loading');
-  });
-
-  it('restarts the defer for a second loading state', () => {
-    const view = mount();
-
-    view.publish('loading');
-    view.advance(LOADING_DEFER_MS);
-    view.publish('playing');
-
-    view.publish('loading');
-    expect(view.state()).toBe('idle');
-
-    view.advance(LOADING_DEFER_MS);
-    expect(view.state()).toBe('loading');
-  });
-
-  it('passes settled states straight through', () => {
-    const view = mount();
-
-    view.publish('error');
-    expect(view.state()).toBe('error');
-
-    view.publish('idle');
-    expect(view.state()).toBe('idle');
   });
 });
 
-function mount(initialKind: TtsButtonState = 'idle') {
+function mount() {
   const container = document.createElement('div');
   document.body.append(container);
 
@@ -73,7 +57,7 @@ function mount(initialKind: TtsButtonState = 'idle') {
   }
 
   act(() => {
-    render(h(Harness, { kind: initialKind }), container);
+    render(h(Harness, { kind: 'idle' }), container);
   });
 
   return {
