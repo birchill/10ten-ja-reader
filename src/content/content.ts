@@ -257,7 +257,7 @@ export class ContentHandler {
   #copyState: CopyState = { kind: 'inactive' };
 
   // Reading playback
-  #ttsPlayback: TtsPlaybackController | undefined;
+  #ttsPlaybackController: TtsPlaybackController | undefined;
 
   // Manual positioning support
   #popupPositionMode: PopupPositionMode = PopupPositionMode.Auto;
@@ -454,7 +454,7 @@ export class ContentHandler {
           // Stop before the popup rebuilds without the button that controls
           // playback, or the audio would keep playing with no way to stop it.
           if (!value) {
-            this.#ttsPlayback?.stop();
+            this.#ttsPlaybackController?.stop();
           }
           if (this.isTopMostWindow()) {
             this.updatePopup();
@@ -539,8 +539,8 @@ export class ContentHandler {
 
     this.#textHighlighter.detach();
     this.#copyState = { kind: 'inactive' };
-    this.#ttsPlayback?.stop();
-    this.#ttsPlayback = undefined;
+    this.#ttsPlaybackController?.stop();
+    this.#ttsPlaybackController = undefined;
     this.#isPopupExpanded = false;
     this.#safeAreaProvider.destroy();
     this.#touchClickTracker.destroy();
@@ -1356,7 +1356,7 @@ export class ContentHandler {
   };
 
   onPageHide = () => {
-    this.#ttsPlayback?.stop();
+    this.#ttsPlaybackController?.stop();
   };
 
   onInterFrameMessage = (event: MessageEvent) => {
@@ -1667,7 +1667,7 @@ export class ContentHandler {
     //   how to handle copyMode-specific keystrokes.
     //
     this.#copyState = { kind: 'active', index, mode: trigger };
-    this.#ttsPlayback?.stop();
+    this.#ttsPlaybackController?.stop();
 
     if (!this.isTopMostWindow()) {
       console.assert(
@@ -1829,7 +1829,7 @@ export class ContentHandler {
     this.#currentPagePoint = undefined;
     this.#lastPointerTarget = null;
     this.#copyState = { kind: 'inactive' };
-    this.#ttsPlayback?.stop();
+    this.#ttsPlaybackController?.stop();
 
     clearPopupTimeout(this.#popupState);
     this.#popupState = undefined;
@@ -2399,15 +2399,15 @@ export class ContentHandler {
           : [];
 
     if (entries.length) {
-      this.#ttsPlayback ??= new TtsPlaybackController({
+      this.#ttsPlaybackController ??= new TtsPlaybackController({
         fetchClip: fetchTtsClip,
         playClip,
       });
     }
 
-    this.#ttsPlayback?.setEntries(entries);
+    this.#ttsPlaybackController?.setEntries(entries);
 
-    return this.#config.playReadings ? this.#ttsPlayback : undefined;
+    return this.#config.playReadings ? this.#ttsPlaybackController : undefined;
   }
 
   getCursorClearanceAndPos(screenTextBoxSizes: SelectionSizes | undefined) {
