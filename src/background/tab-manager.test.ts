@@ -6,7 +6,7 @@ import type { Runtime } from 'webextension-polyfill';
 
 import type { ContentConfigParams } from '../common/content-config-params';
 
-import AllTabManager from './all-tab-manager';
+import TabManager from './tab-manager';
 
 type MessageListener = (
   request: unknown,
@@ -47,7 +47,7 @@ vi.mock('@birchill/bugsnag-zero', () => ({
 }));
 vi.mock('webextension-polyfill', () => ({ default: browserMock }));
 
-describe('AllTabManager', () => {
+describe('TabManager', () => {
   afterEach(() => {
     vi.clearAllTimers();
     vi.useRealTimers();
@@ -56,7 +56,7 @@ describe('AllTabManager', () => {
   it('drops stale child frames when the root frame navigates', async () => {
     vi.useFakeTimers();
 
-    const manager = new AllTabManager();
+    const manager = new TabManager();
     await manager.init({} as ContentConfigParams);
 
     const onMessage = messageListeners[0];

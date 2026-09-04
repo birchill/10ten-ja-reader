@@ -61,7 +61,6 @@ import { isAbortError } from '../utils/is-abort-error';
 import { omit } from '../utils/omit';
 import type { Split } from '../utils/type-helpers';
 
-import TabManager from './all-tab-manager';
 import type { SearchOtherRequest, SearchRequest } from './background-request';
 import { BackgroundRequestSchema } from './background-request';
 import { setDefaultToolbarIcon, updateBrowserAction } from './browser-action';
@@ -81,6 +80,7 @@ import {
 } from './jpdict';
 import { shouldRequestPersistentStorage } from './quota-management';
 import type { SearchOtherResult, SearchWordsResult } from './search-result';
+import TabManager from './tab-manager';
 
 //
 // Setup bugsnag
