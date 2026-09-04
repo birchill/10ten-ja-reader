@@ -6,10 +6,11 @@ import {
   getReleaseTargets,
 } from './release-notes/format-release-notes.js';
 
-// Stamps the Keep a Changelog release date onto the current version's changelog
-// heading at release time, e.g.
+// Finalizes the current version's changelog entry at release time by stamping
+// its release date and adding a comparison link, e.g.
 //
 //   ## 1.28.0  ->  ## [1.28.0] - 2026-06-08
+//   [1.28.0]: https://example.com/compare/v1.27.3...v1.28.0
 //
 // During `changeset version` the new release heading is left in its plain
 // `## <version>` form (see `postprocess-changeset-changelog.js` for why).
@@ -28,23 +29,74 @@ import {
 /**
  * Rewrites the plain `## <version>` heading into the dated Keep a Changelog
  * form, appending a `(… only)` annotation when the release targets a subset of
- * browsers.
+ * browsers, and adds a comparison link from the previous release.
  *
- * @param {{ changeLog: string; version: string; date: string }} options
+ * @param {{ changeLog: string; version: string; date: string; repositoryUrl: string }} options
  * @returns {string}
  */
-export function stampChangelogReleaseDate({ changeLog, version, date }) {
+export function stampChangelogReleaseDate({
+  changeLog,
+  version,
+  date,
+  repositoryUrl,
+}) {
   const headingRe = new RegExp(`^## ${escapeRegExp(version)}$`, 'm');
-  if (!headingRe.test(changeLog)) {
+  const headingMatch = headingRe.exec(changeLog);
+  if (!headingMatch) {
     // Already stamped (or the heading isn't present) — nothing to do.
     return changeLog;
+  }
+
+  const previousVersion = getPreviousVersion({
+    changeLog,
+    releaseHeadingEnd: headingMatch.index + headingMatch[0].length,
+  });
+  if (!previousVersion) {
+    throw new Error(`Could not find the release preceding ${version}`);
   }
 
   const annotation = formatTargetAnnotation(
     getReleaseTargets({ changeLog, version })
   );
 
-  return changeLog.replace(headingRe, `## [${version}] - ${date}${annotation}`);
+  const withHeading = changeLog.replace(
+    headingRe,
+    `## [${version}] - ${date}${annotation}`
+  );
+
+  return addVersionLink({
+    changeLog: withHeading,
+    version,
+    previousVersion,
+    repositoryUrl,
+  });
+}
+
+function getPreviousVersion({ changeLog, releaseHeadingEnd }) {
+  return changeLog
+    .slice(releaseHeadingEnd)
+    .match(/^##\s+\[?(\d+\.\d+\.\d+(?:[-+][^\]\s]+)?)\]?/m)?.[1];
+}
+
+function addVersionLink({
+  changeLog,
+  version,
+  previousVersion,
+  repositoryUrl,
+}) {
+  const versionLinkRe = new RegExp(`^\\[${escapeRegExp(version)}\\]:`, 'm');
+  if (versionLinkRe.test(changeLog)) {
+    return changeLog;
+  }
+
+  const normalizedRepositoryUrl = repositoryUrl.replace(/\/?(?:\.git)?$/, '');
+  const versionLink = `[${version}]: ${normalizedRepositoryUrl}/compare/v${previousVersion}...v${version}`;
+  const firstReferenceIndex = changeLog.search(/^\[[^\]]+\]:\s+\S+/m);
+  if (firstReferenceIndex === -1) {
+    return `${changeLog.trimEnd()}\n\n${versionLink}\n`;
+  }
+
+  return `${changeLog.slice(0, firstReferenceIndex)}${versionLink}\n${changeLog.slice(firstReferenceIndex)}`;
 }
 
 // Returns a human-readable ` (… only)` annotation when the release targets a
@@ -65,6 +117,10 @@ function main() {
   if (!version) {
     throw new Error('Could not find version in package.json');
   }
+  const repositoryUrl = packageJson.repository?.url;
+  if (!repositoryUrl) {
+    throw new Error('Could not find repository URL in package.json');
+  }
 
   const changeLogPath = url.fileURLToPath(
     new URL('../CHANGELOG.md', import.meta.url)
@@ -75,6 +131,7 @@ function main() {
     changeLog: original,
     version,
     date,
+    repositoryUrl,
   });
 
   if (updated === original) {

@@ -263,7 +263,7 @@ Pre-release checks:
   Otherwise the submission will likely be rejected from AMO.
 
 - It's also good to check that the release notes are being parsed correctly by
-  running `pnpm tsx scripts/release-notes.js`.
+  running `pnpm tsx scripts/release-notes.js <version>`.
 
 When changesets are merged to `main`, the
 [Changesets workflow](https://github.com/birchill/10ten-ja-reader/actions/workflows/changesets.yml)

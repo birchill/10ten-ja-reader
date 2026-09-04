@@ -12,7 +12,7 @@ async function main() {
   }
 
   if (!version) {
-    version = 'Unreleased';
+    throw new Error('Usage: node scripts/release-notes.js <version>');
   }
 
   const changeLogPath = url.fileURLToPath(
