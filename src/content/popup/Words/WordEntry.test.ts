@@ -20,7 +20,10 @@ vi.mock('../../../common/i18n', () => ({
 vi.mock('webextension-polyfill', () => ({
   default: {
     i18n: { getMessage: () => '' },
-    runtime: { getURL: (path: string) => path },
+    runtime: {
+      getURL: (path: string) => path,
+      sendMessage: () => Promise.resolve(),
+    },
   },
 }));
 
@@ -68,20 +71,34 @@ describe('WordEntry play button visibility', () => {
     ).toBeNull();
     expect(container.textContent).toContain('ひ');
   });
+
+  it('still shows the karaoke overlay while playing in a static popup', () => {
+    const { container } = renderWithPlayback({
+      interactive: false,
+      state: {
+        kind: 'playing',
+        activeEntryIndex: 0,
+        readingIndex: 0,
+        moraTiming: { charTimingsMs: [0], totalDurationMs: 200 },
+        startedAt: performance.now(),
+      },
+    });
+
+    expect(container.querySelector('.tts-play-button')).toBeNull();
+    expect(container.querySelector('[aria-hidden]')).not.toBeNull();
+  });
 });
 
 function renderWithPlayback({
   interactive,
   withController = true,
+  state = { kind: 'idle' },
 }: {
   interactive: boolean;
   withController?: boolean;
+  state?: TtsPlaybackState;
 }) {
-  const controller = {
-    state: { kind: 'idle' } as TtsPlaybackState,
-    subscribe: () => () => {},
-    toggle: () => {},
-  };
+  const controller = { state, subscribe: () => () => {}, toggle: () => {} };
 
   const entry = createEntry([{ ent: 'ひ', romaji: 'hi', match: true }]);
   const container = document.createElement('div');

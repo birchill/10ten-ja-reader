@@ -1,4 +1,5 @@
 import type { NameTranslation } from '@birchill/jpdict-idb';
+import { Fragment } from 'preact';
 
 import type { NameResult } from '../../../background/search-result';
 import { useLocale } from '../../../common/i18n';
@@ -9,6 +10,7 @@ import type { TtsPlaybackHandle } from '../../tts-playback-controller';
 
 import { Tag } from '../Tag';
 import { TtsPlayButton } from '../Words/TtsPlayButton';
+import { TtsReading } from '../Words/TtsReadingOverlay';
 import { usePopupOptions } from '../options-context';
 
 type SelectState = 'unselected' | 'selected' | 'flash';
@@ -23,8 +25,6 @@ type Props = {
 
 export function NameEntry(props: Props) {
   const { interactive } = usePopupOptions();
-
-  const kana = props.entry.r.join('、');
 
   return (
     <div
@@ -69,7 +69,22 @@ export function NameEntry(props: Props) {
             interactive && 'tp:group-hover:text-(--selected-reading-highlight)'
           )}
         >
-          {kana}
+          {props.entry.r.map((reading, index) => (
+            <Fragment key={reading}>
+              {index > 0 && '、'}
+              {props.tts ? (
+                <TtsReading
+                  controller={props.tts.controller}
+                  entryIndex={props.tts.entryIndex}
+                  readingIndex={index}
+                  kana={{ ent: reading }}
+                  accentDisplay="none"
+                />
+              ) : (
+                reading
+              )}
+            </Fragment>
+          ))}
         </span>
         {interactive && props.tts && (
           <TtsPlayButton

@@ -4,7 +4,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { NameResult } from '../../../background/search-result';
 
-import type { TtsPlaybackState } from '../../tts-playback-controller';
+import type {
+  TtsPlaybackHandle,
+  TtsPlaybackState,
+} from '../../tts-playback-controller';
 
 import { NameTable } from './NameTable';
 
@@ -42,19 +45,14 @@ afterEach(() => {
   document.body.replaceChildren();
 });
 
-describe('NameTable row click vs. the play button', () => {
-  it('plays the clicked name without starting copy mode, while the row still copies', () => {
+describe('NameTable playback', () => {
+  it('plays a name without starting copy mode, while clicking the row still copies', () => {
     const onStartCopy =
       vi.fn<(index: number, trigger: 'touch' | 'mouse') => void>();
     const toggles: Array<number> = [];
-    const controller = {
-      state: { kind: 'idle' } as TtsPlaybackState,
-      subscribe: (listener: (state: TtsPlaybackState) => void) => {
-        listener({ kind: 'idle' });
-        return () => {};
-      },
-      toggle: (entryIndex: number) => toggles.push(entryIndex),
-    };
+    const { controller } = createController((entryIndex) =>
+      toggles.push(entryIndex)
+    );
     const container = document.createElement('div');
     document.body.append(container);
 
@@ -62,8 +60,8 @@ describe('NameTable row click vs. the play button', () => {
       render(
         h(NameTable, {
           entries: [
-            createName(1, '佐藤', 'さとう', 'Sato'),
-            createName(2, '田中', 'たなか', 'Tanaka'),
+            createName(1, '佐藤', ['さとう'], 'Sato'),
+            createName(2, '田中', ['たなか'], 'Tanaka'),
           ],
           matchLen: 2,
           more: false,
@@ -111,18 +109,87 @@ describe('NameTable row click vs. the play button', () => {
 
     expect(onStartCopy).toHaveBeenCalledWith(0, 'mouse');
   });
+
+  it('animates only the name reading currently being played', () => {
+    const { controller, publish } = createController();
+    const container = document.createElement('div');
+    document.body.append(container);
+
+    act(() => {
+      render(
+        h(NameTable, {
+          entries: [createName(1, '佐藤', ['さとう', 'さとお'], 'Sato')],
+          matchLen: 2,
+          more: false,
+          fxData: undefined,
+          preferredUnits: 'metric',
+          copyState: { kind: 'inactive' },
+          ttsPlayback: controller,
+        }),
+        container
+      );
+    });
+
+    act(() => {
+      publish({
+        kind: 'playing',
+        activeEntryIndex: 0,
+        readingIndex: 1,
+        startedAt: performance.now(),
+        moraTiming: { charTimingsMs: [0, 100, 200], totalDurationMs: 300 },
+      });
+    });
+
+    const readings = container.querySelectorAll('.tp\\:inline-grid');
+    expect(readings).toHaveLength(2);
+    expect(hopAnimations(readings[0]!)).toEqual(['', '', '']);
+    expect(hopAnimations(readings[1]!).every(Boolean)).toBe(true);
+  });
 });
+
+function createController(onToggle: (entryIndex: number) => void = () => {}) {
+  let state: TtsPlaybackState = { kind: 'idle' };
+  const listeners = new Set<(state: TtsPlaybackState) => void>();
+  const controller: TtsPlaybackHandle = {
+    get state() {
+      return state;
+    },
+    subscribe: (listener) => {
+      listeners.add(listener);
+      listener(state);
+      return () => listeners.delete(listener);
+    },
+    toggle: onToggle,
+  };
+
+  return {
+    controller,
+    publish: (nextState: TtsPlaybackState) => {
+      state = nextState;
+      listeners.forEach((listener) => listener(state));
+    },
+  };
+}
+
+function hopAnimations(reading: Element): Array<string> {
+  return [...reading.firstElementChild!.children].map(
+    (mora) =>
+      (mora.firstElementChild as HTMLElement).style.animation
+        .split(', ')
+        .find((animation) => animation.includes('tts-mora-hop')) ?? ''
+  );
+}
 
 function createName(
   id: number,
   kanji: string,
-  reading: string,
+  readings: Array<string>,
   translation: string
 ): NameResult {
   return {
     id,
     k: [kanji],
-    r: [reading],
+    r: readings,
     tr: [{ det: [translation], type: ['surname'] }],
     matchLen: 2,
   };
