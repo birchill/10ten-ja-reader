@@ -2,6 +2,7 @@ import { Fragment } from 'preact';
 
 import type { WordResult } from '../../../background/search-result';
 import type { ContentConfigParams } from '../../../common/content-config-params';
+import { getDisplayedKana } from '../../../common/displayed-kana';
 import { useLocale } from '../../../common/i18n';
 import { highPriorityLabels } from '../../../common/priority-labels';
 import { classes } from '../../../utils/classes';
@@ -91,35 +92,7 @@ export function WordEntry(props: WordEntryProps) {
   // Sort matched kanji entries first
   matchingKanji.sort((a, b) => Number(b.match) - Number(a.match));
 
-  // Typically we only show the matching kana headwords but if we matched on
-  // an irregular form or a search-only form, we should show the regular kana
-  // headwords too, for reference.
-  //
-  // For example, if we looked up ふんいき (雰囲気) we should only show that
-  // headword, but if we looked up ふいんき, we should show the more correct
-  // ふんいき too.
-  const matchedOnIrregularKana =
-    matchedOnKana &&
-    entry.r.every(
-      (r) =>
-        !r.match ||
-        r.i?.includes('ik') ||
-        r.i?.includes('ok') ||
-        r.i?.includes('rk') ||
-        r.i?.includes('sk')
-    );
-
-  // For search-only kanji, we show them only if they are the ONLY matches.
-  const matchingKana = entry.r.filter(
-    (r) =>
-      !r.i?.includes('sk') &&
-      (r.match ||
-        (matchedOnIrregularKana &&
-          !r.i?.includes('ik') &&
-          !r.i?.includes('ok') &&
-          !r.i?.includes('rk') &&
-          !r.i?.includes('sk')))
-  );
+  const matchingKana = getDisplayedKana(entry);
 
   // If we have hidden all the kanji headwords, then we shouldn't show
   // "usually kana" annotations on definitions.
