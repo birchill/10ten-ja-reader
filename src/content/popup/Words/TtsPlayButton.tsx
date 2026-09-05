@@ -12,6 +12,7 @@ import type {
 import type { TtsButtonState } from '../hooks/use-deferred-loading';
 import { useDeferredLoading } from '../hooks/use-deferred-loading';
 import { useShouldAnimate } from '../hooks/use-should-animate';
+import { usePopupOptions } from '../options-context';
 import { PLAY_PATH_OPTICALLY_CENTERED, STOP_PATH } from '../play-stop-paths';
 
 export type TtsPlayButtonProps = {
@@ -22,6 +23,7 @@ export type TtsPlayButtonProps = {
 export function TtsPlayButton(props: TtsPlayButtonProps) {
   const { controller, entryIndex } = props;
   const { t, langTag } = useLocale();
+  const { playReadingsShortcuts = [] } = usePopupOptions();
   const shouldAnimate = useShouldAnimate();
 
   const [state, setState] = useState<TtsPlaybackState>(() => controller.state);
@@ -35,6 +37,9 @@ export function TtsPlayButton(props: TtsPlayButtonProps) {
   const label = t(
     isActive ? 'content_stop_readings_label' : 'content_play_readings_label'
   );
+  const title = playReadingsShortcuts.length
+    ? `${label} (${playReadingsShortcuts.join(' / ')})`
+    : label;
 
   // Do not use --cell-highlight-bg; on yellow and black themes it blends
   // into a hovered row.
@@ -66,7 +71,7 @@ export function TtsPlayButton(props: TtsPlayButtonProps) {
         type="button"
         lang={langTag}
         aria-label={label}
-        title={label}
+        title={title}
         style={{
           '--tts-disc-bg': discBackground,
           '--tts-pad': hitAreaPadding,

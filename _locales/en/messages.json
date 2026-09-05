@@ -1384,6 +1384,10 @@
     "message": "None",
     "description": "Label for not showing pitch accent information"
   },
+  "options_audio_heading": {
+    "message": "Audio",
+    "description": "Heading for the section for configuring audio playback of readings"
+  },
   "options_browser_commands_no_toggle_key": {
     "message": "This shortcut key cannot be configured in this browser.",
     "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."
@@ -1677,6 +1681,14 @@
     "message": "Could not check for updates because this device is currently offline. An update will be performed once the device is online.",
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
+  "options_play_readings_description": {
+    "message": "Experimental: play a word's readings as audio, fetched from 10ten's server.",
+    "description": "Short, one-sentence description of the setting to enable the button for playing a word entry's readings as audio. Kept deliberately terse per owner decision 2026-08-21; the full privacy disclosure lives in the store listings (release checklist §3), not here."
+  },
+  "options_play_readings_label": {
+    "message": "Play readings audio",
+    "description": "Checkbox label for the setting to enable the button for playing a word entry's readings as audio"
+  },
   "options_popup_close_popup": { "message": "Close popup" },
   "options_popup_copy_entry": { "message": "Copy entry" },
   "options_popup_copy_fields": { "message": "Copy tab-separated fields" },
@@ -1697,6 +1709,7 @@
     "description": "Note that it is important that down comes before up"
   },
   "options_popup_pin_popup": { "message": "Pin popup" },
+  "options_popup_play_readings": { "message": "Play readings" },
   "options_popup_start_copy": { "message": "Enter copy mode" },
   "options_popup_style_heading": {
     "message": "Popup style",

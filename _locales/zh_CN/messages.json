@@ -1380,6 +1380,10 @@
     "message": "无",
     "description": "Label for not showing pitch accent information"
   },
+  "options_audio_heading": {
+    "message": "音频",
+    "description": "Heading for the section for configuring audio playback of readings"
+  },
   "options_browser_commands_no_toggle_key": {
     "message": "由于您使用的浏览器的限制，您无法在此处更改此快捷键。",
     "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."
@@ -1673,6 +1677,14 @@
     "message": "无法检查更新，因为没有连接到互联网。一旦设备联网，10ten reader 会再次检查更新。",
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
+  "options_play_readings_description": {
+    "message": "实验性功能：播放词语读音的语音，该语音从 10ten 的服务器获取。",
+    "description": "Short, one-sentence description of the setting to enable the button for playing a word entry's readings as audio. Kept deliberately terse per owner decision 2026-08-21; the full privacy disclosure lives in the store listings (release checklist §3), not here."
+  },
+  "options_play_readings_label": {
+    "message": "以语音播放读音",
+    "description": "Checkbox label for the setting to enable the button for playing a word entry's readings as audio"
+  },
   "options_popup_close_popup": { "message": "关闭弹出窗口" },
   "options_popup_copy_entry": { "message": "复制词条" },
   "options_popup_copy_fields": { "message": "复制以制表符分隔的内容" },
@@ -1693,6 +1705,7 @@
     "description": "Note that it is important that down comes before up"
   },
   "options_popup_pin_popup": { "message": "固定弹出窗口" },
+  "options_popup_play_readings": { "message": "播放读音" },
   "options_popup_start_copy": { "message": "进入复制模式" },
   "options_popup_style_heading": {
     "message": "窗口样式",

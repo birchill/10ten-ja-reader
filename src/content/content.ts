@@ -1153,6 +1153,7 @@ export class ContentHandler {
       movePopupUp,
       movePopupDown,
       startCopy,
+      playReadings,
     ] = [
       normalizeKeys(keys.nextDictionary),
       normalizeKeys(keys.toggleDefinition),
@@ -1162,6 +1163,7 @@ export class ContentHandler {
       normalizeKeys(keys.movePopupUp),
       normalizeKeys(keys.movePopupDown),
       normalizeKeys(keys.startCopy),
+      normalizeKeys(keys.playReadings),
     ];
 
     const key = normalizeKey(event.key);
@@ -1209,6 +1211,21 @@ export class ContentHandler {
       this.exitCopyMode();
     } else if (expandPopup.includes(key)) {
       this.expandPopup();
+    } else if (
+      this.#config.playReadings &&
+      this.isVisible() &&
+      this.#popupState?.hasPlayableReadings &&
+      // Don't steal the key from copy mode: let it fall through to the
+      // copy-mode key handling below (which itself falls through unhandled
+      // for keys copy mode doesn't recognize).
+      this.#copyState.kind === 'inactive' &&
+      !hasModifiers(event) &&
+      playReadings.includes(key)
+    ) {
+      // A held key repeats the keydown; treat the whole hold as one toggle.
+      if (!event.repeat) {
+        this.togglePlayReadings();
+      }
     }
     // This needs to come _after_ the above check so that if the user has
     // configured Escape to close the popup but they are in copy mode, we first
@@ -1577,6 +1594,10 @@ export class ContentHandler {
         this.movePopup(request.direction);
         break;
 
+      case 'playReadings':
+        this.togglePlayReadings();
+        break;
+
       case 'enterCopyMode':
         this.enterCopyMode({ trigger: 'keyboard' });
         break;
@@ -1648,6 +1669,28 @@ export class ContentHandler {
       );
     }
     this.updatePopup();
+  }
+
+  togglePlayReadings() {
+    if (!this.isTopMostWindow()) {
+      void browser.runtime.sendMessage({ type: 'top:playReadings' });
+      return;
+    }
+
+    // Re-check here: a forwarded message can arrive after this frame's own
+    // popup state moved on, so the sender's state can no longer be trusted.
+    if (
+      !this.#config.playReadings ||
+      !this.isVisible() ||
+      !this.#popupState?.hasPlayableReadings ||
+      // Don't let a stale or forwarded request restart audio underneath the
+      // copy-mode overlay.
+      this.#copyState.kind !== 'inactive'
+    ) {
+      return;
+    }
+
+    this.#ttsPlaybackController?.toggleTopEntry();
   }
 
   enterCopyMode({
@@ -2301,6 +2344,7 @@ export class ContentHandler {
         }
       },
       pinShortcuts: this.#config.keys.pinPopup,
+      playReadingsShortcuts: this.#config.keys.playReadings,
       pointerType: this.#currentTargetProps?.fromPuck ? 'puck' : 'cursor',
       popupStyle: this.#config.popupStyle,
       posDisplay: this.#config.posDisplay,
@@ -2358,6 +2402,7 @@ export class ContentHandler {
         }),
       },
       contentType: this.#currentTargetProps?.contentType || 'text',
+      hasPlayableReadings: !!this.#ttsPlaybackController?.hasEntries,
       display: this.getNextDisplay(displayMode),
     };
 

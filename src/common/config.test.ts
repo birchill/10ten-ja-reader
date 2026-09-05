@@ -202,6 +202,7 @@ describe('Config', () => {
       pinPopup: ['Ctrl'],
       movePopupDownOrUp: [],
       startCopy: ['c'],
+      playReadings: ['p'],
     });
     expect(config.keysNormalized).toEqual({
       toggleDefinition: [],
@@ -213,6 +214,7 @@ describe('Config', () => {
       movePopupUp: [],
       movePopupDown: [],
       startCopy: ['c'],
+      playReadings: ['p'],
     });
     expect(config.noTextHighlight).toEqual(false);
     expect(config.playReadings).toEqual(false);

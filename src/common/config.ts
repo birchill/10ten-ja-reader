@@ -1075,6 +1075,20 @@ export class Config {
     return !!this.#settings.playReadings;
   }
 
+  set playReadings(value: boolean) {
+    if (this.#settings.playReadings === (value || undefined)) {
+      return;
+    }
+
+    if (!value) {
+      delete this.#settings.playReadings;
+      void browser.storage.sync.remove('playReadings');
+    } else {
+      this.#settings.playReadings = value;
+      void browser.storage.sync.set({ playReadings: value });
+    }
+  }
+
   // popupInteractive (local): Defaults to true
 
   get popupInteractive(): boolean {

@@ -40,7 +40,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-it('renders a play button in a standalone name popup', () => {
+it('shows the play shortcut on a standalone name popup button', () => {
   const popupHost = document.createElement('div');
   const controller: TtsPlaybackHandle = {
     state: { kind: 'idle' },
@@ -58,15 +58,17 @@ it('renders a play button in a standalone name popup', () => {
         fontSize: 'normal',
         fxData: undefined,
         interactive: true,
+        playReadingsShortcuts: ['p'],
         preferredUnits: 'metric',
         ttsPlayback: controller,
       },
       popupHost,
     });
 
-    expect(
-      names.querySelector('button[aria-label="content_play_readings_label"]')
-    ).not.toBeNull();
+    const playButton = names.querySelector<HTMLButtonElement>(
+      'button[aria-label="content_play_readings_label"]'
+    );
+    expect(playButton?.title).toBe('content_play_readings_label (p)');
   } finally {
     unmountPopupComponents(popupHost);
   }

@@ -53,6 +53,10 @@ export const PopupStateSchema = s.type({
   // The type of content the popup is positioned relative to.
   contentType: s.enums(['text', 'image']),
 
+  // Whether the words tab is showing at least one entry whose reading can
+  // be played back as audio.
+  hasPlayableReadings: s.boolean(),
+
   // The particular appearance and behavior of the popup
   display: discriminator('mode', {
     // static: no interactivity, small tabs, no close button etc.
