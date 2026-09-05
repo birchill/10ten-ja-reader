@@ -69,7 +69,7 @@ jobs:
         if: ${{ steps.out.outputs.should_release == 'true' }}
         uses: pnpm/action-setup@v6
         with:
-          version: 11
+          version: 12
 
       - name: Install dependencies
         if: ${{ steps.out.outputs.should_release == 'true' }}
@@ -116,7 +116,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 11
+          version: 12
 
       - name: Setup node
         uses: actions/setup-node@v7
@@ -306,7 +306,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 11
+          version: 12
 
       - uses: actions/setup-node@v7
         with:
