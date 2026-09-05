@@ -165,6 +165,7 @@ export function renderPopup(
               namePreview={result!.namePreview}
               onStartCopy={options.onStartCopy}
               title={result!.title}
+              ttsPlayback={options.ttsPlayback}
             />
           </div>
         </Expandable>
