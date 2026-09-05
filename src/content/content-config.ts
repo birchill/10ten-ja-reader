@@ -166,6 +166,9 @@ export class ContentConfig implements ContentConfigParams {
   get noTextHighlight() {
     return this.#params.noTextHighlight;
   }
+  get playReadings() {
+    return this.#params.playReadings;
+  }
   get popupInteractive() {
     // Even if `this.params.popupInteractive` is false, if there's no mouse we
     // should force it to true.

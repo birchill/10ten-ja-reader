@@ -2,7 +2,28 @@ import { describe, expect, it } from 'vitest';
 
 import type { WordResult } from '../../background/search-result';
 
-import { resolveTtsParams } from './tts-params';
+import { resolveNameTtsParams, resolveTtsParams } from './tts-params';
+
+describe('resolveNameTtsParams', () => {
+  it('uses the first kanji form for every displayed reading', () => {
+    expect(
+      resolveNameTtsParams({
+        k: ['秋篠宮', '秋篠の宮'],
+        r: ['あきしのみや', 'あきしののみや'],
+      })
+    ).toEqual([
+      { kanji: '秋篠宮', reading: 'あきしのみや' },
+      { kanji: '秋篠宮', reading: 'あきしののみや' },
+    ]);
+  });
+
+  it('uses reading-only requests for kana-only names', () => {
+    expect(resolveNameTtsParams({ r: ['ノコノコ', 'のこ'] })).toEqual([
+      { reading: 'ノコノコ' },
+      { reading: 'のこ' },
+    ]);
+  });
+});
 
 describe('resolveTtsParams', () => {
   it('returns the displayed kana verbatim with no kanji for a kana-only entry', () => {
