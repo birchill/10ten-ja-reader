@@ -19,7 +19,7 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     name: Test
 
     steps:
@@ -46,10 +46,20 @@ jobs:
           pnpm build:chrome
           pnpm build:thunderbird
 
+      # The runner image only provides Firefox as a snap (/snap/bin/firefox).
+      # Snaps get a private /tmp, so Firefox can't read the temporary profile
+      # geckodriver passes it via -profile and the WebDriver session never
+      # starts, making the browser (firefox) tests time out. Install an
+      # unconfined Firefox and put it ahead of the snap on the PATH.
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@v1
+
       - name: Run tests
         env:
           CI: true
-        run: pnpm test
+        run: |-
+          which -a firefox
+          pnpm test
 
       - name: Upload any failure artifacts
         uses: actions/upload-artifact@v7
@@ -71,7 +81,7 @@ jobs:
         run: pnpm cosmos-export
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     name: Lint
 
     steps:
