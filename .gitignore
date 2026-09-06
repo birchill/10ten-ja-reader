@@ -3,7 +3,7 @@ docs/plans
 spikes
 **/*.xcuserstate
 **/xcuserdata/**
-**/__screenshots__
+.vitest
 cosmos-export
 coverage
 node_modules

@@ -56,7 +56,8 @@ jobs:
         if: always()
         with:
           name: test-screenshots
-          path: '**/__screenshots__/**/*.png'
+          path: '.vitest/attachments/failure-screenshots/**/*.png'
+          include-hidden-files: true
           if-no-files-found: ignore
           retention-days: 20
 
