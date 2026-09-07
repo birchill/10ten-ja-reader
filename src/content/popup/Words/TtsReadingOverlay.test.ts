@@ -67,13 +67,13 @@ describe('TtsReading', () => {
       'べ',
       'る',
     ]);
-    expect(hopAnimations(idleGlyphs)).toEqual(['', '', '']);
+    expect(growAnimations(idleGlyphs)).toEqual(['', '', '']);
 
     publish(playing({ activeEntryIndex: 1 }));
-    expect(hopAnimations(glyphs())).toEqual(['', '', '']);
+    expect(growAnimations(glyphs())).toEqual(['', '', '']);
 
     publish(playing({ readingIndex: 1 }));
-    expect(hopAnimations(glyphs())).toEqual(['', '', '']);
+    expect(growAnimations(glyphs())).toEqual(['', '', '']);
 
     publish({
       kind: 'loading',
@@ -81,10 +81,10 @@ describe('TtsReading', () => {
       readingIndex: 0,
       audioStarted: false,
     });
-    expect(hopAnimations(glyphs())).toEqual(['', '', '']);
+    expect(growAnimations(glyphs())).toEqual(['', '', '']);
 
     publish(playing());
-    expect(hopAnimations(glyphs()).every(Boolean)).toBe(true);
+    expect(growAnimations(glyphs()).every(Boolean)).toBe(true);
     expect(glyphs()).toEqual(idleGlyphs);
   });
 
@@ -99,7 +99,7 @@ describe('TtsReading', () => {
     );
   });
 
-  it('colors and hops each single visible glyph on its own timing', () => {
+  it('colors and grows each single visible glyph on its own timing', () => {
     const { glyphs, moras, publish } = mount();
 
     publish(playing());
@@ -110,21 +110,17 @@ describe('TtsReading', () => {
       'tts-mora-reveal-a 200ms ease-in-out 200ms forwards',
       'tts-mora-reveal-a 200ms ease-in-out 400ms forwards',
     ]);
-    expect(hopAnimations(glyphs())).toEqual([
-      'tts-mora-hop-a 200ms ease-in-out 0ms',
-      'tts-mora-hop-a 200ms ease-in-out 200ms',
-      'tts-mora-hop-a 200ms ease-in-out 400ms',
+    expect(growAnimations(glyphs())).toEqual([
+      'tts-mora-grow-a 200ms ease-in-out 0ms',
+      'tts-mora-grow-a 200ms ease-in-out 200ms',
+      'tts-mora-grow-a 200ms ease-in-out 400ms',
     ]);
     expect(colorAnimations(glyphs())).toEqual([
       'tts-mora-highlight-a 200ms ease-in-out 0ms forwards',
       'tts-mora-highlight-a 200ms ease-in-out 200ms forwards',
       'tts-mora-highlight-a 200ms ease-in-out 400ms forwards',
     ]);
-    expect(glyphs().map((glyph) => glyph.style.translate)).toEqual([
-      '0 0',
-      '0 0',
-      '0 0',
-    ]);
+    expect(glyphs().map((glyph) => glyph.style.scale)).toEqual(['1', '1', '1']);
   });
 
   it.each([
@@ -146,20 +142,20 @@ describe('TtsReading', () => {
           (delay) => `tts-mora-reveal-a 200ms ease-in-out ${delay} forwards`
         )
       );
-      expect(hopAnimations(glyphs())).toEqual(
-        delays.map((delay) => `tts-mora-hop-a 200ms ease-in-out ${delay}`)
+      expect(growAnimations(glyphs())).toEqual(
+        delays.map((delay) => `tts-mora-grow-a 200ms ease-in-out ${delay}`)
       );
     }
   );
 
   it('holds the delays steady when the popup re-renders', () => {
     const { glyphs, rerender } = mount({ initialState: playing() });
-    const before = hopAnimations(glyphs());
+    const before = growAnimations(glyphs());
 
     vi.spyOn(performance, 'now').mockReturnValue(STARTED_AT + 400);
     rerender();
 
-    expect(hopAnimations(glyphs())).toEqual(before);
+    expect(growAnimations(glyphs())).toEqual(before);
   });
 
   it('draws solid accent borders sized to the base layer', () => {
@@ -264,7 +260,7 @@ describe('TtsReading', () => {
       'tts-mora-unhighlight 400ms ease-in-out 0ms forwards',
       'tts-mora-unhighlight 400ms ease-in-out 0ms forwards',
     ]);
-    expect(hopAnimations(glyphs())).toEqual(['', '', '']);
+    expect(growAnimations(glyphs())).toEqual(['', '', '']);
 
     act(() => {
       accentOverlay().dispatchEvent(animationEnd('tts-mora-reveal-a'));
@@ -275,7 +271,7 @@ describe('TtsReading', () => {
       accentOverlay().dispatchEvent(animationEnd('fade-out'));
     });
     expect(accentOverlay().style.animation).toBe('');
-    expect(hopAnimations(glyphs())).toEqual(['', '', '']);
+    expect(growAnimations(glyphs())).toEqual(['', '', '']);
     expect(revealAnimations(moras())).toEqual(['', '', '']);
   });
 
@@ -291,9 +287,9 @@ describe('TtsReading', () => {
       'tts-mora-unhighlight 400ms ease-in-out -300ms forwards',
       '',
     ]);
-    expect(hopAnimations(glyphs())).toEqual([
+    expect(growAnimations(glyphs())).toEqual([
       '',
-      'tts-mora-hop-a 200ms ease-in-out 200ms',
+      'tts-mora-grow-a 200ms ease-in-out 200ms',
       '',
     ]);
     expect(moras().map((mora) => mora.style.opacity)).toEqual(['1', '0', '0']);
@@ -331,10 +327,10 @@ describe('TtsReading', () => {
       'tts-mora-reveal-b 200ms ease-in-out 200ms forwards',
       'tts-mora-reveal-b 200ms ease-in-out 400ms forwards',
     ]);
-    expect(hopAnimations(second)).toEqual([
-      'tts-mora-hop-b 200ms ease-in-out 0ms',
-      'tts-mora-hop-b 200ms ease-in-out 200ms',
-      'tts-mora-hop-b 200ms ease-in-out 400ms',
+    expect(growAnimations(second)).toEqual([
+      'tts-mora-grow-b 200ms ease-in-out 0ms',
+      'tts-mora-grow-b 200ms ease-in-out 200ms',
+      'tts-mora-grow-b 200ms ease-in-out 400ms',
     ]);
   });
 
@@ -343,14 +339,14 @@ describe('TtsReading', () => {
 
     const { glyphs, moras } = mount({ initialState: playing() });
 
-    expect(hopAnimations(glyphs())).toEqual(['', '', '']);
+    expect(growAnimations(glyphs())).toEqual(['', '', '']);
     expect(revealAnimations(moras())).toEqual(['', '', '']);
   });
 
   it('resyncs from the current clock when animation is switched back on', () => {
     setReducedMotion(true);
     const { glyphs, moras } = mount({ initialState: playing() });
-    expect(hopAnimations(glyphs())).toEqual(['', '', '']);
+    expect(growAnimations(glyphs())).toEqual(['', '', '']);
 
     vi.spyOn(performance, 'now').mockReturnValue(STARTED_AT + 400);
     act(() => setReducedMotion(false));
@@ -371,11 +367,11 @@ describe('TtsReading', () => {
 
     act(() => setReducedMotion(true));
     expect(accentOverlay().style.animation).toBe('');
-    expect(hopAnimations(glyphs())).toEqual(['', '', '']);
+    expect(growAnimations(glyphs())).toEqual(['', '', '']);
 
     act(() => setReducedMotion(false));
     expect(accentOverlay().style.animation).toBe('');
-    expect(hopAnimations(glyphs())).toEqual(['', '', '']);
+    expect(growAnimations(glyphs())).toEqual(['', '', '']);
   });
 
   it('leaves the reading still when the clip has no timings', () => {
@@ -388,7 +384,7 @@ describe('TtsReading', () => {
       },
     });
 
-    expect(hopAnimations(glyphs())).toEqual(['', '', '']);
+    expect(growAnimations(glyphs())).toEqual(['', '', '']);
     expect(revealAnimations(moras())).toEqual(['', '', '']);
   });
 
@@ -416,7 +412,7 @@ describe('TtsReading', () => {
     const root = container.firstElementChild as HTMLElement;
     const glyphLayer = root.firstElementChild as HTMLElement;
     expect([...glyphLayer.children]).toHaveLength(3);
-    expect(hopAnimations(glyphsFrom(root)).every(Boolean)).toBe(true);
+    expect(growAnimations(glyphsFrom(root)).every(Boolean)).toBe(true);
   });
 });
 
@@ -504,12 +500,12 @@ function revealAnimations(moras: Array<HTMLElement>): Array<string> {
   return moras.map((mora) => mora.style.animation);
 }
 
-function hopAnimations(glyphs: Array<HTMLElement>): Array<string> {
+function growAnimations(glyphs: Array<HTMLElement>): Array<string> {
   return glyphs.map(
     (glyph) =>
       glyph.style.animation
         .split(', ')
-        .find((animation) => animation.includes('tts-mora-hop')) ?? ''
+        .find((animation) => animation.includes('tts-mora-grow')) ?? ''
   );
 }
 
