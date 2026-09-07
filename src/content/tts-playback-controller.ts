@@ -35,7 +35,7 @@ export type TtsPlaybackHandle = Pick<
 export class TtsPlaybackController {
   #player: TtsPlayer;
   #entries: ReadonlyArray<TtsEntry> = [];
-  #activeEntry: { index: number; key: string } | undefined;
+  #activeEntry: { index: number | undefined; key: string } | undefined;
   #audioStarted = false;
   #actions: Array<() => void> = [];
   #draining = false;
@@ -115,7 +115,7 @@ export class TtsPlaybackController {
       }
 
       const state = this.#currentState();
-      if (state.kind === 'idle') {
+      if (this.#player.state.kind === 'idle') {
         this.#activeEntry = undefined;
       }
       if (!sameState(state, this.#state)) {
@@ -147,7 +147,7 @@ export class TtsPlaybackController {
   #currentState(): TtsPlaybackState {
     const playerState = this.#player.state;
     const active = this.#activeEntry;
-    if (playerState.kind === 'idle' || !active) {
+    if (playerState.kind === 'idle' || active?.index === undefined) {
       return { kind: 'idle' };
     }
 
@@ -183,18 +183,16 @@ export class TtsPlaybackController {
       return;
     }
 
-    const stillThere = entries[active.index];
+    const stillThere =
+      active.index === undefined ? undefined : entries[active.index];
     const index =
-      stillThere && entryKey(stillThere) === active.key
+      active.index !== undefined &&
+      stillThere &&
+      entryKey(stillThere) === active.key
         ? active.index
         : entries.findIndex((entry) => entryKey(entry) === active.key);
-    if (index < 0) {
-      this.#applyStop();
-      return;
-    }
-
     if (index !== active.index) {
-      this.#activeEntry = { ...active, index };
+      this.#activeEntry = { ...active, index: index < 0 ? undefined : index };
     }
   }
 
