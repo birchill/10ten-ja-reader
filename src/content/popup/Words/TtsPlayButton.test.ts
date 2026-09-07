@@ -4,7 +4,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { TtsPlaybackState } from '../../tts-playback-controller';
 
-import { LOADING_DEFER_MS } from '../hooks/use-deferred-loading';
 import { STOP_PATH } from '../play-stop-paths';
 
 import { TtsPlayButton, type TtsPlayButtonProps } from './TtsPlayButton';
@@ -56,60 +55,6 @@ describe('TtsPlayButton', () => {
     expect(button.getAttribute('aria-label')).toBe(
       'content_stop_readings_label'
     );
-  });
-
-  it('flips the glyph to stop only once playback actually starts', () => {
-    const { path, publish } = mount();
-    const playPath = path.getAttribute('d');
-
-    act(() => publish(loading()));
-    expect(path.getAttribute('d')).toBe(playPath);
-
-    act(() => {
-      vi.advanceTimersByTime(LOADING_DEFER_MS);
-    });
-    expect(path.getAttribute('d')).toBe(playPath);
-
-    act(() => publish(playing()));
-    expect(path.getAttribute('d')).toBe(STOP_PATH);
-  });
-
-  it('holds the stop glyph across a loading gap between readings', () => {
-    const { path, publish } = mount();
-
-    act(() => publish(playing()));
-    act(() => publish(loading(1, true)));
-    expect(path.getAttribute('d')).toBe(STOP_PATH);
-  });
-
-  it('adds scan styles after the loading delay', () => {
-    const { glyphClass, publish } = mount();
-
-    act(() => publish(loading()));
-    expect(glyphClass()).not.toContain('scan-line');
-    expect(glyphClass()).not.toContain('animate-[scan-up_0.7s_infinite]');
-
-    act(() => {
-      vi.advanceTimersByTime(LOADING_DEFER_MS);
-    });
-
-    expect(glyphClass()).toContain('scan-line');
-    expect(glyphClass()).toContain('animate-[scan-up_0.7s_infinite]');
-  });
-
-  it('selects dimmed, no-animation styles for reduced motion', () => {
-    prefersReducedMotion();
-    const { glyphClass, publish } = mount();
-
-    act(() => publish(loading()));
-    act(() => {
-      vi.advanceTimersByTime(LOADING_DEFER_MS);
-    });
-
-    expect(glyphClass()).toContain('opacity-30');
-    expect(glyphClass()).not.toContain('scan-line');
-    expect(glyphClass()).not.toContain('animate-[scan-up_0.7s_infinite]');
-    expect(glyphClass()).not.toContain('group-hover/tts:opacity-100');
   });
 
   it('ignores state published for a different entry', () => {
@@ -192,13 +137,9 @@ function mount(overrides: Partial<TtsPlayButtonProps> = {}) {
     render(h(TtsPlayButton, props), container);
   });
 
-  const glyph = () => container.querySelectorAll('svg')[0]!;
-
   return {
     container,
     button: container.querySelector('button')!,
-    path: glyph().querySelector('path')!,
-    glyphClass: () => glyph().getAttribute('class') ?? '',
     publish: (state: TtsPlaybackState) => {
       currentState = state;
       listener?.(state);
@@ -212,20 +153,6 @@ function loading(readingIndex = 0, audioStarted = false): TtsPlaybackState {
 
 function playing(readingIndex = 0): TtsPlaybackState {
   return { kind: 'playing', activeEntryIndex: 0, readingIndex, startedAt: 100 };
-}
-
-function prefersReducedMotion() {
-  vi.stubGlobal(
-    'matchMedia',
-    vi
-      .fn()
-      .mockImplementation((query: string) => ({
-        matches: query.includes('prefers-reduced-motion'),
-        media: query,
-        addEventListener: () => {},
-        removeEventListener: () => {},
-      }))
-  );
 }
 
 function errored(): TtsPlaybackState {

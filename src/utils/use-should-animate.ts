@@ -1,4 +1,4 @@
-import { useMediaQuery } from '../../../utils/use-media-query';
+import { useMediaQuery } from './use-media-query';
 
 export function useShouldAnimate(): boolean {
   return !useMediaQuery('(prefers-reduced-motion: reduce)');

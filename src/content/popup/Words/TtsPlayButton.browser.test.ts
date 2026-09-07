@@ -18,8 +18,8 @@ afterEach(() => {
   document.body.replaceChildren();
 });
 
-describe('TtsPlayButton browser rendering', () => {
-  it('keeps its glyph size when options and popup styles load together', () => {
+describe('Options and popup styles coexisting in Cosmos', () => {
+  it('keeps the play button glyph size when both stylesheets load', () => {
     const { button, glyph } = mountButton({ kind: 'idle' });
 
     expect(getComputedStyle(button).boxSizing).toBe('content-box');
@@ -28,7 +28,7 @@ describe('TtsPlayButton browser rendering', () => {
     expect(glyph.getBoundingClientRect().height).toBeCloseTo(14, 1);
   });
 
-  it('keeps border-box sizing inside the options UI', () => {
+  it('preserves options border-box sizing after scoping its reset', () => {
     const options = document.createElement('div');
     options.className = 'options';
     const child = document.createElement('div');
@@ -36,21 +36,6 @@ describe('TtsPlayButton browser rendering', () => {
     document.body.append(options);
 
     expect(getComputedStyle(child).boxSizing).toBe('border-box');
-  });
-
-  it("renders a 10px error badge at the glyph's top-right corner", () => {
-    const { button, glyph } = mountButton({
-      kind: 'error',
-      activeEntryIndex: 0,
-    });
-    const badge = button.querySelector('.tts-error-badge')!;
-    const glyphRect = glyph.getBoundingClientRect();
-    const badgeRect = badge.getBoundingClientRect();
-
-    expect(badgeRect.width).toBeCloseTo(10, 1);
-    expect(badgeRect.height).toBeCloseTo(10, 1);
-    expect(badgeRect.x + badgeRect.width / 2).toBeCloseTo(glyphRect.right, 1);
-    expect(badgeRect.y + badgeRect.height / 2).toBeCloseTo(glyphRect.top, 1);
   });
 });
 

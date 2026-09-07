@@ -3,15 +3,15 @@ import { useEffect, useState } from 'preact/hooks';
 
 import { useLocale } from '../../../common/i18n';
 import { classes } from '../../../utils/classes';
+import type { TtsButtonState } from '../../../utils/use-deferred-loading';
+import { useDeferredLoading } from '../../../utils/use-deferred-loading';
+import { useShouldAnimate } from '../../../utils/use-should-animate';
 
 import type {
   TtsPlaybackHandle,
   TtsPlaybackState,
 } from '../../tts-playback-controller';
 
-import type { TtsButtonState } from '../hooks/use-deferred-loading';
-import { useDeferredLoading } from '../hooks/use-deferred-loading';
-import { useShouldAnimate } from '../hooks/use-should-animate';
 import { PLAY_PATH_OPTICALLY_CENTERED, STOP_PATH } from '../play-stop-paths';
 
 export type TtsPlayButtonProps = {
@@ -42,19 +42,20 @@ export function TtsPlayButton(props: TtsPlayButtonProps) {
     'color-mix(in srgb, var(--text-color) 12%, transparent)';
 
   const hitAreaPadding = 'calc((13 / 14) * var(--base-font-size))';
-  // Keep vertical padding smaller so the hit area does not overlap the first
-  // definition.
+  // Scale 6px padding from the 14px base to avoid the first definition.
+  // Split any shortfall around the glyph to keep the target at least 24px tall.
   const hitAreaPaddingBlock =
     'max(calc((6 / 14) * var(--base-font-size)), calc((24px - var(--base-font-size)) / 2))';
-  // The 14px row gap and 13px padding add 27px before the icon. Pull back
-  // 15px to leave 12px.
+  // Scale the negative start margin to leave a 12px gap at the 14px base size.
+  // This removes 15px from the 14px row spacing plus 13px button padding.
   const marginInlineStart = 'calc((15 / 14) * var(--base-font-size))';
   const discInset = 'calc((9 / 14) * var(--base-font-size))';
-  // Use a separate vertical inset so asymmetric button padding still produces
-  // a round disc.
+  // The disc width at the 14px base size is 14 + 2 * 13 - 2 * 9 = 22px.
+  // Subtract that scaled diameter from the button height (glyph + both paddings).
+  // Halve the remainder to center a round disc despite the smaller vertical padding.
   const discInsetBlock =
     'calc((var(--tts-glyph) + 2 * var(--tts-pad-y) - 22 / 14 * var(--base-font-size)) / 2)';
-  const glyphSize = 'calc((14 / 14) * var(--base-font-size))';
+  const glyphSize = 'var(--base-font-size)';
   const errorBadgeSize = 'calc((10 / 14) * var(--base-font-size))';
   // Without this optical adjustment, vertical-align: middle makes the disc
   // look too low.

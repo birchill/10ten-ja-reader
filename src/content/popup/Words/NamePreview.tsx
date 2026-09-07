@@ -39,7 +39,7 @@ export function NamePreview({
 
         return (
           <NameEntry
-            key={index}
+            key={name.id}
             entry={name}
             selectState={selectState}
             tts={
