@@ -1,5 +1,7 @@
 import { useFixtureSelect } from 'react-cosmos/client';
 
+import { classes } from '../../../utils/classes';
+
 import type { TtsPlaybackState } from '../../tts-playback-controller';
 
 import { TtsPlayButton } from './TtsPlayButton';
@@ -12,6 +14,7 @@ export default {
     const [kind] = useFixtureSelect<FixtureKind>('state', {
       options: ['idle', 'loading', 'playing', 'between-readings', 'error'],
     });
+    const [row] = useFixtureSelect('row', { options: ['normal', 'selected'] });
 
     const state = states[kind];
     const controller = {
@@ -24,9 +27,22 @@ export default {
     };
 
     return (
-      <div class="tp:p-4 tp:hover:bg-(--hover-bg) tp:hover:[--tts-highlight:var(--selected-highlight)] tp:hover:[--tts-error-badge-color:var(--selected-tts-error-badge-color)]">
+      <div
+        class={classes(
+          'tp:group tp:p-4',
+          'tp:hover:bg-(--hover-bg)',
+          'tp:hover:[--tts-highlight:var(--selected-highlight)]',
+          'tp:hover:[--tts-error-badge-color:var(--selected-tts-error-badge-color)]',
+          'tp:no-overlay:data-selected:bg-(--selected-bg)',
+          'tp:no-overlay:data-selected:[--tts-highlight:var(--selected-highlight)]',
+          'tp:no-overlay:data-selected:[--tts-error-badge-color:var(--selected-tts-error-badge-color)]'
+        )}
+        data-selected={row === 'selected' || undefined}
+      >
         <div class="tp:space-x-4 tp:text-xl" lang="ja">
-          <span class="tp:text-(--reading-highlight)">ひ</span>
+          <span class="tp:text-(--reading-highlight) tp:group-hover:text-(--selected-reading-highlight) tp:no-overlay:group-data-selected:text-(--selected-reading-highlight)">
+            ひ
+          </span>
           <TtsPlayButton controller={controller} entryIndex={0} />
         </div>
       </div>

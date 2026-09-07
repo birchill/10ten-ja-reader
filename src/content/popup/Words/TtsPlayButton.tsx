@@ -97,6 +97,8 @@ export function TtsPlayButton(props: TtsPlayButtonProps) {
           'tp:before:rounded-full tp:before:pointer-events-none',
           'tp:hover:before:bg-(--tts-disc-bg)',
           'tp:hover:text-(--tts-highlight)',
+          'tp:group-hover:text-(--tts-highlight)',
+          'tp:no-overlay:group-data-selected:text-(--tts-highlight)',
           'tp:focus-visible:outline-2',
           'tp:focus-visible:-outline-offset-4',
           'tp:focus-visible:outline-(--tts-highlight)',
@@ -117,7 +119,7 @@ export function TtsPlayButton(props: TtsPlayButtonProps) {
             // the button and would hide the dimmed state.
             dimForLoading
               ? 'tp:opacity-30'
-              : 'tp:opacity-60 tp:group-hover/tts:opacity-100',
+              : 'tp:opacity-60 tp:group-hover/tts:opacity-100 tp:group-hover:opacity-100 tp:no-overlay:group-data-selected:opacity-100',
             deferredState === 'loading' &&
               shouldAnimate &&
               'tp:scan-line tp:animate-[scan-up_0.7s_infinite]'
