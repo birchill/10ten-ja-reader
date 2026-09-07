@@ -1,55 +1,33 @@
-import { useLayoutEffect, useRef } from 'preact/hooks';
-
 import type { TtsPlaybackHandle } from '../tts-playback-controller';
 
-import { unmountPopupComponents } from './mount';
-import { renderNamesEntries } from './names';
-import { usePopupOptions } from './options-context';
+import { NameTable } from './Names/NameTable';
 
-export default function StandaloneNamesFixture() {
-  const host = useRef<HTMLDivElement>(null);
-  const { interactive, fontSize } = usePopupOptions();
+export default function NamesPlaybackFixture() {
+  const controller: TtsPlaybackHandle = {
+    state: { kind: 'idle' },
+    subscribe: () => () => {},
+    toggle: () => {},
+  };
 
-  useLayoutEffect(() => {
-    const popupHost = host.current;
-    if (!popupHost) {
-      return;
-    }
-
-    const controller: TtsPlaybackHandle = {
-      state: { kind: 'idle' },
-      subscribe: () => () => {},
-      toggle: () => {},
-    };
-    const names = renderNamesEntries({
-      entries: [
-        {
-          id: 1,
-          k: ['佐藤'],
-          r: ['さとう'],
-          tr: [{ det: ['Sato'], type: ['surname'] }],
-          matchLen: 2,
-        },
-      ],
-      matchLen: 2,
-      more: false,
-      options: {
-        copyState: { kind: 'inactive' },
-        fontSize: fontSize ?? 'normal',
-        fxData: undefined,
-        interactive,
-        preferredUnits: 'metric',
-        ttsPlayback: controller,
-      },
-      popupHost,
-    });
-    popupHost.append(names);
-
-    return () => {
-      unmountPopupComponents(popupHost);
-      names.remove();
-    };
-  }, [interactive, fontSize]);
-
-  return <div ref={host} />;
+  return (
+    <div class="entry-data">
+      <NameTable
+        entries={[
+          {
+            id: 1,
+            k: ['佐藤'],
+            r: ['さとう'],
+            tr: [{ det: ['Sato'], type: ['surname'] }],
+            matchLen: 2,
+          },
+        ]}
+        matchLen={2}
+        more={false}
+        copyState={{ kind: 'inactive' }}
+        fxData={undefined}
+        preferredUnits="metric"
+        ttsPlayback={controller}
+      />
+    </div>
+  );
 }
