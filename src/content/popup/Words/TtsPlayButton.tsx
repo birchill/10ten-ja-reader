@@ -46,13 +46,14 @@ export function TtsPlayButton(props: TtsPlayButtonProps) {
   // Split any shortfall around the glyph to keep the target at least 24px tall.
   const hitAreaPaddingBlock =
     'max(calc((6 / 14) * var(--base-font-size)), calc((24px - var(--base-font-size)) / 2))';
-  // Scale the negative start margin to leave a 12px gap at the 14px base size.
-  // This removes 15px from the 14px row spacing plus 13px button padding.
+  // The row and button add 27px of space before the icon at the normal font size.
+  // Move the button 15px toward the reading to leave a 12px gap.
+  // Adjust this distance with the font size.
   const marginInlineStart = 'calc((15 / 14) * var(--base-font-size))';
   const discInset = 'calc((9 / 14) * var(--base-font-size))';
-  // The disc width at the 14px base size is 14 + 2 * 13 - 2 * 9 = 22px.
-  // Subtract that scaled diameter from the button height (glyph + both paddings).
-  // Halve the remainder to center a round disc despite the smaller vertical padding.
+  // At the normal font size, the button is 40px wide. Leave 9px on each side for a 22px circle.
+  // Subtract the circle's height from the button's height, then split the space equally above and below.
+  // This keeps the background round even though the button has more space on its sides.
   const discInsetBlock =
     'calc((var(--tts-glyph) + 2 * var(--tts-pad-y) - 22 / 14 * var(--base-font-size)) / 2)';
   const glyphSize = 'var(--base-font-size)';
