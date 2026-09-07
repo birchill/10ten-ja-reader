@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { AccentDisplay } from '../../../common/content-config-params';
 import type { MoraTimingData } from '../../../common/tts/tts-request';
 import { classes } from '../../../utils/classes';
+import { useShouldAnimate } from '../../../utils/use-should-animate';
 
 import type {
   TtsPlaybackController,
@@ -15,8 +16,6 @@ import {
 } from '../../tts/mora-durations';
 import type { ReadingToken } from '../../tts/reading-tokens';
 import { getAccentPos, getReadingTokens } from '../../tts/reading-tokens';
-
-import { useShouldAnimate } from '../hooks/use-should-animate';
 
 import { accentClasses, accentLayer } from './Reading';
 
