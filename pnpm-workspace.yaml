@@ -9,3 +9,6 @@ minimumReleaseAge: 1440 # 1 day
 minimumReleaseAgeExclude:
   - '@birchill/*'
   - react-cosmos-plugin-rspack
+
+# Avoid requiring release timestamps for every candidate in registry metadata.
+resolutionMode: highest
