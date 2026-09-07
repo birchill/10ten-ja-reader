@@ -142,8 +142,8 @@ describe('NameTable playback', () => {
 
     const readings = container.querySelectorAll('.tp\\:inline-grid');
     expect(readings).toHaveLength(2);
-    expect(hopAnimations(readings[0]!)).toEqual(['', '', '']);
-    expect(hopAnimations(readings[1]!).every(Boolean)).toBe(true);
+    expect(growAnimations(readings[0]!)).toEqual(['', '', '']);
+    expect(growAnimations(readings[1]!).every(Boolean)).toBe(true);
   });
 });
 
@@ -171,12 +171,12 @@ function createController(onToggle: (entryIndex: number) => void = () => {}) {
   };
 }
 
-function hopAnimations(reading: Element): Array<string> {
+function growAnimations(reading: Element): Array<string> {
   return [...reading.firstElementChild!.children].map(
     (mora) =>
       (mora.firstElementChild as HTMLElement).style.animation
         .split(', ')
-        .find((animation) => animation.includes('tts-mora-hop')) ?? ''
+        .find((animation) => animation.includes('tts-mora-grow')) ?? ''
   );
 }
 
