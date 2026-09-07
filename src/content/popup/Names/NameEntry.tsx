@@ -39,6 +39,7 @@ export function NameEntry(props: Props) {
         'tp:no-overlay:data-selected:text-(--selected-highlight)',
         'tp:no-overlay:data-selected:bg-(--selected-bg)',
         'tp:no-overlay:data-selected:[--tts-highlight:var(--selected-highlight)]',
+        'tp:no-overlay:data-selected:[--tts-error-badge-color:var(--selected-tts-error-badge-color)]',
         // Run the flash animation, but not until the overlay has
         // disappeared.
         'tp:no-overlay:data-flash:animate-flash',
@@ -46,6 +47,7 @@ export function NameEntry(props: Props) {
           ? [
               'tp:hover:bg-(--hover-bg)',
               'tp:hover:[--tts-highlight:var(--selected-highlight)]',
+              'tp:hover:[--tts-error-badge-color:var(--selected-tts-error-badge-color)]',
               'tp:hover:cursor-pointer',
               // Fade _out_ the color change
               'tp:transition-colors tp:interactive:duration-100',

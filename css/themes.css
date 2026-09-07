@@ -14,6 +14,7 @@
   --selected-tag-border: rgba(0, 0, 0, 0.3);
 
   --tts-error-badge-color: #f87171;
+  --selected-tts-error-badge-color: #b91c1c;
 }
 
 /*
@@ -222,6 +223,7 @@
   --tag-blue-border: rgba(255, 255, 255, 0.3);
 
   --tts-error-badge-color: #fecaca;
+  --selected-tts-error-badge-color: #fecaca;
 }
 
 .window.theme-black .w-def .w-misc {

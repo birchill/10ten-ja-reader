@@ -129,6 +129,7 @@ export function WordEntry(props: WordEntryProps) {
         // overlay
         'tp:no-overlay:data-selected:bg-(--selected-bg)',
         'tp:no-overlay:data-selected:[--tts-highlight:var(--selected-highlight)]',
+        'tp:no-overlay:data-selected:[--tts-error-badge-color:var(--selected-tts-error-badge-color)]',
         'tp:no-overlay:data-selected:rounded-xs',
         // Run the flash animation, but not until the overlay has
         // disappeared.
@@ -137,6 +138,7 @@ export function WordEntry(props: WordEntryProps) {
           ? [
               'tp:hover:bg-(--hover-bg)',
               'tp:hover:[--tts-highlight:var(--selected-highlight)]',
+              'tp:hover:[--tts-error-badge-color:var(--selected-tts-error-badge-color)]',
               'tp:hover:rounded-xs',
               'tp:hover:cursor-pointer',
               // Fade _out_ the color change
