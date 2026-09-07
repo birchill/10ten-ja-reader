@@ -36,10 +36,8 @@ export function TtsPlayButton(props: TtsPlayButtonProps) {
     isActive ? 'content_stop_readings_label' : 'content_play_readings_label'
   );
 
-  // Do not use --cell-highlight-bg; on yellow and black themes it blends
-  // into a hovered row.
-  const discBackground =
-    'color-mix(in srgb, var(--text-color) 12%, transparent)';
+  // Follow the icon color so the circle darkens on light highlighted rows.
+  const discBackground = 'color-mix(in srgb, currentColor 20%, transparent)';
 
   const hitAreaPadding = 'calc((13 / 14) * var(--base-font-size))';
   // Scale 6px padding from the 14px base to avoid the first definition.
