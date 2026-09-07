@@ -196,7 +196,7 @@ describe('TtsPlaybackController', () => {
     });
   });
 
-  it('stops when the audio of the entry it is playing changes', async () => {
+  it('keeps the original audio playing when the displayed readings change', async () => {
     const { controller, statuses, playbacks } = setUp([entryA, entryB]);
 
     controller.toggle(1);
@@ -204,11 +204,11 @@ describe('TtsPlaybackController', () => {
 
     controller.setEntries([entryA, { id: entryB.id, requests: twoReadings }]);
 
-    expect(playbacks[0].signal.aborted).toBe(true);
+    expect(playbacks[0].signal.aborted).toBe(false);
     expect(statuses()).toEqual(['idle', 'idle']);
   });
 
-  it('stops when the entry it is playing disappears', async () => {
+  it('keeps playing when the entry it is playing disappears', async () => {
     const { controller, statuses, playbacks } = setUp([entryA, entryB]);
 
     controller.toggle(1);
@@ -216,8 +216,102 @@ describe('TtsPlaybackController', () => {
 
     controller.setEntries([]);
 
-    expect(playbacks[0].signal.aborted).toBe(true);
+    expect(playbacks[0].signal.aborted).toBe(false);
     expect(statuses()).toEqual(['idle', 'idle']);
+  });
+
+  it('restores playback state when the playing entry reappears', async () => {
+    const { controller, playbacks, statuses } = setUp([entryA, entryB]);
+
+    controller.toggle(1);
+    await flush();
+    const playing = controller.state;
+    controller.setEntries([]);
+    controller.setEntries([entryB, entryA]);
+
+    expect(playbacks[0].signal.aborted).toBe(false);
+    expect(controller.state).toEqual({ ...playing, activeEntryIndex: 0 });
+    expect(statuses()).toEqual(['playing', 'idle']);
+
+    controller.toggle(0);
+
+    expect(playbacks[0].signal.aborted).toBe(true);
+    expect(controller.state).toEqual({ kind: 'idle' });
+  });
+
+  it('finishes all readings after the popup entries are cleared', async () => {
+    const { controller, playbacks, unsubscribeAll } = setUp([
+      { id: 4, requests: twoReadings },
+    ]);
+
+    controller.toggle(0);
+    await flush();
+    controller.setEntries([]);
+    unsubscribeAll();
+    playbacks[0].end();
+    await flush();
+
+    expect(playbacks).toHaveLength(2);
+    expect(playbacks[1].signal.aborted).toBe(false);
+    expect(controller.state).toEqual({ kind: 'idle' });
+
+    playbacks[1].end();
+    await flush();
+    controller.setEntries([{ id: 4, requests: twoReadings }]);
+
+    expect(playbacks[1].signal.aborted).toBe(true);
+    expect(controller.state).toEqual({ kind: 'idle' });
+  });
+
+  it('continues loading after the popup entries are cleared', async () => {
+    const { controller, fetches, playbacks } = setUp([entryA], {
+      deferFetch: true,
+    });
+
+    controller.toggle(0);
+    controller.setEntries([]);
+
+    expect(fetches[0].signal.aborted).toBe(false);
+
+    fetches[0].resolve();
+    await flush();
+    controller.setEntries([entryA]);
+
+    expect(playbacks).toHaveLength(1);
+    expect(controller.state).toMatchObject({
+      kind: 'playing',
+      activeEntryIndex: 0,
+    });
+  });
+
+  it('replaces hidden playback when a different entry at the same index starts', async () => {
+    const { controller, playbacks, statuses } = setUp([entryA]);
+
+    controller.toggle(0);
+    await flush();
+    controller.setEntries([entryB]);
+
+    expect(statuses()).toEqual(['idle', 'idle']);
+
+    controller.toggle(0);
+    await flush();
+
+    expect(playbacks[0].signal.aborted).toBe(true);
+    expect(playbacks).toHaveLength(2);
+    expect(statuses()).toEqual(['playing', 'idle']);
+  });
+
+  it('can explicitly stop playback after the popup entries are cleared', async () => {
+    const { controller, playbacks } = setUp([entryA]);
+
+    controller.toggle(0);
+    await flush();
+    controller.setEntries([]);
+    controller.stop();
+    controller.setEntries([entryA]);
+
+    expect(playbacks[0].signal.aborted).toBe(true);
+    expect(controller.state).toEqual({ kind: 'idle' });
   });
 
   it('fetches the clips again when an entry is played after it finished', async () => {

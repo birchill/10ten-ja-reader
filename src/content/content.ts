@@ -1368,6 +1368,7 @@ export class ContentHandler {
     if (this.isTopMostWindow()) {
       this.applyPuckConfig();
     } else {
+      this.#ttsPlaybackController?.stop();
       removePopup();
       this.clearResult();
       this.tearDownPuck();
@@ -1867,7 +1868,7 @@ export class ContentHandler {
     this.#currentPagePoint = undefined;
     this.#lastPointerTarget = null;
     this.#copyState = { kind: 'inactive' };
-    this.#ttsPlaybackController?.stop();
+    this.#ttsPlaybackController?.setEntries([]);
 
     clearPopupTimeout(this.#popupState);
     this.#popupState = undefined;
