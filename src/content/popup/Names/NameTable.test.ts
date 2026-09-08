@@ -140,10 +140,9 @@ describe('NameTable playback', () => {
       });
     });
 
-    const readings = container.querySelectorAll('.tp\\:inline-grid');
-    expect(readings).toHaveLength(2);
-    expect(growAnimations(readings[0]!)).toEqual(['', '', '']);
-    expect(growAnimations(readings[1]!).every(Boolean)).toBe(true);
+    // さとう and さとお share their first two moras, so a highlight leaking
+    // into the other reading would show up as six animating glyphs.
+    expect(swellingGlyphs(container)).toEqual(['さ', 'と', 'お']);
   });
 });
 
@@ -171,19 +170,12 @@ function createController(onToggle: (entryIndex: number) => void = () => {}) {
   };
 }
 
-function growAnimations(reading: Element): Array<string> {
-  // The glyph layer groups its moras into one box per accent run, so the
-  // moras sit a level below the layer's own children.
-  const moras = [...reading.firstElementChild!.children].flatMap((group) => [
-    ...group.children,
-  ]);
+function swellingGlyphs(container: HTMLElement): Array<string | null> {
+  const entry = container.querySelector('[lang="ja"]')!;
 
-  return moras.map(
-    (mora) =>
-      (mora.firstElementChild as HTMLElement).style.animation
-        .split(', ')
-        .find((animation) => animation.includes('tts-mora-grow')) ?? ''
-  );
+  return [...entry.querySelectorAll<HTMLElement>('span')]
+    .filter((span) => span.style.animation.includes('tts-mora-grow'))
+    .map((span) => span.textContent);
 }
 
 function createName(
