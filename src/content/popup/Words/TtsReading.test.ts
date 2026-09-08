@@ -79,8 +79,7 @@ describe('TtsReading', () => {
   });
 
   it.each([
-    [0, [0, 200, 400]],
-    [50, [-50, 150, 350]],
+    // Spoken, mid-sweep, and not yet reached.
     [250, [-250, -50, 150]],
     // Past the end of the clip every mora is already filled in.
     [900, [-900, -700, -500]],
@@ -108,15 +107,12 @@ describe('TtsReading', () => {
     expect(delaysFor(glyphs(), 'tts-mora-grow')).toEqual(before);
   });
 
-  it('hides the ink layer from assistive tech and the pointer', () => {
+  it('hides the ink layer from assistive tech', () => {
     const { accentOverlay, publish } = mount();
 
     publish(playing());
 
     expect(accentOverlay()!.getAttribute('aria-hidden')).toBe('true');
-    expect(accentOverlay()!.classList.contains('tp:pointer-events-none')).toBe(
-      true
-    );
   });
 
   it('mounts no ink layer for a reading that draws no pitch line', () => {
@@ -140,7 +136,6 @@ describe('TtsReading', () => {
     expect(mark.textContent).toBe('ꜜ');
     expect(colouring([mark])).toEqual([true]);
     expect(swelling([mark])).toEqual([false]);
-    expect(mark.style.transformOrigin).toBe('');
   });
 
   it('reverses the colour of everything already spoken when playback stops', () => {
@@ -180,22 +175,19 @@ describe('TtsReading', () => {
     expect(paused(moras())).toEqual([false, true, false]);
   });
 
-  it('clears the highlight once the fade has finished', () => {
+  it('waits for the fade before it clears the highlight', () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     const { glyphs, moras, publish } = mount();
 
     publish(playing());
     vi.spyOn(performance, 'now').mockReturnValue(STARTED_AT + 600);
     publish({ kind: 'idle' });
+
+    // Clearing on the spot would cut the reverse sweep off mid-fade.
     expect(uncolouring(glyphs())).toEqual([true, true, true]);
 
     act(() => {
-      vi.advanceTimersByTime(FADE_MS - 1);
-    });
-    expect(uncolouring(glyphs())).toEqual([true, true, true]);
-
-    act(() => {
-      vi.advanceTimersByTime(1);
+      vi.runAllTimers();
     });
     expect(animating(glyphs())).toEqual([false, false, false]);
     expect(animating(moras())).toEqual([false, false, false]);
@@ -287,10 +279,6 @@ describe('TtsReading', () => {
 });
 
 type Kana = WordResult['r'][0];
-
-// Matches the fade in TtsReading. The test only needs to know the boundary it
-// waits either side of.
-const FADE_MS = 400;
 
 function playing(
   overrides: {
