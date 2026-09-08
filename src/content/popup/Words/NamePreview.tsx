@@ -14,14 +14,12 @@ export function NamePreview({
   copyState,
   onStartCopy,
   ttsPlayback,
-  ttsEntryIndexOffset = 0,
 }: {
   namePreview: QueryNamePreview;
   selectedIndex?: number;
   copyState: CopyState;
   onStartCopy?: StartCopyCallback;
   ttsPlayback?: TtsPlaybackHandle;
-  ttsEntryIndexOffset?: number;
 }) {
   const namesPreview = useRef<HTMLDivElement>(null);
   const lastPointerType = useRef('touch');
@@ -42,12 +40,7 @@ export function NamePreview({
             key={name.id}
             entry={name}
             selectState={selectState}
-            tts={
-              ttsPlayback && {
-                controller: ttsPlayback,
-                entryIndex: ttsEntryIndexOffset + index,
-              }
-            }
+            tts={ttsPlayback && { controller: ttsPlayback, entryIndex: index }}
             onPointerUp={(evt) => {
               lastPointerType.current = evt.pointerType;
             }}

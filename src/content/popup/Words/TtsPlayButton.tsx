@@ -37,9 +37,12 @@ export function TtsPlayButton(props: TtsPlayButtonProps) {
   const label = t(
     isActive ? 'content_stop_readings_label' : 'content_play_readings_label'
   );
-  const title = playReadingsShortcuts.length
-    ? `${label} (${playReadingsShortcuts.join(' / ')})`
-    : label;
+  // The key only plays the first entry, so a hint on a lower row would
+  // promise the wrong row.
+  const title =
+    entryIndex === 0 && playReadingsShortcuts.length
+      ? `${label} (${playReadingsShortcuts.join(' / ')})`
+      : label;
 
   // Follow the icon color so the circle darkens on light highlighted rows.
   const discBackground = 'color-mix(in srgb, currentColor 20%, transparent)';

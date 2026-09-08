@@ -358,6 +358,32 @@ describe('TtsPlaybackController', () => {
       moraTiming
     );
   });
+
+  it('reports whether it has entries to play', () => {
+    const { controller } = setUp([]);
+
+    expect(controller.hasEntries).toBe(false);
+
+    controller.setEntries([entryA]);
+    expect(controller.hasEntries).toBe(true);
+
+    controller.setEntries([]);
+    expect(controller.hasEntries).toBe(false);
+  });
+
+  it('plays the first entry on toggleTopEntry', async () => {
+    const { controller, statuses } = setUp([entryA, entryB]);
+
+    controller.toggleTopEntry();
+    await flush();
+
+    expect(statuses()).toEqual(['playing', 'idle']);
+
+    controller.toggleTopEntry();
+    await flush();
+
+    expect(statuses()).toEqual(['idle', 'idle']);
+  });
 });
 
 const entryA: TtsEntry = {
