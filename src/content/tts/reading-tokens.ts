@@ -31,8 +31,8 @@ export function getReadingTokens(
   const accent = Math.min(accentPos, moras.length);
 
   if (accentDisplay === 'downstep') {
-    // Heiban has no downstep to mark, so its overline is the accent every mora
-    // carries.
+    // Heiban has no pitch drop, so draw a line above the whole reading instead
+    // of a downstep mark. Each mora draws its part of the line.
     return accent === 0
       ? moras.map((mora) => ({ ...mora, accent: 'high' as const }))
       : moras.map((mora, index) =>
