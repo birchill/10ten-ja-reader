@@ -17,8 +17,8 @@ vi.mock('../common/i18n', () => ({
 let container: HTMLDivElement | undefined;
 
 beforeEach(() => {
-  // Freeze the clock before the badge's expiry, or this stops testing
-  // anything once that date passes.
+  // Freeze the clock before the badge's expiry, or this test starts failing
+  // once that date passes.
   vi.useFakeTimers();
   vi.setSystemTime(new Date('2020-01-01'));
 });

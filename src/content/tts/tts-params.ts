@@ -1,8 +1,49 @@
+import type { MajorDataSeries } from '@birchill/jpdict-idb';
+
 import type { NameResult, WordResult } from '../../background/search-result';
 import { getDisplayedKana } from '../../common/displayed-kana';
 import type { TtsClipRequest } from '../../common/tts/tts-request';
 
+import type { TtsEntry } from '../tts-playback-controller';
+
 import { getAccentPos } from './reading-tokens';
+
+// The parts of a `QueryResult` that carry readings we can play.
+export type TtsEntrySource = {
+  words?: { data: Array<WordResult> } | null;
+  names?: { data: Array<NameResult> } | null;
+  namePreview?: { names: Array<NameResult> };
+};
+
+export function buildTtsEntries(
+  dict: MajorDataSeries,
+  result: TtsEntrySource | undefined
+): Array<TtsEntry> {
+  if (dict === 'words') {
+    return [
+      // The name preview renders above the words, and `getCopyEntry` numbers
+      // them the same way. Swap these two and the play key and the copy key
+      // pick different rows.
+      ...(result?.namePreview?.names ?? []).map((name) => ({
+        id: name.id,
+        requests: resolveNameTtsParams(name),
+      })),
+      ...(result?.words?.data ?? []).map((word) => ({
+        id: word.id,
+        requests: resolveTtsParams(word),
+      })),
+    ];
+  }
+
+  if (dict === 'names') {
+    return (result?.names?.data ?? []).map((name) => ({
+      id: name.id,
+      requests: resolveNameTtsParams(name),
+    }));
+  }
+
+  return [];
+}
 
 export function resolveTtsParams(entry: WordResult): Array<TtsClipRequest> {
   return getDisplayedKana(entry).map((kana) =>
