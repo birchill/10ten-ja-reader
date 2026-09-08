@@ -7,7 +7,7 @@ import type { MoraTimingData } from '../../../common/tts/tts-request';
 
 import type { TtsPlaybackState } from '../../tts-playback-controller';
 
-import { TtsReading } from './TtsReadingOverlay';
+import { TtsReading } from './TtsReading';
 
 const MS_PER_SOUND = 220;
 

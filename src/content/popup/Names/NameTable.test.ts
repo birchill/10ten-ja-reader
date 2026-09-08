@@ -172,7 +172,13 @@ function createController(onToggle: (entryIndex: number) => void = () => {}) {
 }
 
 function growAnimations(reading: Element): Array<string> {
-  return [...reading.firstElementChild!.children].map(
+  // The glyph layer groups its moras into one box per accent run, so the
+  // moras sit a level below the layer's own children.
+  const moras = [...reading.firstElementChild!.children].flatMap((group) => [
+    ...group.children,
+  ]);
+
+  return moras.map(
     (mora) =>
       (mora.firstElementChild as HTMLElement).style.animation
         .split(', ')
