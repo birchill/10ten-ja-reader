@@ -53,7 +53,6 @@ export const PopupStateSchema = s.type({
   // The type of content the popup is positioned relative to.
   contentType: s.enums(['text', 'image']),
 
-  // Whether the popup has at least one entry with reading audio.
   hasTtsEntries: s.boolean(),
 
   // The particular appearance and behavior of the popup

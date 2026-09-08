@@ -127,7 +127,7 @@ import type { TtsPlaybackHandle } from './tts-playback-controller';
 import { TtsPlaybackController } from './tts-playback-controller';
 import { playClip } from './tts/audio-clip-player';
 import { fetchTtsClip } from './tts/tts-clip-fetcher';
-import { resolveNameTtsParams, resolveTtsParams } from './tts/tts-params';
+import { buildTtsEntries } from './tts/tts-params';
 
 const enum HoldToShowKeyType {
   None = 0,
@@ -1269,7 +1269,7 @@ export class ContentHandler {
       this.#config.playReadings &&
       this.isVisible() &&
       !!this.#popupState?.hasTtsEntries &&
-      // Copy mode draws an overlay over the entries, so leave the key to it.
+      // Entering copy mode stops playback, so don't let the key restart it.
       this.#copyState.kind === 'inactive'
     );
   }
@@ -2420,26 +2420,9 @@ export class ContentHandler {
   }
 
   #syncTtsPlayback(): TtsPlaybackHandle | undefined {
-    const entries =
-      this.#config.playReadings && this.#currentDict === 'words'
-        ? [
-            // The name preview renders above the words, and `getCopyEntry`
-            // numbers them the same way. Swap these two and the play key and
-            // the copy key pick different rows.
-            ...(this.#currentSearchResult?.namePreview?.names ?? []).map(
-              (name) => ({ id: name.id, requests: resolveNameTtsParams(name) })
-            ),
-            ...(this.#currentSearchResult?.words?.data ?? []).map((word) => ({
-              id: word.id,
-              requests: resolveTtsParams(word),
-            })),
-          ]
-        : this.#config.playReadings && this.#currentDict === 'names'
-          ? (this.#currentSearchResult?.names?.data ?? []).map((name) => ({
-              id: name.id,
-              requests: resolveNameTtsParams(name),
-            }))
-          : [];
+    const entries = this.#config.playReadings
+      ? buildTtsEntries(this.#currentDict, this.#currentSearchResult)
+      : [];
 
     if (entries.length) {
       this.#ttsPlaybackController ??= new TtsPlaybackController({
