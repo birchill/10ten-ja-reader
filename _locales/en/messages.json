@@ -1682,12 +1682,12 @@
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
   "options_play_readings_description": {
-    "message": "Experimental: play a word's readings as audio, fetched from 10ten's server.",
-    "description": "Short, one-sentence description of the setting to enable the button for playing a word entry's readings as audio. Kept deliberately terse per owner decision 2026-08-21; the full privacy disclosure lives in the store listings (release checklist §3), not here."
+    "message": "Experimental: play an entry's readings as audio, fetched from 10ten's server.",
+    "description": "Short, one-sentence description of the setting to enable the button for playing an entry's readings as audio"
   },
   "options_play_readings_label": {
     "message": "Play readings audio",
-    "description": "Checkbox label for the setting to enable the button for playing a word entry's readings as audio"
+    "description": "Checkbox label for the setting to enable the button for playing an entry's readings as audio"
   },
   "options_popup_close_popup": { "message": "Close popup" },
   "options_popup_copy_entry": { "message": "Copy entry" },

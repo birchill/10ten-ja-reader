@@ -1211,13 +1211,7 @@ export class ContentHandler {
     } else if (expandPopup.includes(key)) {
       this.expandPopup();
     } else if (
-      this.#config.playReadings &&
-      this.isVisible() &&
-      this.#popupState?.hasPlayableReadings &&
-      // Don't steal the key from copy mode: let it fall through to the
-      // copy-mode key handling below (which itself falls through unhandled
-      // for keys copy mode doesn't recognize).
-      this.#copyState.kind === 'inactive' &&
+      this.#canPlayReadings() &&
       !hasModifiers(event) &&
       playReadings.includes(key)
     ) {
@@ -1268,6 +1262,16 @@ export class ContentHandler {
     }
 
     return true;
+  }
+
+  #canPlayReadings(): boolean {
+    return (
+      this.#config.playReadings &&
+      this.isVisible() &&
+      !!this.#popupState?.hasTtsEntries &&
+      // Copy mode draws an overlay over the entries, so leave the key to it.
+      this.#copyState.kind === 'inactive'
+    );
   }
 
   onFocusIn = (event: FocusEvent) => {
@@ -1678,14 +1682,7 @@ export class ContentHandler {
 
     // Re-check here: a forwarded message can arrive after this frame's own
     // popup state moved on, so the sender's state can no longer be trusted.
-    if (
-      !this.#config.playReadings ||
-      !this.isVisible() ||
-      !this.#popupState?.hasPlayableReadings ||
-      // Don't let a stale or forwarded request restart audio underneath the
-      // copy-mode overlay.
-      this.#copyState.kind !== 'inactive'
-    ) {
+    if (!this.#canPlayReadings()) {
       return;
     }
 
@@ -2401,7 +2398,7 @@ export class ContentHandler {
         }),
       },
       contentType: this.#currentTargetProps?.contentType || 'text',
-      hasPlayableReadings: !!this.#ttsPlaybackController?.hasEntries,
+      hasTtsEntries: !!this.#ttsPlaybackController?.hasEntries,
       display: this.getNextDisplay(displayMode),
     };
 
@@ -2426,13 +2423,16 @@ export class ContentHandler {
     const entries =
       this.#config.playReadings && this.#currentDict === 'words'
         ? [
+            // The name preview renders above the words, and `getCopyEntry`
+            // numbers them the same way. Swap these two and the play key and
+            // the copy key pick different rows.
+            ...(this.#currentSearchResult?.namePreview?.names ?? []).map(
+              (name) => ({ id: name.id, requests: resolveNameTtsParams(name) })
+            ),
             ...(this.#currentSearchResult?.words?.data ?? []).map((word) => ({
               id: word.id,
               requests: resolveTtsParams(word),
             })),
-            ...(this.#currentSearchResult?.namePreview?.names ?? []).map(
-              (name) => ({ id: name.id, requests: resolveNameTtsParams(name) })
-            ),
           ]
         : this.#config.playReadings && this.#currentDict === 'names'
           ? (this.#currentSearchResult?.names?.data ?? []).map((name) => ({

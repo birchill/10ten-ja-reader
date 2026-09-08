@@ -103,7 +103,6 @@ export const WordTable = (props: WordTableProps) => {
           copyState={props.copyState}
           onStartCopy={props.onStartCopy}
           ttsPlayback={props.ttsPlayback}
-          ttsEntryIndexOffset={entries.length}
         />
       )}
 
@@ -145,7 +144,7 @@ export const WordTable = (props: WordTableProps) => {
               tts={
                 props.ttsPlayback && {
                   controller: props.ttsPlayback,
-                  entryIndex: index,
+                  entryIndex: numNames + index,
                 }
               }
               onPointerUp={(evt) => {

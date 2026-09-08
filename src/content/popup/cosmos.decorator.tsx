@@ -32,6 +32,8 @@ export default function PopupDecorator({
   // For when the popup is marked as being interactive
   const [interactive] = useFixtureInput('interactive', true);
 
+  const [playReadingsShortcut] = useFixtureInput('play readings key', 'p');
+
   useLayoutEffect(() => {
     if (massivePageFontSize) {
       window.document.documentElement.style.fontSize = '50px';
@@ -42,7 +44,13 @@ export default function PopupDecorator({
 
   return (
     <I18nProvider locale={locale}>
-      <PopupOptionsProvider interactive={interactive} fontSize={fontSize}>
+      <PopupOptionsProvider
+        interactive={interactive}
+        fontSize={fontSize}
+        playReadingsShortcuts={
+          playReadingsShortcut ? [playReadingsShortcut] : []
+        }
+      >
         <div
           className={`theme-${themeName} window bundled-fonts`}
           data-type="window"

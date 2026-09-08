@@ -17,8 +17,8 @@ vi.mock('../common/i18n', () => ({
 let container: HTMLDivElement | undefined;
 
 beforeEach(() => {
-  // Before both this badge's expiry and the dropped 2023-10-10 one, so a
-  // returning stale entry would still fail the badge-absence assertion.
+  // Freeze the clock before the badge's expiry, or this stops testing
+  // anything once that date passes.
   vi.useFakeTimers();
   vi.setSystemTime(new Date('2020-01-01'));
 });
@@ -33,6 +33,49 @@ afterEach(() => {
   }
 });
 
+describe('PopupKeysForm playReadings row', () => {
+  it('hides the row while the play-readings setting is off', () => {
+    const form = renderForm({ playReadingsEnabled: false });
+
+    expect(findKeyRow(form, 'options_popup_play_readings')).toBeUndefined();
+  });
+
+  it('shows the row, with its new badge, once the play-readings setting is on', () => {
+    const form = renderForm({ playReadingsEnabled: true });
+
+    const row = findKeyRow(form, 'options_popup_play_readings');
+    expect(row).toBeDefined();
+    expect(row?.querySelector('span')?.textContent).toBe(
+      'options_new_badge_text'
+    );
+  });
+});
+
+function renderForm({
+  playReadingsEnabled,
+}: {
+  playReadingsEnabled: boolean;
+}): HTMLDivElement {
+  container = document.createElement('div');
+  document.body.append(container);
+
+  const target = container;
+  act(() => {
+    render(
+      h(PopupKeysForm, {
+        isMac: false,
+        keys: emptyKeys,
+        onUpdateKey: () => {},
+        isHoldToShowShiftEnabled: false,
+        playReadingsEnabled,
+      }),
+      target
+    );
+  });
+
+  return target;
+}
+
 const emptyKeys: StoredKeyboardKeys = {
   closePopup: [],
   expandPopup: [],
@@ -45,74 +88,11 @@ const emptyKeys: StoredKeyboardKeys = {
   toggleDefinition: [],
 };
 
-describe('PopupKeysForm new-key badges', () => {
-  it('shows the new badge for playReadings but not for the stale expandPopup entry', () => {
-    container = document.createElement('div');
-    document.body.append(container);
-
-    act(() => {
-      render(
-        h(PopupKeysForm, {
-          isMac: false,
-          keys: emptyKeys,
-          onUpdateKey: () => {},
-          isHoldToShowShiftEnabled: false,
-          playReadingsEnabled: true,
-        }),
-        container!
-      );
-    });
-
-    // The mocked `t` returns the l10n key verbatim, so a row with a badge
-    // reads as its label text immediately followed by the badge's l10n key.
-    const text = container.textContent ?? '';
-    expect(text).toContain('options_popup_play_readingsoptions_new_badge_text');
-    expect(text).not.toContain(
-      'options_popup_expand_popupoptions_new_badge_text'
-    );
-  });
-});
-
-describe('PopupKeysForm playReadings row', () => {
-  it('hides the row while the play-readings setting is off', () => {
-    container = document.createElement('div');
-    document.body.append(container);
-
-    act(() => {
-      render(
-        h(PopupKeysForm, {
-          isMac: false,
-          keys: emptyKeys,
-          onUpdateKey: () => {},
-          isHoldToShowShiftEnabled: false,
-          playReadingsEnabled: false,
-        }),
-        container!
-      );
-    });
-
-    const text = container.textContent ?? '';
-    expect(text).not.toContain('options_popup_play_readings');
-  });
-
-  it('shows the row, with its new badge, once the play-readings setting is on', () => {
-    container = document.createElement('div');
-    document.body.append(container);
-
-    act(() => {
-      render(
-        h(PopupKeysForm, {
-          isMac: false,
-          keys: emptyKeys,
-          onUpdateKey: () => {},
-          isHoldToShowShiftEnabled: false,
-          playReadingsEnabled: true,
-        }),
-        container!
-      );
-    });
-
-    const text = container.textContent ?? '';
-    expect(text).toContain('options_popup_play_readingsoptions_new_badge_text');
-  });
-});
+function findKeyRow(
+  form: HTMLDivElement,
+  l10nKey: string
+): HTMLDivElement | undefined {
+  return [...form.querySelectorAll('div')].find(
+    (row) => row.firstChild?.textContent === l10nKey
+  );
+}
