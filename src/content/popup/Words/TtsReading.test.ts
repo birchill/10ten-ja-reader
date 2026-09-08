@@ -8,29 +8,11 @@ import type { MoraTimingData } from '../../../common/tts/tts-request';
 
 import type { TtsPlaybackState } from '../../tts-playback-controller';
 
-import { TtsReading, type TtsReadingProps } from './TtsReadingOverlay';
-
-const { sendMessage } = vi.hoisted(() => ({
-  sendMessage: vi.fn<(message: unknown) => Promise<unknown>>(),
-}));
-
-vi.mock('webextension-polyfill', () => ({
-  default: { runtime: { sendMessage } },
-}));
+import { TtsReading, type TtsReadingProps } from './TtsReading';
 
 /**
  * @vitest-environment jsdom
  */
-
-// jsdom has no `onanimationend` property. Preact checks for that property to
-// pick the case of the native listener name, so without it Preact listens
-// under the wrong name and a dispatched event never arrives.
-if (!('onanimationend' in HTMLElement.prototype)) {
-  Object.defineProperty(HTMLElement.prototype, 'onanimationend', {
-    value: null,
-    writable: true,
-  });
-}
 
 const STARTED_AT = 1000;
 
@@ -46,13 +28,12 @@ const evenTiming: MoraTimingData = {
 };
 
 beforeEach(() => {
-  sendMessage.mockReset();
-  sendMessage.mockResolvedValue(undefined);
   installMatchMedia();
   vi.spyOn(performance, 'now').mockReturnValue(STARTED_AT);
 });
 
 afterEach(() => {
+  vi.useRealTimers();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
   document.body.replaceChildren();
@@ -84,7 +65,11 @@ describe('TtsReading', () => {
     expect(growAnimations(glyphs())).toEqual(['', '', '']);
 
     publish(playing());
-    expect(growAnimations(glyphs()).every(Boolean)).toBe(true);
+    expect(growAnimations(glyphs())).toEqual([
+      'tts-mora-grow-a 200ms ease-in-out 0ms',
+      'tts-mora-grow-a 200ms ease-in-out 200ms',
+      'tts-mora-grow-a 200ms ease-in-out 400ms',
+    ]);
     expect(glyphs()).toEqual(idleGlyphs);
   });
 
@@ -93,10 +78,24 @@ describe('TtsReading', () => {
 
     publish(playing());
 
-    expect(accentOverlay().getAttribute('aria-hidden')).toBe('true');
-    expect(accentOverlay().classList.contains('tp:pointer-events-none')).toBe(
+    expect(accentOverlay()!.getAttribute('aria-hidden')).toBe('true');
+    expect(accentOverlay()!.classList.contains('tp:pointer-events-none')).toBe(
       true
     );
+  });
+
+  it('draws the accent borders on a plain inline box, as the static reading does', () => {
+    const { groups, publish } = mount({ kana: { ent: 'たべる', a: 0 } });
+
+    publish(playing());
+
+    // An inline-block here would size the border to the line box and lift
+    // every accent line off the glyphs.
+    expect(groups().map((group) => group.getAttribute('class'))).toEqual([
+      'tp:border-0 tp:border-b-(length:--border-width) tp:border-r-(length:--border-width)',
+      'tp:border-0 tp:border-t-(length:--border-width)',
+    ]);
+    expect(groups().map((group) => group.textContent)).toEqual(['た', 'べる']);
   });
 
   it('colors and grows each single visible glyph on its own timing', () => {
@@ -171,9 +170,9 @@ describe('TtsReading', () => {
       'tp:inline-block tp:mb-1 tp:*:m-0 tp:*:text-[90%]'
     );
     expect(moras().map((mora) => mora.getAttribute('class'))).toEqual([
-      `tp:inline-block ${SOLID} tp:border-0 tp:border-b-(length:--border-width) tp:border-r-(length:--border-width)`,
-      `tp:inline-block ${SOLID} tp:border-0 tp:border-t-(length:--border-width) tp:border-r-(length:--border-width)`,
-      `tp:inline-block ${SOLID} tp:border-0 tp:border-b-(length:--border-width)`,
+      `${SOLID} tp:border-0 tp:border-b-(length:--border-width) tp:border-r-(length:--border-width)`,
+      `${SOLID} tp:border-0 tp:border-t-(length:--border-width) tp:border-r-(length:--border-width)`,
+      `${SOLID} tp:border-0 tp:border-b-(length:--border-width)`,
     ]);
   });
 
@@ -189,22 +188,17 @@ describe('TtsReading', () => {
   });
 
   it('colors the downstep mark without moving it', () => {
-    const { baseMoras, moras, publish } = mount({
+    const { accentOverlay, glyphMoras, publish } = mount({
       kana: { ent: 'たべる', a: 2 },
       accentDisplay: 'downstep',
     });
 
     publish(playing());
 
-    expect(moras().map((mora) => mora.textContent)).toEqual([
-      'た',
-      'べꜜ',
-      'る',
-    ]);
-    expect(moras().every((mora) => mora.className === 'tp:inline-block')).toBe(
-      true
-    );
-    const downstep = baseMoras()[1].children[1] as HTMLElement;
+    // A downstep reading draws no pitch line, so it gets no ink layer at all.
+    expect(accentOverlay()).toBeUndefined();
+
+    const downstep = glyphMoras()[1].children[1] as HTMLElement;
     expect(downstep.textContent).toBe('ꜜ');
     expect(downstep.style.animation).toBe(
       'tts-mora-highlight-a 200ms ease-in-out 200ms forwards'
@@ -225,34 +219,38 @@ describe('TtsReading', () => {
     expect(layer()!.getAttribute('class')).toBeNull();
     expect(layer()!.getAttribute('style')).toBe('--border-width: 1.5px;');
     expect(moras().map((mora) => mora.getAttribute('class'))).toEqual([
-      `tp:inline-block ${SOLID} tp:border-0 tp:border-t-(length:--border-width)`,
-      `tp:inline-block ${SOLID} tp:border-0 tp:border-t-(length:--border-width)`,
-      `tp:inline-block ${SOLID} tp:border-0 tp:border-t-(length:--border-width)`,
+      `${SOLID} tp:border-0 tp:border-t-(length:--border-width)`,
+      `${SOLID} tp:border-0 tp:border-t-(length:--border-width)`,
+      `${SOLID} tp:border-0 tp:border-t-(length:--border-width)`,
     ]);
   });
 
-  it('adds no accent line when accents are turned off', () => {
-    const { moras, publish } = mount({
+  it('mounts no ink layer when accents are turned off', () => {
+    const { accentOverlay, glyphs, publish } = mount({
       kana: { ent: 'たべる', a: 2 },
       accentDisplay: 'none',
     });
 
     publish(playing());
 
-    expect(moras().map((mora) => mora.textContent)).toEqual(['た', 'べ', 'る']);
-    expect(moras().every((mora) => mora.className === 'tp:inline-block')).toBe(
-      true
-    );
+    expect(accentOverlay()).toBeUndefined();
+    expect(glyphs().map((glyph) => glyph.textContent)).toEqual([
+      'た',
+      'べ',
+      'る',
+    ]);
+    expect(growAnimations(glyphs()).every(Boolean)).toBe(true);
   });
 
   it('fades the color and accent ink back over 400ms', () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     const { accentOverlay, glyphs, moras, publish } = mount();
 
     publish(playing());
     vi.spyOn(performance, 'now').mockReturnValue(STARTED_AT + 600);
     publish({ kind: 'idle' });
 
-    expect(accentOverlay().style.animation).toBe(
+    expect(accentOverlay()!.style.animation).toBe(
       'fade-out 400ms ease-in-out forwards'
     );
     expect(colorAnimations(glyphs())).toEqual([
@@ -263,14 +261,14 @@ describe('TtsReading', () => {
     expect(growAnimations(glyphs())).toEqual(['', '', '']);
 
     act(() => {
-      accentOverlay().dispatchEvent(animationEnd('tts-mora-reveal-a'));
+      vi.advanceTimersByTime(399);
     });
-    expect(accentOverlay().style.animation).not.toBe('');
+    expect(accentOverlay()!.style.animation).not.toBe('');
 
     act(() => {
-      accentOverlay().dispatchEvent(animationEnd('fade-out'));
+      vi.advanceTimersByTime(1);
     });
-    expect(accentOverlay().style.animation).toBe('');
+    expect(accentOverlay()!.style.animation).toBe('');
     expect(growAnimations(glyphs())).toEqual(['', '', '']);
     expect(revealAnimations(moras())).toEqual(['', '', '']);
   });
@@ -293,9 +291,20 @@ describe('TtsReading', () => {
       '',
     ]);
     expect(moras().map((mora) => mora.style.opacity)).toEqual(['1', '0', '0']);
+  });
+
+  it('freezes the half-revealed mora instead of brightening it while fading', () => {
+    const { moras, publish } = mount();
+
+    publish(playing());
+    vi.spyOn(performance, 'now').mockReturnValue(STARTED_AT + 250);
+    publish({ kind: 'idle' });
+
+    // Mora 1 is 50ms into its 200ms reveal. Running it on while the layer
+    // fades would multiply two curves and flash the ink brighter than it was.
     expect(revealAnimations(moras())).toEqual([
       '',
-      'tts-mora-reveal-a 200ms ease-in-out 200ms forwards',
+      'tts-mora-reveal-a 200ms ease-in-out -50ms forwards paused',
       '',
     ]);
   });
@@ -308,7 +317,7 @@ describe('TtsReading', () => {
     expect(first).toHaveLength(3);
 
     publish({ kind: 'idle' });
-    expect(accentOverlay().style.animation).toBe(
+    expect(accentOverlay()!.style.animation).toBe(
       'fade-out 400ms ease-in-out forwards'
     );
 
@@ -319,7 +328,7 @@ describe('TtsReading', () => {
     publish(playing({ startedAt: replayedAt }));
 
     const second = glyphs();
-    expect(accentOverlay().style.animation).toBe('');
+    expect(accentOverlay()!.style.animation).toBe('');
     expect(second).toHaveLength(3);
     expect(second).toEqual(first);
     expect(revealAnimations(moras())).toEqual([
@@ -334,44 +343,40 @@ describe('TtsReading', () => {
     ]);
   });
 
-  it('keeps the reading still and uncolored under prefers-reduced-motion', () => {
+  it('keeps colouring the reading under prefers-reduced-motion but does not move it', () => {
     setReducedMotion(true);
 
     const { glyphs, moras } = mount({ initialState: playing() });
 
+    // Reduced motion asks for less movement, not less feedback: without the
+    // colour the user cannot tell which of an entry's readings is playing.
     expect(growAnimations(glyphs())).toEqual(['', '', '']);
-    expect(revealAnimations(moras())).toEqual(['', '', '']);
+    expect(colorAnimations(glyphs())).toEqual([
+      'tts-mora-highlight-a 200ms ease-in-out 0ms forwards',
+      'tts-mora-highlight-a 200ms ease-in-out 200ms forwards',
+      'tts-mora-highlight-a 200ms ease-in-out 400ms forwards',
+    ]);
+    expect(revealAnimations(moras())).toEqual([
+      'tts-mora-reveal-a 200ms ease-in-out 0ms forwards',
+      'tts-mora-reveal-a 200ms ease-in-out 200ms forwards',
+      'tts-mora-reveal-a 200ms ease-in-out 400ms forwards',
+    ]);
   });
 
-  it('resyncs from the current clock when animation is switched back on', () => {
+  it('adds the swell back without restarting the colour sweep', () => {
     setReducedMotion(true);
-    const { glyphs, moras } = mount({ initialState: playing() });
-    expect(growAnimations(glyphs())).toEqual(['', '', '']);
+    const { glyphs } = mount({ initialState: playing() });
+    const colors = colorAnimations(glyphs());
 
     vi.spyOn(performance, 'now').mockReturnValue(STARTED_AT + 400);
     act(() => setReducedMotion(false));
 
-    expect(revealAnimations(moras())).toEqual([
-      'tts-mora-reveal-a 200ms ease-in-out -400ms forwards',
-      'tts-mora-reveal-a 200ms ease-in-out -200ms forwards',
-      'tts-mora-reveal-a 200ms ease-in-out 0ms forwards',
+    expect(growAnimations(glyphs())).toEqual([
+      'tts-mora-grow-a 200ms ease-in-out 0ms',
+      'tts-mora-grow-a 200ms ease-in-out 200ms',
+      'tts-mora-grow-a 200ms ease-in-out 400ms',
     ]);
-  });
-
-  it('clears a stale fade when reduced motion is enabled', () => {
-    const { accentOverlay, glyphs, publish } = mount();
-    publish(playing());
-    vi.spyOn(performance, 'now').mockReturnValue(STARTED_AT + 600);
-    publish({ kind: 'idle' });
-    expect(accentOverlay().style.animation).not.toBe('');
-
-    act(() => setReducedMotion(true));
-    expect(accentOverlay().style.animation).toBe('');
-    expect(growAnimations(glyphs())).toEqual(['', '', '']);
-
-    act(() => setReducedMotion(false));
-    expect(accentOverlay().style.animation).toBe('');
-    expect(growAnimations(glyphs())).toEqual(['', '', '']);
+    expect(colorAnimations(glyphs())).toEqual(colors);
   });
 
   it('leaves the reading still when the clip has no timings', () => {
@@ -403,16 +408,18 @@ describe('TtsReading', () => {
         controller,
         entryIndex: 0,
         readingIndex: 0,
-        kana: { ent: 'たべる' } as Kana,
+        kana: { ent: 'たべる', a: 2 } as Kana,
         accentDisplay: 'binary',
       }),
       container
     );
 
     const root = container.firstElementChild as HTMLElement;
-    const glyphLayer = root.firstElementChild as HTMLElement;
-    expect([...glyphLayer.children]).toHaveLength(3);
-    expect(growAnimations(glyphsFrom(root)).every(Boolean)).toBe(true);
+    expect(growAnimations(glyphsFrom(root))).toEqual([
+      'tts-mora-grow-a 200ms ease-in-out 0ms',
+      'tts-mora-grow-a 200ms ease-in-out 200ms',
+      'tts-mora-grow-a 200ms ease-in-out 400ms',
+    ]);
   });
 });
 
@@ -461,7 +468,7 @@ function mount(
     },
     entryIndex: 0,
     readingIndex: 0,
-    kana: { ent: 'たべる', ...options.kana } as Kana,
+    kana: { ent: 'たべる', a: 2, ...options.kana } as Kana,
     accentDisplay: options.accentDisplay ?? 'binary',
   };
 
@@ -475,17 +482,19 @@ function mount(
   draw();
 
   const root = () => container.firstElementChild as HTMLElement;
-  const accentOverlay = () => root().children[1] as HTMLElement;
-  const layer = () => accentOverlay().firstElementChild as HTMLElement;
+  const accentOverlay = () => root().children[1] as HTMLElement | undefined;
+  const layer = () => accentOverlay()?.firstElementChild as HTMLElement;
   const moras = () => [...(layer()?.children ?? [])] as Array<HTMLElement>;
-  const baseMoras = () =>
+  const groups = () =>
     [...(root().firstElementChild?.children ?? [])] as Array<HTMLElement>;
+  const glyphMoras = () => glyphMorasFrom(root());
   const glyphs = () => glyphsFrom(root());
 
   return {
     accentOverlay,
-    baseMoras,
+    glyphMoras,
     glyphs,
+    groups,
     layer,
     moras,
     rerender: draw,
@@ -523,9 +532,17 @@ function colorAnimations(glyphs: Array<HTMLElement>): Array<string> {
 }
 
 function glyphsFrom(root: HTMLElement): Array<HTMLElement> {
-  const glyphLayer = root.firstElementChild as HTMLElement;
-  return [...glyphLayer.children].map(
+  return glyphMorasFrom(root).map(
     (mora) => mora.firstElementChild as HTMLElement
+  );
+}
+
+// The glyph layer groups its moras into one box per accent run, so the moras
+// sit a level below the layer's own children.
+function glyphMorasFrom(root: HTMLElement): Array<HTMLElement> {
+  const glyphLayer = root.firstElementChild as HTMLElement;
+  return [...glyphLayer.children].flatMap(
+    (group) => [...group.children] as Array<HTMLElement>
   );
 }
 
@@ -563,10 +580,4 @@ function setReducedMotion(reduce: boolean) {
   for (const listener of motionListeners) {
     listener({ matches: reduce } as MediaQueryListEvent);
   }
-}
-
-function animationEnd(animationName: string): Event {
-  const event = new Event('animationend', { bubbles: true });
-  Object.defineProperty(event, 'animationName', { value: animationName });
-  return event;
 }

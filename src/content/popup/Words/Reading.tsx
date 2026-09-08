@@ -5,9 +5,10 @@ import { classes } from '../../../utils/classes';
 
 import type { ReadingTokenAccent } from '../../tts/reading-tokens';
 import {
-  coalesceReadingTokens,
   getAccentPos,
   getReadingTokens,
+  groupReadingTokens,
+  groupText,
 } from '../../tts/reading-tokens';
 
 export function Reading({
@@ -25,25 +26,9 @@ export function Reading({
 
   const tokens = getReadingTokens(kana.ent, accentPos, accentDisplay);
 
-  if (accentDisplay === 'downstep') {
-    if (accentPos === 0) {
-      // accentPos 0 (heiban) is special since there's no accent to show.
-      //
-      // At the same time we want to distinguish between heiban and
-      // "no accent information". So we indicate heiban with a dotted line
-      // across the top instead.
-      return (
-        <span
-          class={classes(
-            'tp:border-dotted tp:border-current',
-            'tp:border-0 tp:border-t-[1.5px]'
-          )}
-        >
-          {kana.ent}
-        </span>
-      );
-    }
-
+  // Heiban has no mark to insert, so it falls through to the accent layer
+  // below. Drop the accentPos test and heiban looks like missing accent data.
+  if (accentDisplay === 'downstep' && accentPos !== 0) {
     return tokens
       .map((token) => (token.downstep ? `${token.text}ꜜ` : token.text))
       .join('');
@@ -62,19 +47,15 @@ export function Reading({
       )}
       style={{ '--border-width': layer.borderWidth }}
     >
-      {coalesceReadingTokens(tokens).map((segment, index) => (
-        <span key={index} class={accentClasses(segment.accent)}>
-          {segment.text}
+      {groupReadingTokens(tokens).map((group, index) => (
+        <span key={index} class={accentClasses(group.accent)}>
+          {groupText(group)}
         </span>
       ))}
     </span>
   );
 }
 
-/**
- * The box a reading's accent marks are drawn in. The karaoke overlay stacks on
- * top of that box, so it has to be laid out from the same numbers.
- */
 export function accentLayer(accentDisplay: AccentDisplay): {
   classes: string | undefined;
   borderWidth: string;

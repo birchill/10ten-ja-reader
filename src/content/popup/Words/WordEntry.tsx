@@ -17,7 +17,7 @@ import { Definitions } from './Definitions';
 import { HeadwordInfo } from './HeadwordInfo';
 import { Reading } from './Reading';
 import { TtsPlayButton } from './TtsPlayButton';
-import { TtsReading } from './TtsReadingOverlay';
+import { TtsReading } from './TtsReading';
 import type { BunproDeckType } from './bunpro-url';
 import { getBunproUrl } from './bunpro-url';
 

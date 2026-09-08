@@ -2,6 +2,8 @@ import type { NameResult, WordResult } from '../../background/search-result';
 import { getDisplayedKana } from '../../common/displayed-kana';
 import type { TtsClipRequest } from '../../common/tts/tts-request';
 
+import { getAccentPos } from './reading-tokens';
+
 export function resolveTtsParams(entry: WordResult): Array<TtsClipRequest> {
   return getDisplayedKana(entry).map((kana) =>
     resolveReadingParams(kana, entry.k)
@@ -21,7 +23,7 @@ function resolveReadingParams(
 ): TtsClipRequest {
   const request: TtsClipRequest = { reading: kana.ent };
 
-  const pitchAccentPos = resolvePitchAccentPos(kana.a);
+  const pitchAccentPos = getAccentPos(kana.a);
   if (pitchAccentPos !== undefined) {
     request.pitchAccentPos = pitchAccentPos;
   }
@@ -32,12 +34,6 @@ function resolveReadingParams(
   }
 
   return request;
-}
-
-function resolvePitchAccentPos(
-  accent: WordResult['r'][number]['a']
-): number | undefined {
-  return Array.isArray(accent) ? accent[0]?.i : accent;
 }
 
 function resolvePlayableKanji(

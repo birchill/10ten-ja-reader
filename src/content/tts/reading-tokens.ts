@@ -6,13 +6,16 @@ import type { AccentDisplay } from '../../common/content-config-params';
 export type ReadingTokenAccent = 'high' | 'low' | 'rise' | 'fall';
 
 export type ReadingToken = {
-  /** One mora — one codepoint, or several combined, as in きゃ or ぎゃぁ. */
   text: string;
-  /** Codepoint offset of the mora's first character. */
+  // Counted in codepoints, which is how the service indexes its mora timings.
   charIndex: number;
   accent?: ReadingTokenAccent;
-  /** A downstep mark (ꜜ) follows this mora. */
   downstep?: boolean;
+};
+
+export type ReadingTokenGroup = {
+  accent?: ReadingTokenAccent;
+  tokens: Array<ReadingToken>;
 };
 
 export function getReadingTokens(
@@ -91,26 +94,30 @@ function binaryAccent(
   return mora === accentPos ? 'fall' : 'low';
 }
 
-export function coalesceReadingTokens(
+export function groupReadingTokens(
   tokens: ReadonlyArray<ReadingToken>
-): Array<{ text: string; accent?: ReadingTokenAccent }> {
-  const segments: Array<{ text: string; accent?: ReadingTokenAccent }> = [];
+): Array<ReadingTokenGroup> {
+  const groups: Array<ReadingTokenGroup> = [];
 
   for (const token of tokens) {
-    const last = segments[segments.length - 1];
+    const last = groups[groups.length - 1];
     const continues =
       last &&
       (last.accent === token.accent ||
         (last.accent === 'high' && token.accent === 'fall'));
     if (continues) {
-      last.text += token.text;
+      last.tokens.push(token);
       last.accent = token.accent;
     } else {
-      segments.push({ text: token.text, accent: token.accent });
+      groups.push({ accent: token.accent, tokens: [token] });
     }
   }
 
-  return segments;
+  return groups;
+}
+
+export function groupText(group: ReadingTokenGroup): string {
+  return group.tokens.map((token) => token.text).join('');
 }
 
 export function getAccentPos(

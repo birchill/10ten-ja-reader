@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
+import type { AccentDisplay } from '../../common/content-config-params';
+
 import {
-  coalesceReadingTokens,
   getAccentPos,
   getReadingTokens,
+  groupReadingTokens,
+  groupText,
 } from './reading-tokens';
 
 describe('getReadingTokens', () => {
@@ -85,11 +88,9 @@ describe('getReadingTokens', () => {
   });
 });
 
-describe('coalesceReadingTokens', () => {
+describe('groupReadingTokens', () => {
   it('merges the run of high moras into the mora that falls', () => {
-    expect(
-      coalesceReadingTokens(getReadingTokens('あいうえお', 3, 'binary'))
-    ).toEqual([
+    expect(grouped('あいうえお', 3, 'binary')).toEqual([
       { text: 'あ', accent: 'rise' },
       { text: 'いう', accent: 'fall' },
       { text: 'えお', accent: 'low' },
@@ -97,18 +98,23 @@ describe('coalesceReadingTokens', () => {
   });
 
   it('keeps the rise out of the following high run', () => {
-    expect(
-      coalesceReadingTokens(getReadingTokens('さくら', 0, 'binary'))
-    ).toEqual([
+    expect(grouped('さくら', 0, 'binary')).toEqual([
       { text: 'さ', accent: 'rise' },
       { text: 'くら', accent: 'high' },
     ]);
   });
 
   it('collapses an unaccented reading into one segment', () => {
-    expect(
-      coalesceReadingTokens(getReadingTokens('さくら', 0, 'none'))
-    ).toEqual([{ text: 'さくら', accent: undefined }]);
+    expect(grouped('さくら', 0, 'none')).toEqual([
+      { text: 'さくら', accent: undefined },
+    ]);
+  });
+
+  it('keeps every mora of a group addressable for animation', () => {
+    const groups = groupReadingTokens(getReadingTokens('さくら', 0, 'binary'));
+
+    expect(groups.map((group) => group.tokens.length)).toEqual([1, 2]);
+    expect(groups[1].tokens.map((token) => token.charIndex)).toEqual([1, 2]);
   });
 });
 
@@ -124,3 +130,13 @@ describe('getAccentPos', () => {
     expect(getAccentPos([])).toBeUndefined();
   });
 });
+
+function grouped(
+  kana: string,
+  accentPos: number,
+  accentDisplay: AccentDisplay
+): Array<{ text: string; accent: string | undefined }> {
+  return groupReadingTokens(
+    getReadingTokens(kana, accentPos, accentDisplay)
+  ).map((group) => ({ text: groupText(group), accent: group.accent }));
+}

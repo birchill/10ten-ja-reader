@@ -10,7 +10,7 @@ import type { TtsPlaybackHandle } from '../../tts-playback-controller';
 
 import { Tag } from '../Tag';
 import { TtsPlayButton } from '../Words/TtsPlayButton';
-import { TtsReading } from '../Words/TtsReadingOverlay';
+import { TtsReading } from '../Words/TtsReading';
 import { usePopupOptions } from '../options-context';
 
 type SelectState = 'unselected' | 'selected' | 'flash';
