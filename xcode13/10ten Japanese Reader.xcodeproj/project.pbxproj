@@ -93,6 +93,12 @@
 		D3BBFED926FCA81B0059B886 /* iphone-pro-5.png in Resources */ = {isa = PBXBuildFile; fileRef = D3BBFEB026FCA81B0059B886 /* iphone-pro-5.png */; };
 		D3BBFEDA26FCA81B0059B886 /* iphone-pro-4b.png in Resources */ = {isa = PBXBuildFile; fileRef = D3BBFEB126FCA81B0059B886 /* iphone-pro-4b.png */; };
 		D3BBFEDB26FCA81B0059B886 /* iphone-pro-4b.png in Resources */ = {isa = PBXBuildFile; fileRef = D3BBFEB126FCA81B0059B886 /* iphone-pro-4b.png */; };
+		A18D3B042E6F000100000001 /* ipad-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B012E6F000100000001 /* ipad-6-permission.png */; };
+		A18D3B052E6F000100000001 /* iphone-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B022E6F000100000001 /* iphone-6-permission.png */; };
+		A18D3B062E6F000100000001 /* iphone-pro-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B032E6F000100000001 /* iphone-pro-6-permission.png */; };
+		A18D3B072E6F000100000001 /* ipad-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B012E6F000100000001 /* ipad-6-permission.png */; };
+		A18D3B082E6F000100000001 /* iphone-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B022E6F000100000001 /* iphone-6-permission.png */; };
+		A18D3B092E6F000100000001 /* iphone-pro-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B032E6F000100000001 /* iphone-pro-6-permission.png */; };
 		F1A7845A2BAC226200442DCC /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = F1A784592BAC226200442DCC /* fonts */; };
 		F1A7845B2BAC226200442DCC /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = F1A784592BAC226200442DCC /* fonts */; };
 /* End PBXBuildFile section */
@@ -194,6 +200,9 @@
 		D3BBFEAF26FCA81B0059B886 /* ipad-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad-2.png"; sourceTree = "<group>"; };
 		D3BBFEB026FCA81B0059B886 /* iphone-pro-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-pro-5.png"; sourceTree = "<group>"; };
 		D3BBFEB126FCA81B0059B886 /* iphone-pro-4b.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-pro-4b.png"; sourceTree = "<group>"; };
+		A18D3B012E6F000100000001 /* ipad-6-permission.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad-6-permission.png"; sourceTree = "<group>"; };
+		A18D3B022E6F000100000001 /* iphone-6-permission.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-6-permission.png"; sourceTree = "<group>"; };
+		A18D3B032E6F000100000001 /* iphone-pro-6-permission.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-pro-6-permission.png"; sourceTree = "<group>"; };
 		F1A784592BAC226200442DCC /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = fonts; path = ../../fonts; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -262,6 +271,7 @@
 				D3BBFEAE26FCA81B0059B886 /* ipad-4b.png */,
 				D3BBFEA626FCA81A0059B886 /* ipad-5.png */,
 				D3BBFEA026FCA81A0059B886 /* ipad-6.png */,
+				A18D3B012E6F000100000001 /* ipad-6-permission.png */,
 				D3BBFEA126FCA81A0059B886 /* iphone-1.png */,
 				D3BBFE9E26FCA81A0059B886 /* iphone-2.png */,
 				D3BBFEAA26FCA81A0059B886 /* iphone-3.png */,
@@ -269,6 +279,7 @@
 				D3BBFEAB26FCA81A0059B886 /* iphone-4b.png */,
 				D3BBFE9F26FCA81A0059B886 /* iphone-5.png */,
 				D3BBFEAC26FCA81A0059B886 /* iphone-6.png */,
+				A18D3B022E6F000100000001 /* iphone-6-permission.png */,
 				D3BBFEA826FCA81A0059B886 /* iphone-pro-1.png */,
 				D3BBFE9D26FCA81A0059B886 /* iphone-pro-2.png */,
 				D3BBFEA226FCA81A0059B886 /* iphone-pro-3.png */,
@@ -276,6 +287,7 @@
 				D3BBFEB126FCA81B0059B886 /* iphone-pro-4b.png */,
 				D3BBFEB026FCA81B0059B886 /* iphone-pro-5.png */,
 				D3BBFEA326FCA81A0059B886 /* iphone-pro-6.png */,
+				A18D3B032E6F000100000001 /* iphone-pro-6-permission.png */,
 				D306F4312692C54F002FA4FD /* Main.html */,
 				D306F4332692C54F002FA4FD /* Icon.png */,
 				D306F4342692C54F002FA4FD /* Style.css */,
@@ -507,6 +519,9 @@
 				D3BBFEC826FCA81B0059B886 /* iphone-pro-1.png in Resources */,
 				D3BBFEBE26FCA81B0059B886 /* iphone-pro-6.png in Resources */,
 				D3BBFED026FCA81B0059B886 /* iphone-6.png in Resources */,
+				A18D3B042E6F000100000001 /* ipad-6-permission.png in Resources */,
+				A18D3B052E6F000100000001 /* iphone-6-permission.png in Resources */,
+				A18D3B062E6F000100000001 /* iphone-pro-6-permission.png in Resources */,
 				D3BBFEC426FCA81B0059B886 /* ipad-5.png in Resources */,
 				D3BBFECE26FCA81B0059B886 /* iphone-4b.png in Resources */,
 				D3BBFED426FCA81B0059B886 /* ipad-4b.png in Resources */,
@@ -534,6 +549,9 @@
 				D3BBFEB926FCA81B0059B886 /* ipad-6.png in Resources */,
 				D306F4722692C553002FA4FD /* Style.css in Resources */,
 				D3BBFEBF26FCA81B0059B886 /* iphone-pro-6.png in Resources */,
+				A18D3B072E6F000100000001 /* ipad-6-permission.png in Resources */,
+				A18D3B082E6F000100000001 /* iphone-6-permission.png in Resources */,
+				A18D3B092E6F000100000001 /* iphone-pro-6-permission.png in Resources */,
 				D3BBFEBB26FCA81B0059B886 /* iphone-1.png in Resources */,
 				D3BBFECD26FCA81B0059B886 /* iphone-3.png in Resources */,
 				D3BBFEB726FCA81B0059B886 /* iphone-5.png in Resources */,
