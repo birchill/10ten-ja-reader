@@ -1678,7 +1678,7 @@
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
   "options_play_readings_description": {
-    "message": "实验性功能：播放词条读音的语音，该语音从 10ten 的服务器获取。",
+    "message": "实验性功能：以语音播放词条读音。读音和汉字会发送至 10ten 的服务器以获取语音。",
     "description": "Short, one-sentence description of the setting to enable the button for playing an entry's readings as audio"
   },
   "options_play_readings_label": {

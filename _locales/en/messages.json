@@ -1682,7 +1682,7 @@
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
   "options_play_readings_description": {
-    "message": "Experimental: play an entry's readings as audio, fetched from 10ten's server.",
+    "message": "Experimental: play an entry's readings as audio. The reading and kanji are sent to 10ten's server to fetch the clip.",
     "description": "Short, one-sentence description of the setting to enable the button for playing an entry's readings as audio"
   },
   "options_play_readings_label": {

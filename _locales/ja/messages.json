@@ -1682,7 +1682,7 @@
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
   "options_play_readings_description": {
-    "message": "実験的機能: 項目の読み方を、10tenのサーバーから取得した音声で再生します。",
+    "message": "実験的機能：項目の読み方を音声で再生します。音声を取得するため、読み方と漢字を10tenのサーバーに送信します。",
     "description": "Short, one-sentence description of the setting to enable the button for playing an entry's readings as audio"
   },
   "options_play_readings_label": {

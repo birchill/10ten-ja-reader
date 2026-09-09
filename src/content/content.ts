@@ -1686,7 +1686,7 @@ export class ContentHandler {
       return;
     }
 
-    this.#ttsPlaybackController?.toggleTopEntry();
+    this.#ttsPlaybackController?.toggle(0);
   }
 
   enterCopyMode({

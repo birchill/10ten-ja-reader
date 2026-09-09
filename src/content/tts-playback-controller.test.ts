@@ -370,20 +370,6 @@ describe('TtsPlaybackController', () => {
     controller.setEntries([]);
     expect(controller.hasEntries).toBe(false);
   });
-
-  it('plays the first entry on toggleTopEntry', async () => {
-    const { controller, statuses } = setUp([entryA, entryB]);
-
-    controller.toggleTopEntry();
-    await flush();
-
-    expect(statuses()).toEqual(['playing', 'idle']);
-
-    controller.toggleTopEntry();
-    await flush();
-
-    expect(statuses()).toEqual(['idle', 'idle']);
-  });
 });
 
 const entryA: TtsEntry = {

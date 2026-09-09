@@ -28,9 +28,9 @@ export function OptionsPage(props: Props) {
         <PopupInteractivitySettings config={props.config} />
         <CurrencySettings config={props.config} />
         <UnitSettings config={props.config} />
+        <AudioSettings config={props.config} />
         {hasKeyboard && <KeyboardSettings config={props.config} />}
         <CopySettings config={props.config} />
-        <AudioSettings config={props.config} />
         <PuckSettings config={props.config} />
         <DictionaryLanguageSettings config={props.config} />
         <KanjiReferenceSettings config={props.config} />
