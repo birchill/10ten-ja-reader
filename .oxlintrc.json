@@ -2,6 +2,7 @@
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["eslint", "oxc", "react", "typescript", "unicorn", "vitest"],
   "categories": { "correctness": "error" },
+  "options": { "typeAware": true },
   "env": { "browser": true },
   "settings": { "react": { "version": "16.0", "pragma": "h" } },
   "rules": {

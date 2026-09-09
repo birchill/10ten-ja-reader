@@ -37,7 +37,7 @@
     "cosmos": "node --import=./cosmos-import.js node_modules/react-cosmos/bin/cosmos.js",
     "cosmos-export": "node --import=./cosmos-import.js node_modules/react-cosmos/bin/cosmos-export.js",
     "postinstall": "if-env RELEASE_BUILD=1 || husky",
-    "lint": "web-ext lint && oxlint --type-aware src/",
+    "lint": "web-ext lint && oxlint src/",
     "package": "rspack --env package",
     "package:chrome": "rspack --env target=chrome --env package",
     "package:chrome-electron": "rspack --env target=chrome-electron --env package",

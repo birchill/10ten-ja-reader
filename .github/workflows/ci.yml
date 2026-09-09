@@ -94,7 +94,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: pnpm oxlint --type-aware scripts src tests "*.{cjs,js,ts}"
+        run: pnpm oxlint scripts src tests "*.{cjs,js,ts}"
 
       - name: Check formatting
         run: pnpm prettier --check _locales css scripts src tests "*.{js,json,md,ts}"
