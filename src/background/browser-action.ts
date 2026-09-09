@@ -14,7 +14,6 @@ import type { JpdictStateWithFallback } from './jpdict';
 interface BrowserActionState {
   enabled: boolean;
   jpdictState: JpdictStateWithFallback;
-  tabId: number | undefined;
   toolbarIcon: 'default' | 'sky';
 }
 
@@ -80,7 +79,6 @@ export function updateBrowserAction(params: BrowserActionState) {
 async function doUpdateBrowserAction({
   enabled,
   jpdictState,
-  tabId,
   toolbarIcon,
 }: BrowserActionState) {
   const iconFilenameParts = ['10ten'];
@@ -162,7 +160,7 @@ async function doUpdateBrowserAction({
   // We'd like to feature-detect if SVG icons are supported but Safari will
   // just fail silently if we try.
   const iconFilename = iconFilenameParts.join('-');
-  await setIcon(iconFilename, tabId);
+  await setIcon(iconFilename);
 
   // Add a warning overlay and update the string if there was a fatal
   // update error.
@@ -178,27 +176,27 @@ async function doUpdateBrowserAction({
     // a constant error signal.
     jpdictState.updateError.name !== 'QuotaExceededError'
   ) {
-    await action.setBadgeText({ text: '!', tabId });
+    await action.setBadgeText({ text: '!' });
     await browser.composeAction?.setBadgeText({ text: '!' });
-    await action.setBadgeBackgroundColor({ color: 'yellow', tabId });
+    await action.setBadgeBackgroundColor({ color: 'yellow' });
     await browser.composeAction?.setBadgeBackgroundColor({ color: 'yellow' });
     tooltip = browser.i18n.getMessage('command_toggle_update_error');
   } else {
-    await action.setBadgeText({ text: '', tabId });
+    await action.setBadgeText({ text: '' });
     await browser.composeAction?.setBadgeText({ text: '' });
   }
 
   // Set the caption
-  throttledSetTitle({ title: tooltip, tabId });
+  throttledSetTitle({ title: tooltip });
   await browser.composeAction?.setTitle({ title: tooltip });
 }
 
-async function setIcon(iconFilename: string, tabId?: number): Promise<void> {
+async function setIcon(iconFilename: string): Promise<void> {
   // We'd like to feature-detect if SVG icons are supported but Safari will
   // just fail silently if we try.
   if (__SUPPORTS_SVG_ICONS__) {
     const details = { path: `images/${iconFilename}.svg` };
-    await action.setIcon({ ...details, tabId });
+    await action.setIcon(details);
     await browser.composeAction?.setIcon(details);
   } else {
     const details = {
@@ -221,26 +219,24 @@ async function setIcon(iconFilename: string, tabId?: number): Promise<void> {
     // really only need to wait on it for Chrome/Edge anyway since setIcon is
     // not FIFO there.
     if (isSafari()) {
-      action.setIcon({ ...details, tabId }).catch((error) => {
+      action.setIcon(details).catch((error) => {
         // Safari sometimes reports:
         //
         //   Invalid call to action.setIcon(). Tab not found.
         //
         // I don't think there's anything we can do about it so just ignore it
         // for now.
-        Bugsnag.leaveBreadcrumb('Safari setIcon error', { error, tabId });
+        Bugsnag.leaveBreadcrumb('Safari setIcon error', { error });
       });
     } else {
-      await action.setIcon({ ...details, tabId });
+      await action.setIcon(details);
     }
     await browser.composeAction?.setIcon(details);
   }
 }
 
-// This will clobber any existing icon settings so it is only intended
-// to be used on startup (when no existing icon is already set) or when the icon
-// setting is changed (in which case we will update the browser action for
-// enabled tabs immediately afterwards anyway).
+// Set the initial icon before the tab manager has finished loading the enabled
+// state.
 export function setDefaultToolbarIcon(toolbarIcon: 'default' | 'sky') {
   const iconFilename =
     toolbarIcon === 'sky' ? '10ten-disabled' : '10ten-sky-disabled';

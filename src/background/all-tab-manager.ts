@@ -12,11 +12,7 @@ import type {
   TopFrameMessage,
 } from './background-message';
 import { BackgroundRequestSchema } from './background-request';
-import type {
-  EnabledChangedCallback,
-  EnabledState,
-  TabManager,
-} from './tab-manager';
+import type { EnabledChangedCallback, TabManager } from './tab-manager';
 
 type Tab = {
   frames: Record<number, { initialSrc: string }>;
@@ -175,17 +171,17 @@ export default class AllTabManager implements TabManager {
   // State queries
   //
 
-  getEnabledState(): Promise<Array<EnabledState>> {
-    return Promise.resolve([{ enabled: this.#enabled, tabId: undefined }]);
+  isEnabled(): boolean {
+    return this.#enabled;
   }
 
   //
   // Toggling related interface
   //
 
-  async toggleTab(_tab: Tabs.Tab | undefined, config: ContentConfigParams) {
+  async toggle(config: ContentConfigParams) {
     if (!this.#initPromise) {
-      throw new Error('Should have called init before toggleTab');
+      throw new Error('Should have called init before toggle');
     }
 
     await this.#initPromise;
@@ -440,20 +436,16 @@ export default class AllTabManager implements TabManager {
     }
 
     if (this.#initComplete) {
-      listener({ enabled: this.#enabled, anyEnabled: this.#enabled });
+      listener(this.#enabled);
     }
 
     // If we are still initializing, all the listeners will get notified at the
     // end of initialization if we are enabled.
   }
 
-  removeListener(listener: EnabledChangedCallback) {
-    this.#listeners = this.#listeners.filter((l) => l !== listener);
-  }
-
   #notifyListeners(enabled: boolean) {
     for (const listener of this.#listeners.slice()) {
-      listener({ enabled, anyEnabled: enabled });
+      listener(enabled);
     }
   }
 }

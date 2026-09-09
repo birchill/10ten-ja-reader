@@ -120,7 +120,6 @@ const testConfig = {
   output: { path: path.resolve(__dirname, 'tests'), filename: '[name].js' },
   plugins: [
     new rspack.DefinePlugin({
-      __ACTIVE_TAB_ONLY__: false,
       __SUPPORTS_SVG_ICONS__: false,
       __SUPPORTS_TAB_CONTEXT_TYPE__: false,
       __VERSION__: `'${pjson.version}'`,
@@ -254,7 +253,6 @@ export default (env) => {
 
 /**
  * @typedef {object} ExtConfigOptions
- * @property {boolean} [activeTabOnly]
  * @property {boolean} [addBom]
  * @property {string} artifactsDir
  * @property {string} distFolder
@@ -292,10 +290,6 @@ function getExtConfig(options) {
   //
 
   const preprocessorFeatures = [];
-
-  if (options.activeTabOnly) {
-    preprocessorFeatures.push('active_tab_only');
-  }
 
   if (options.includeRikaichampName) {
     preprocessorFeatures.push('include_rikaichamp_name');
@@ -371,7 +365,6 @@ function getExtConfig(options) {
 
   const plugins = [
     new rspack.DefinePlugin({
-      __ACTIVE_TAB_ONLY__: !!options.activeTabOnly,
       __MV3__: !!options.mv3,
       __SUPPORTS_SVG_ICONS__: !!options.supportsSvgIcons,
       __SUPPORTS_TAB_CONTEXT_TYPE__: !!options.supportsTabContextType,
@@ -392,15 +385,6 @@ function getExtConfig(options) {
           : 'css/[name].css',
     }),
   ];
-
-  if (options.activeTabOnly) {
-    plugins.push(
-      new rspack.NormalModuleReplacementPlugin(
-        /all-tab-manager$/,
-        path.resolve(__dirname, 'src', 'background', 'active-tab-manager.ts')
-      )
-    );
-  }
 
   if (options.addBom) {
     plugins.push(new BomPlugin(true));
