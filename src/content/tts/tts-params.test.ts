@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import type { NameResult, WordResult } from '../../background/search-result';
+import type {
+  NameResult,
+  NameSearchResult,
+  WordResult,
+  WordSearchResult,
+} from '../../background/search-result';
 
 import type { TtsEntry } from '../tts-playback-controller';
 
@@ -13,8 +18,8 @@ import {
 describe('buildTtsEntries', () => {
   it('numbers the name preview before the words, so index 0 is the top row', () => {
     const entries = buildTtsEntries('words', {
-      words: { data: [createEntry([kana('ひ')])] },
-      namePreview: { names: [createName()] },
+      words: wordsResult([createEntry([kana('ひ')])]),
+      namePreview: { names: [createName()], more: false },
     });
 
     expect(readings(entries)).toEqual(['さとう', 'ひ']);
@@ -22,7 +27,7 @@ describe('buildTtsEntries', () => {
 
   it('reads the names tab from the names result', () => {
     const entries = buildTtsEntries('names', {
-      names: { data: [createName()] },
+      names: namesResult([createName()]),
     });
 
     expect(readings(entries)).toEqual(['さとう']);
@@ -173,6 +178,14 @@ function createName(): NameResult {
     tr: [{ det: ['Sato'], type: ['surname'] }],
     matchLen: 2,
   };
+}
+
+function wordsResult(data: Array<WordResult>): WordSearchResult {
+  return { type: 'words', data, matchLen: 1, more: false };
+}
+
+function namesResult(data: Array<NameResult>): NameSearchResult {
+  return { type: 'names', data, matchLen: 2, more: false };
 }
 
 function readings(entries: Array<TtsEntry>): Array<string | undefined> {

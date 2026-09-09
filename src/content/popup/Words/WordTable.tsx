@@ -144,7 +144,7 @@ export const WordTable = (props: WordTableProps) => {
               tts={
                 props.ttsPlayback && {
                   controller: props.ttsPlayback,
-                  entryIndex: numNames + index,
+                  entryIndex: index + numNames,
                 }
               }
               onPointerUp={(evt) => {

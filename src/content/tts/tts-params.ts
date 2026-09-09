@@ -4,16 +4,14 @@ import type { NameResult, WordResult } from '../../background/search-result';
 import { getDisplayedKana } from '../../common/displayed-kana';
 import type { TtsClipRequest } from '../../common/tts/tts-request';
 
+import type { QueryResult } from '../query';
 import type { TtsEntry } from '../tts-playback-controller';
 
 import { getAccentPos } from './reading-tokens';
 
-// The parts of a `QueryResult` that carry readings we can play.
-export type TtsEntrySource = {
-  words?: { data: Array<WordResult> } | null;
-  names?: { data: Array<NameResult> } | null;
-  namePreview?: { names: Array<NameResult> };
-};
+type TtsEntrySource = Partial<
+  Pick<QueryResult, 'words' | 'names' | 'namePreview'>
+>;
 
 export function buildTtsEntries(
   dict: MajorDataSeries,
@@ -21,9 +19,8 @@ export function buildTtsEntries(
 ): Array<TtsEntry> {
   if (dict === 'words') {
     return [
-      // The name preview renders above the words, and `getCopyEntry` numbers
-      // them the same way. Swap these two and the play key and the copy key
-      // pick different rows.
+      // Names come first to match `getCopyEntryFromResult`. Swap these and
+      // `p` plays a different row than copy mode selects.
       ...(result?.namePreview?.names ?? []).map((name) => ({
         id: name.id,
         requests: resolveNameTtsParams(name),
