@@ -21,7 +21,7 @@ import {
   groupReadingTokens,
 } from '../../tts/reading-tokens';
 
-import { accentClasses, accentLayer } from './Reading';
+import { accentClasses, accentLayerStyles } from './Reading';
 
 const FADE_MS = 400;
 
@@ -178,7 +178,7 @@ function ReadingGlyphLayer(props: {
   accentDisplay: AccentDisplay;
   timeline: Timeline;
 }) {
-  const layer = accentLayer(props.accentDisplay);
+  const layer = accentLayerStyles(props.accentDisplay);
   const hasAccentBorders = props.groups.some(
     (group) => group.accent !== undefined
   );
@@ -266,7 +266,7 @@ function ReadingAccentOverlay(props: {
   accentDisplay: AccentDisplay;
   timeline: Timeline;
 }) {
-  const layer = accentLayer(props.accentDisplay);
+  const layer = accentLayerStyles(props.accentDisplay);
   const { durations, elapsedMs, animationPhase, fade } = props.timeline;
 
   return (
@@ -328,7 +328,7 @@ function animationTiming(
   elapsedMs: number
 ): string | undefined {
   // A negative delay leaves an already-spoken mora at its filled end state,
-  // which is how a popup mounted mid-reading catches up.
+  // which is how a popup rebuilt mid-reading catches up.
   return duration
     ? `${Math.round(duration.durationMs)}ms ease-in-out ${Math.round(
         duration.startMs - elapsedMs
