@@ -9,11 +9,16 @@ export type ReadingToken = {
   text: string;
   // Counted in codepoints, which is how the service indexes its mora timings.
   charIndex: number;
+  // Each mora keeps its accent so its border can be revealed independently.
   accent?: ReadingTokenAccent;
   downstep?: boolean;
 };
 
+// Adjacent tokens share one continuous accent border, while remaining separate
+// for playback timing.
 export type ReadingTokenGroup = {
+  // The last token's accent describes the whole border, including any final fall.
+  // Store it here for convenience instead of looking up the last token when rendering.
   accent?: ReadingTokenAccent;
   tokens: Array<ReadingToken>;
 };

@@ -34,7 +34,7 @@ export function Reading({
       .join('');
   }
 
-  const layer = accentLayer(accentDisplay);
+  const layer = accentLayerStyles(accentDisplay);
 
   return (
     <span
@@ -56,7 +56,7 @@ export function Reading({
   );
 }
 
-export function accentLayer(accentDisplay: AccentDisplay): {
+export function accentLayerStyles(accentDisplay: AccentDisplay): {
   classes: string | undefined;
   borderWidth: string;
 } {
