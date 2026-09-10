@@ -20,7 +20,11 @@ type Props = {
   selectState: SelectState;
   onPointerUp?: (evt: PointerEvent) => void;
   onClick?: () => void;
-  tts?: { controller: TtsPlaybackHandle; entryIndex: number };
+  tts?: {
+    controller: TtsPlaybackHandle;
+    entryIndex: number;
+    shortcuts?: ReadonlyArray<string>;
+  };
 };
 
 export function NameEntry(props: Props) {
@@ -92,6 +96,7 @@ export function NameEntry(props: Props) {
           <TtsPlayButton
             controller={props.tts.controller}
             entryIndex={props.tts.entryIndex}
+            shortcuts={props.tts.shortcuts}
           />
         )}
       </div>
