@@ -148,11 +148,12 @@ jobs:
           fileName: ${{ steps.parse_chrome_release.outputs.addon_asset_name }}
 
       - name: Publish
-        uses: mnao305/chrome-extension-upload@v6.0.0
+        uses: mnao305/chrome-extension-upload@v7
         if: ${{ !steps.parse_chrome_release.outputs.skip }}
         with:
           file-path: ${{ steps.parse_chrome_release.outputs.addon_asset_name }}
           extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
+          publisher-id: ${{ secrets.CHROME_PUBLISHER_ID }}
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
           refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
