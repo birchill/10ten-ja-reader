@@ -12,18 +12,17 @@ import type {
   TtsPlaybackState,
 } from '../../tts-playback-controller';
 
-import { usePopupOptions } from '../options-context';
 import { PLAY_PATH_OPTICALLY_CENTERED, STOP_PATH } from '../play-stop-paths';
 
 export type TtsPlayButtonProps = {
   controller: TtsPlaybackHandle;
   entryIndex: number;
+  shortcuts?: ReadonlyArray<string>;
 };
 
 export function TtsPlayButton(props: TtsPlayButtonProps) {
-  const { controller, entryIndex } = props;
+  const { controller, entryIndex, shortcuts } = props;
   const { t, langTag } = useLocale();
-  const { playReadingsShortcuts = [] } = usePopupOptions();
   const shouldAnimate = useShouldAnimate();
 
   const [state, setState] = useState<TtsPlaybackState>(() => controller.state);
@@ -40,8 +39,8 @@ export function TtsPlayButton(props: TtsPlayButtonProps) {
   // The key only plays the first entry, so a hint on a lower row would
   // promise the wrong row.
   const title =
-    entryIndex === 0 && playReadingsShortcuts.length
-      ? `${label} (${playReadingsShortcuts.join(' / ')})`
+    entryIndex === 0 && shortcuts?.length
+      ? `${label} (${shortcuts.join(' / ')})`
       : label;
 
   // Follow the icon color so the circle darkens on light highlighted rows.

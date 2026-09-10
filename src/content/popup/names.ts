@@ -41,11 +41,7 @@ export function renderNamesEntries({
     container: containerElement,
     vnode: h(
       PopupOptionsProvider,
-      {
-        interactive: options.interactive,
-        fontSize: options.fontSize,
-        playReadingsShortcuts: options.playReadingsShortcuts,
-      },
+      { interactive: options.interactive, fontSize: options.fontSize },
       h(NameTable, {
         entries,
         matchLen,
@@ -56,6 +52,7 @@ export function renderNamesEntries({
         copyState: options.copyState,
         onStartCopy: options.onStartCopy,
         ttsPlayback: options.ttsPlayback,
+        playReadingsShortcuts: options.playReadingsShortcuts,
       })
     ),
   });

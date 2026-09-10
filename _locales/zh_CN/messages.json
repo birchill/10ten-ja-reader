@@ -1678,11 +1678,11 @@
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
   "options_play_readings_description": {
-    "message": "实验性功能：以语音播放词条读音。读音和汉字会发送至 10ten 的服务器以获取语音。",
-    "description": "Short, one-sentence description of the setting to enable the button for playing an entry's readings as audio"
+    "message": "实验性功能：此功能将在未来版本中默认启用。",
+    "description": "Note shown under the checkbox for playing an entry's readings, explaining that the setting is temporary"
   },
   "options_play_readings_label": {
-    "message": "以语音播放读音",
+    "message": "启用读音播放按钮",
     "description": "Checkbox label for the setting to enable the button for playing an entry's readings as audio"
   },
   "options_popup_close_popup": { "message": "关闭弹出窗口" },

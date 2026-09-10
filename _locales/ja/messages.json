@@ -1682,11 +1682,11 @@
     "description": "Message shown when the system is offline so updates cannot be performed"
   },
   "options_play_readings_description": {
-    "message": "実験的機能：項目の読み方を音声で再生します。音声を取得するため、読み方と漢字を10tenのサーバーに送信します。",
-    "description": "Short, one-sentence description of the setting to enable the button for playing an entry's readings as audio"
+    "message": "実験的機能：今後のリリースでは既定で有効になります。",
+    "description": "Note shown under the checkbox for playing an entry's readings, explaining that the setting is temporary"
   },
   "options_play_readings_label": {
-    "message": "音声で読み方を再生する",
+    "message": "読み方の再生ボタンを有効にする",
     "description": "Checkbox label for the setting to enable the button for playing an entry's readings as audio"
   },
   "options_popup_close_popup": { "message": "ポップアップを閉じる" },

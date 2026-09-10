@@ -4,10 +4,12 @@ import { useContext } from 'preact/hooks';
 
 import type { FontSize } from '../../common/content-config-params';
 
+// Not every popup option belongs here. This context is only for cross-cutting
+// options. Pass a more tightly scoped option as a prop.
+
 export type PopupOptionsContextType = {
   interactive: boolean;
   fontSize?: FontSize;
-  playReadingsShortcuts?: ReadonlyArray<string>;
 };
 
 const contextValue: PopupOptionsContextType = {

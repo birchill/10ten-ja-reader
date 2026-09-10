@@ -1,4 +1,4 @@
-import { useFixtureSelect } from 'react-cosmos/client';
+import { useFixtureInput, useFixtureSelect } from 'react-cosmos/client';
 
 import { classes } from '../../../utils/classes';
 
@@ -15,6 +15,7 @@ export default {
       options: ['idle', 'loading', 'playing', 'between-readings', 'error'],
     });
     const [row] = useFixtureSelect('row', { options: ['normal', 'selected'] });
+    const [shortcut] = useFixtureInput('play readings key', 'p');
 
     const state = states[kind];
     const controller = {
@@ -43,7 +44,11 @@ export default {
           <span class="tp:text-(--reading-highlight) tp:group-hover:text-(--selected-reading-highlight) tp:no-overlay:group-data-selected:text-(--selected-reading-highlight)">
             ひ
           </span>
-          <TtsPlayButton controller={controller} entryIndex={0} />
+          <TtsPlayButton
+            controller={controller}
+            entryIndex={0}
+            shortcuts={shortcut ? [shortcut] : []}
+          />
         </div>
       </div>
     );
