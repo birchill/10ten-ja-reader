@@ -1,0 +1,85 @@
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+
+import type { NameResult } from '../../background/search-result';
+
+import type { TtsPlaybackHandle } from '../tts-playback-controller';
+
+import { unmountPopupComponents } from './mount';
+import { renderNamesEntries } from './names';
+
+/**
+ * @vitest-environment jsdom
+ */
+
+vi.mock('../../common/i18n', () => ({
+  useLocale: () => ({ t: (key: string) => key, langTag: 'en' }),
+}));
+
+vi.mock('webextension-polyfill', () => ({
+  default: {
+    i18n: { getMessage: () => '' },
+    runtime: { getURL: (path: string) => path },
+  },
+}));
+
+beforeEach(() => {
+  vi.stubGlobal(
+    'matchMedia',
+    vi
+      .fn()
+      .mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+      }))
+  );
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+it('shows the play shortcut on a standalone name popup button', () => {
+  const popupHost = document.createElement('div');
+  const controller: TtsPlaybackHandle = {
+    state: { kind: 'idle' },
+    subscribe: () => () => {},
+    toggle: () => {},
+  };
+
+  try {
+    const names = renderNamesEntries({
+      entries: [createName()],
+      matchLen: 2,
+      more: false,
+      options: {
+        copyState: { kind: 'inactive' },
+        fontSize: 'normal',
+        fxData: undefined,
+        interactive: true,
+        playReadingsShortcuts: ['p'],
+        preferredUnits: 'metric',
+        ttsPlayback: controller,
+      },
+      popupHost,
+    });
+
+    const playButton = names.querySelector<HTMLButtonElement>(
+      'button[aria-label="content_play_readings_label"]'
+    );
+    expect(playButton?.title).toBe('content_play_readings_label (p)');
+  } finally {
+    unmountPopupComponents(popupHost);
+  }
+});
+
+function createName(): NameResult {
+  return {
+    id: 1,
+    k: ['佐藤'],
+    r: ['さとう'],
+    tr: [{ det: ['Sato'], type: ['surname'] }],
+    matchLen: 2,
+  };
+}

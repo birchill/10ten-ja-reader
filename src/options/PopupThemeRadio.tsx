@@ -11,6 +11,7 @@ import type {
 } from '../common/content-config-params';
 import { WordEntry } from '../content/popup/Words/WordEntry';
 import { PopupOptionsProvider } from '../content/popup/options-context';
+import type { TtsPlaybackHandle } from '../content/tts-playback-controller';
 import { classes } from '../utils/classes';
 import { useThemeClass } from '../utils/use-theme-class';
 
@@ -19,6 +20,7 @@ type Props = {
   fontFace: FontFace;
   fontSize: FontSize;
   onChangeTheme: (theme: string) => void;
+  playReadings: boolean;
   posDisplay: PartOfSpeechDisplay;
   showBunproDecks: boolean;
   showDefinitions: boolean;
@@ -96,6 +98,7 @@ type PopupPreviewProps = {
   accentDisplay: AccentDisplay;
   fontFace: FontFace;
   fontSize: FontSize;
+  playReadings: boolean;
   posDisplay: PartOfSpeechDisplay;
   showBunproDecks: boolean;
   showDefinitions: boolean;
@@ -130,6 +133,12 @@ const demoEntry: WordResult = {
   matchLen: 2,
 };
 
+const idleTtsPlayback: TtsPlaybackHandle = {
+  state: { kind: 'idle' },
+  subscribe: () => () => {},
+  toggle: () => {},
+};
+
 function PopupPreview(props: PopupPreviewProps) {
   const themeClass = useThemeClass(props.theme);
   const entryData = { ...demoEntry };
@@ -140,6 +149,9 @@ function PopupPreview(props: PopupPreviewProps) {
       class={classes(
         themeClass,
         'window inline-block min-w-[180px] py-2 text-left',
+        // The preview sits inside the theme's radio label. Without this, its
+        // play button would swallow the click that picks the theme.
+        'pointer-events-none',
         props.fontFace === 'bundled' && 'bundled-fonts',
         `font-${props.fontSize}`
       )}
@@ -160,6 +172,12 @@ function PopupPreview(props: PopupPreviewProps) {
           }}
           entry={entryData}
           selectState="unselected"
+          showPlayButton
+          tts={
+            props.playReadings
+              ? { controller: idleTtsPlayback, entryIndex: 0 }
+              : undefined
+          }
         />
       </PopupOptionsProvider>
     </div>

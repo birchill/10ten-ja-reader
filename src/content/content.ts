@@ -127,7 +127,7 @@ import type { TtsPlaybackHandle } from './tts-playback-controller';
 import { TtsPlaybackController } from './tts-playback-controller';
 import { playClip } from './tts/audio-clip-player';
 import { fetchTtsClip } from './tts/tts-clip-fetcher';
-import { resolveNameTtsParams, resolveTtsParams } from './tts/tts-params';
+import { buildTtsEntries } from './tts/tts-params';
 
 const enum HoldToShowKeyType {
   None = 0,
@@ -1152,6 +1152,7 @@ export class ContentHandler {
       movePopupUp,
       movePopupDown,
       startCopy,
+      playReadings,
     ] = [
       normalizeKeys(keys.nextDictionary),
       normalizeKeys(keys.toggleDefinition),
@@ -1161,6 +1162,7 @@ export class ContentHandler {
       normalizeKeys(keys.movePopupUp),
       normalizeKeys(keys.movePopupDown),
       normalizeKeys(keys.startCopy),
+      normalizeKeys(keys.playReadings),
     ];
 
     const key = normalizeKey(event.key);
@@ -1208,6 +1210,15 @@ export class ContentHandler {
       this.exitCopyMode();
     } else if (expandPopup.includes(key)) {
       this.expandPopup();
+    } else if (
+      this.#canPlayReadings() &&
+      !hasModifiers(event) &&
+      playReadings.includes(key)
+    ) {
+      // A held key repeats the keydown; treat the whole hold as one toggle.
+      if (!event.repeat) {
+        this.togglePlayReadings();
+      }
     }
     // This needs to come _after_ the above check so that if the user has
     // configured Escape to close the popup but they are in copy mode, we first
@@ -1251,6 +1262,16 @@ export class ContentHandler {
     }
 
     return true;
+  }
+
+  #canPlayReadings(): boolean {
+    return (
+      this.#config.playReadings &&
+      this.isVisible() &&
+      !!this.#popupState?.hasTtsEntries &&
+      // Entering copy mode stops playback, so don't let the key restart it.
+      this.#copyState.kind === 'inactive'
+    );
   }
 
   onFocusIn = (event: FocusEvent) => {
@@ -1576,6 +1597,10 @@ export class ContentHandler {
         this.movePopup(request.direction);
         break;
 
+      case 'playReadings':
+        this.togglePlayReadings();
+        break;
+
       case 'enterCopyMode':
         this.enterCopyMode({ trigger: 'keyboard' });
         break;
@@ -1647,6 +1672,21 @@ export class ContentHandler {
       );
     }
     this.updatePopup();
+  }
+
+  togglePlayReadings() {
+    if (!this.isTopMostWindow()) {
+      void browser.runtime.sendMessage({ type: 'top:playReadings' });
+      return;
+    }
+
+    // Re-check here: a forwarded message can arrive after this frame's own
+    // popup state moved on, so the sender's state can no longer be trusted.
+    if (!this.#canPlayReadings()) {
+      return;
+    }
+
+    this.#ttsPlaybackController?.toggle(0);
   }
 
   enterCopyMode({
@@ -2300,6 +2340,7 @@ export class ContentHandler {
         }
       },
       pinShortcuts: this.#config.keys.pinPopup,
+      playReadingsShortcuts: this.#config.keys.playReadings,
       pointerType: this.#currentTargetProps?.fromPuck ? 'puck' : 'cursor',
       popupStyle: this.#config.popupStyle,
       posDisplay: this.#config.posDisplay,
@@ -2357,6 +2398,7 @@ export class ContentHandler {
         }),
       },
       contentType: this.#currentTargetProps?.contentType || 'text',
+      hasTtsEntries: !!this.#ttsPlaybackController?.hasEntries,
       display: this.getNextDisplay(displayMode),
     };
 
@@ -2378,23 +2420,9 @@ export class ContentHandler {
   }
 
   #syncTtsPlayback(): TtsPlaybackHandle | undefined {
-    const entries =
-      this.#config.playReadings && this.#currentDict === 'words'
-        ? [
-            ...(this.#currentSearchResult?.words?.data ?? []).map((word) => ({
-              id: word.id,
-              requests: resolveTtsParams(word),
-            })),
-            ...(this.#currentSearchResult?.namePreview?.names ?? []).map(
-              (name) => ({ id: name.id, requests: resolveNameTtsParams(name) })
-            ),
-          ]
-        : this.#config.playReadings && this.#currentDict === 'names'
-          ? (this.#currentSearchResult?.names?.data ?? []).map((name) => ({
-              id: name.id,
-              requests: resolveNameTtsParams(name),
-            }))
-          : [];
+    const entries = this.#config.playReadings
+      ? buildTtsEntries(this.#currentDict, this.#currentSearchResult)
+      : [];
 
     if (entries.length) {
       this.#ttsPlaybackController ??= new TtsPlaybackController({

@@ -1,8 +1,46 @@
+import type { MajorDataSeries } from '@birchill/jpdict-idb';
+
 import type { NameResult, WordResult } from '../../background/search-result';
 import { getDisplayedKana } from '../../common/displayed-kana';
 import type { TtsClipRequest } from '../../common/tts/tts-request';
 
+import type { QueryResult } from '../query';
+import type { TtsEntry } from '../tts-playback-controller';
+
 import { getAccentPos } from './reading-tokens';
+
+type TtsEntrySource = Partial<
+  Pick<QueryResult, 'words' | 'names' | 'namePreview'>
+>;
+
+export function buildTtsEntries(
+  dict: MajorDataSeries,
+  result: TtsEntrySource | undefined
+): Array<TtsEntry> {
+  if (dict === 'words') {
+    return [
+      // Names come first to match `getCopyEntryFromResult`. Swap these and
+      // `p` plays a different row than copy mode selects.
+      ...(result?.namePreview?.names ?? []).map((name) => ({
+        id: name.id,
+        requests: resolveNameTtsParams(name),
+      })),
+      ...(result?.words?.data ?? []).map((word) => ({
+        id: word.id,
+        requests: resolveTtsParams(word),
+      })),
+    ];
+  }
+
+  if (dict === 'names') {
+    return (result?.names?.data ?? []).map((name) => ({
+      id: name.id,
+      requests: resolveNameTtsParams(name),
+    }));
+  }
+
+  return [];
+}
 
 export function resolveTtsParams(entry: WordResult): Array<TtsClipRequest> {
   return getDisplayedKana(entry).map((kana) =>

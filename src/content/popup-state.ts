@@ -53,6 +53,8 @@ export const PopupStateSchema = s.type({
   // The type of content the popup is positioned relative to.
   contentType: s.enums(['text', 'image']),
 
+  hasTtsEntries: s.boolean(),
+
   // The particular appearance and behavior of the popup
   display: discriminator('mode', {
     // static: no interactivity, small tabs, no close button etc.

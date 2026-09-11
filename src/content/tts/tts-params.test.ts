@@ -1,8 +1,42 @@
 import { describe, expect, it } from 'vitest';
 
-import type { WordResult } from '../../background/search-result';
+import type {
+  NameResult,
+  NameSearchResult,
+  WordResult,
+  WordSearchResult,
+} from '../../background/search-result';
 
-import { resolveNameTtsParams, resolveTtsParams } from './tts-params';
+import type { TtsEntry } from '../tts-playback-controller';
+
+import {
+  buildTtsEntries,
+  resolveNameTtsParams,
+  resolveTtsParams,
+} from './tts-params';
+
+describe('buildTtsEntries', () => {
+  it('numbers the name preview before the words, so index 0 is the top row', () => {
+    const entries = buildTtsEntries('words', {
+      words: wordsResult([createEntry([kana('ひ')])]),
+      namePreview: { names: [createName()], more: false },
+    });
+
+    expect(readings(entries)).toEqual(['さとう', 'ひ']);
+  });
+
+  it('reads the names tab from the names result', () => {
+    const entries = buildTtsEntries('names', {
+      names: namesResult([createName()]),
+    });
+
+    expect(readings(entries)).toEqual(['さとう']);
+  });
+
+  it('has nothing to play on the kanji tab', () => {
+    expect(buildTtsEntries('kanji', undefined)).toEqual([]);
+  });
+});
 
 describe('resolveNameTtsParams', () => {
   it('uses the first kanji form for every displayed reading', () => {
@@ -134,4 +168,26 @@ function kanji(
 
 function createEntry(r: WordResult['r'], k: WordResult['k'] = []): WordResult {
   return { id: 1, k, r, s: [], matchLen: 1 };
+}
+
+function createName(): NameResult {
+  return {
+    id: 2,
+    k: ['佐藤'],
+    r: ['さとう'],
+    tr: [{ det: ['Sato'], type: ['surname'] }],
+    matchLen: 2,
+  };
+}
+
+function wordsResult(data: Array<WordResult>): WordSearchResult {
+  return { type: 'words', data, matchLen: 1, more: false };
+}
+
+function namesResult(data: Array<NameResult>): NameSearchResult {
+  return { type: 'names', data, matchLen: 2, more: false };
+}
+
+function readings(entries: Array<TtsEntry>): Array<string | undefined> {
+  return entries.map((entry) => entry.requests[0]?.reading);
 }

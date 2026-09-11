@@ -164,6 +164,15 @@ body {
   box-sizing: border-box;
 }
 
+/*
+ * The popup style preview renders real popup components inside the options
+ * page. The play button sizes its glyph with content-box padding, so the
+ * border-box reset above shrinks the glyph to zero width and hides it.
+ */
+.options .tts-play-button {
+  box-sizing: content-box;
+}
+
 :root.safari body {
   max-width: 600px;
   margin-left: auto;
