@@ -28,6 +28,21 @@ describe('Options and popup styles coexisting in Cosmos', () => {
     expect(glyph.getBoundingClientRect().height).toBeCloseTo(14, 1);
   });
 
+  it('keeps the play button glyph visible in the options page preview', () => {
+    // The preview renders popup components inside the options page, whose
+    // reset makes every element border-box. Without an exception the button's
+    // own padding eats its width and the glyph collapses to nothing.
+    const { button, glyph } = mountButton(
+      { kind: 'idle' },
+      { inOptions: true }
+    );
+
+    expect(getComputedStyle(button).boxSizing).toBe('content-box');
+    expect(button.getBoundingClientRect().width).toBeCloseTo(40, 1);
+    expect(glyph.getBoundingClientRect().width).toBeCloseTo(14, 1);
+    expect(glyph.getBoundingClientRect().height).toBeCloseTo(14, 1);
+  });
+
   it('preserves options border-box sizing after scoping its reset', () => {
     const options = document.createElement('div');
     options.className = 'options';
@@ -39,11 +54,22 @@ describe('Options and popup styles coexisting in Cosmos', () => {
   });
 });
 
-function mountButton(state: TtsPlaybackState) {
+function mountButton(
+  state: TtsPlaybackState,
+  { inOptions = false }: { inOptions?: boolean } = {}
+) {
   const container = document.createElement('div');
   container.className = 'theme-light window bundled-fonts';
   container.style.setProperty('--base-font-size', '14px');
-  document.body.append(container);
+
+  if (inOptions) {
+    const options = document.createElement('div');
+    options.className = 'options';
+    options.append(container);
+    document.body.append(options);
+  } else {
+    document.body.append(container);
+  }
 
   const controller = { state, subscribe: () => () => {}, toggle: () => {} };
   act(() => {
