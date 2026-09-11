@@ -13,7 +13,7 @@ jobs:
   prepare:
     name: Prepare release
     if: ${{ github.repository == 'birchill/10ten-ja-reader' }}
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     concurrency:
       group: app-store-connect-build-number
       cancel-in-progress: false
@@ -103,7 +103,7 @@ jobs:
     # Keep the Safari build/sign/upload steps in this job in sync with
     # `.github/workflows/create-safari-test-build.yml`'s `build` job.
     name: Build Safari assets
-    runs-on: macos-26
+    runs-on: blacksmith-6vcpu-macos-26
     needs: prepare
     if: ${{ github.repository == 'birchill/10ten-ja-reader' && needs.prepare.outputs.should_release == 'true' }}
 
@@ -286,7 +286,7 @@ jobs:
 
   release:
     name: Create release
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     needs: [prepare, build_macos]
     if: ${{ github.repository == 'birchill/10ten-ja-reader' && needs.prepare.outputs.should_release == 'true' }}
     permissions:
