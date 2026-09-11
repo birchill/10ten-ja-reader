@@ -81,6 +81,7 @@ import {
 import { shouldRequestPersistentStorage } from './quota-management';
 import type { SearchOtherResult, SearchWordsResult } from './search-result';
 import TabManager from './tab-manager';
+import { cancelTtsFetch, fetchTtsClip } from './tts-fetch';
 
 //
 // Setup bugsnag
@@ -580,6 +581,29 @@ browser.runtime.onMessage.addListener(
 
       case 'isDbUpdating':
         return Promise.resolve(isDbUpdating());
+
+      case 'fetchTtsClip':
+        if (!sender.tab?.id || typeof sender.frameId !== 'number') {
+          return Promise.resolve({ ok: false });
+        }
+        return fetchTtsClip(
+          {
+            tabId: sender.tab.id,
+            frameId: sender.frameId,
+            requestId: request.requestId,
+          },
+          request.request
+        );
+
+      case 'cancelTtsFetch':
+        if (sender.tab?.id && typeof sender.frameId === 'number') {
+          cancelTtsFetch({
+            tabId: sender.tab.id,
+            frameId: sender.frameId,
+            requestId: request.requestId,
+          });
+        }
+        break;
 
       //
       // Forwarded messages
