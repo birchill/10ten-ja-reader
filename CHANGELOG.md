@@ -6,6 +6,10 @@ The format is based roughly on [Keep a Changelog](https://keepachangelog.com/en/
 This project does _not_ adhere to semantic versioning—it's a consumer
 app.
 
+## 1.29.0
+
+- (Safari) Keep 10ten enabled when switching tabs and websites.
+
 ## [1.28.0] - 2026-09-02
 
 - Avoid looking up text when the cursor is far off the end of the line ([#2813](https://github.com/birchill/10ten-ja-reader/issues/2813)).
