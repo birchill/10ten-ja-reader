@@ -175,25 +175,9 @@ describe('TtsPlaybackController', () => {
     controller.toggle(1);
     await flush();
 
-    controller.setEntries([{ ...entryA }, { ...entryB }]);
+    controller.setEntries([{ ...entryA }, { ...entryB }], '入る');
 
     expect(statuses()).toEqual(['idle', 'playing']);
-  });
-
-  it('keeps playing when the entry it is playing moves to another index', async () => {
-    const { controller, statuses, playbacks } = setUp([entryA, entryB]);
-
-    controller.toggle(1);
-    await flush();
-
-    controller.setEntries([entryB]);
-
-    expect(playbacks[0].signal.aborted).toBe(false);
-    expect(statuses()).toEqual(['playing', 'idle']);
-    expect(controller.state).toMatchObject({
-      kind: 'playing',
-      activeEntryIndex: 0,
-    });
   });
 
   it('keeps the original audio playing when the displayed readings change', async () => {
@@ -202,40 +186,43 @@ describe('TtsPlaybackController', () => {
     controller.toggle(1);
     await flush();
 
-    controller.setEntries([entryA, { id: entryB.id, requests: twoReadings }]);
+    controller.setEntries(
+      [entryA, { id: entryB.id, requests: twoReadings }],
+      '入る'
+    );
 
     expect(playbacks[0].signal.aborted).toBe(false);
     expect(statuses()).toEqual(['idle', 'idle']);
   });
 
-  it('keeps playing when the entry it is playing disappears', async () => {
-    const { controller, statuses, playbacks } = setUp([entryA, entryB]);
+  it('restores the current reading on the original row when the same word popup reopens', async () => {
+    const entry = { id: 4, requests: twoReadings };
+    const { controller, playbacks, statuses } = setUp([entry, entry]);
 
     controller.toggle(1);
     await flush();
-
-    controller.setEntries([]);
+    controller.setEntries([], undefined);
 
     expect(playbacks[0].signal.aborted).toBe(false);
     expect(statuses()).toEqual(['idle', 'idle']);
-  });
 
-  it('restores playback state when the playing entry reappears', async () => {
-    const { controller, playbacks, statuses } = setUp([entryA, entryB]);
+    playbacks[0].end();
+    await flush();
+    controller.setEntries([{ ...entry }, { ...entry }], '入る');
+
+    expect(playbacks).toHaveLength(2);
+    expect(playbacks[1].signal.aborted).toBe(false);
+    expect(controller.state).toMatchObject({
+      kind: 'playing',
+      activeEntryIndex: 1,
+      readingIndex: 1,
+      startedAt: 200,
+    });
+    expect(statuses()).toEqual(['idle', 'playing']);
 
     controller.toggle(1);
-    await flush();
-    const playing = controller.state;
-    controller.setEntries([]);
-    controller.setEntries([entryB, entryA]);
 
-    expect(playbacks[0].signal.aborted).toBe(false);
-    expect(controller.state).toEqual({ ...playing, activeEntryIndex: 0 });
-    expect(statuses()).toEqual(['playing', 'idle']);
-
-    controller.toggle(0);
-
-    expect(playbacks[0].signal.aborted).toBe(true);
+    expect(playbacks[1].signal.aborted).toBe(true);
     expect(controller.state).toEqual({ kind: 'idle' });
   });
 
@@ -246,7 +233,7 @@ describe('TtsPlaybackController', () => {
 
     controller.toggle(0);
     await flush();
-    controller.setEntries([]);
+    controller.setEntries([], undefined);
     unsubscribeAll();
     playbacks[0].end();
     await flush();
@@ -257,7 +244,7 @@ describe('TtsPlaybackController', () => {
 
     playbacks[1].end();
     await flush();
-    controller.setEntries([{ id: 4, requests: twoReadings }]);
+    controller.setEntries([{ id: 4, requests: twoReadings }], '入る');
 
     expect(playbacks[1].signal.aborted).toBe(true);
     expect(controller.state).toEqual({ kind: 'idle' });
@@ -269,13 +256,13 @@ describe('TtsPlaybackController', () => {
     });
 
     controller.toggle(0);
-    controller.setEntries([]);
+    controller.setEntries([], undefined);
 
     expect(fetches[0].signal.aborted).toBe(false);
 
     fetches[0].resolve();
     await flush();
-    controller.setEntries([entryA]);
+    controller.setEntries([entryA], '入る');
 
     expect(playbacks).toHaveLength(1);
     expect(controller.state).toMatchObject({
@@ -284,12 +271,15 @@ describe('TtsPlaybackController', () => {
     });
   });
 
-  it('replaces hidden playback when a different entry at the same index starts', async () => {
+  it('keeps playback hidden for a different word with the same entry until clicked', async () => {
     const { controller, playbacks, statuses } = setUp([entryA]);
 
     controller.toggle(0);
     await flush();
-    controller.setEntries([entryB]);
+    controller.setEntries([], undefined);
+    controller.setEntries([entryA], '入った');
+
+    expect(playbacks[0].signal.aborted).toBe(false);
 
     expect(statuses()).toEqual(['idle', 'idle']);
 
@@ -306,9 +296,9 @@ describe('TtsPlaybackController', () => {
 
     controller.toggle(0);
     await flush();
-    controller.setEntries([]);
+    controller.setEntries([], undefined);
     controller.stop();
-    controller.setEntries([entryA]);
+    controller.setEntries([entryA], '入る');
 
     expect(playbacks[0].signal.aborted).toBe(true);
     expect(controller.state).toEqual({ kind: 'idle' });
@@ -441,7 +431,7 @@ describe('TtsPlaybackController', () => {
         ended: new Promise<void>(() => {}),
       }),
     });
-    controller.setEntries([entryA]);
+    controller.setEntries([entryA], '入る');
 
     controller.toggle(0);
     await flush();
@@ -458,10 +448,10 @@ describe('TtsPlaybackController', () => {
 
     expect(controller.hasEntries).toBe(false);
 
-    controller.setEntries([entryA]);
+    controller.setEntries([entryA], '入る');
     expect(controller.hasEntries).toBe(true);
 
-    controller.setEntries([]);
+    controller.setEntries([], undefined);
     expect(controller.hasEntries).toBe(false);
   });
 });
@@ -537,7 +527,7 @@ function setUp(entries: ReadonlyArray<TtsEntry>, behavior: Behavior = {}) {
   };
 
   const controller = new TtsPlaybackController({ fetchClip, playClip });
-  controller.setEntries(entries);
+  controller.setEntries(entries, '入る');
 
   const deliveries: Array<{ entryIndex: number; kind: string }> = [];
   const probes = [
