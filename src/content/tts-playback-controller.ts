@@ -35,7 +35,9 @@ export type TtsPlaybackHandle = Pick<
 export class TtsPlaybackController {
   #player: TtsPlayer;
   #entries: ReadonlyArray<TtsEntry> = [];
-  #activeEntry: { index: number | undefined; key: string } | undefined;
+  #activeEntry:
+    | { index: number | undefined; lastKnownIndex: number; key: string }
+    | undefined;
   #audioStarted = false;
   #actions: Array<() => void> = [];
   #draining = false;
@@ -183,16 +185,17 @@ export class TtsPlaybackController {
       return;
     }
 
-    const stillThere =
-      active.index === undefined ? undefined : entries[active.index];
+    const stillThere = entries[active.lastKnownIndex];
     const index =
-      active.index !== undefined &&
-      stillThere &&
-      entryKey(stillThere) === active.key
-        ? active.index
+      stillThere && entryKey(stillThere) === active.key
+        ? active.lastKnownIndex
         : entries.findIndex((entry) => entryKey(entry) === active.key);
     if (index !== active.index) {
-      this.#activeEntry = { ...active, index: index < 0 ? undefined : index };
+      this.#activeEntry = {
+        ...active,
+        index: index < 0 ? undefined : index,
+        lastKnownIndex: index < 0 ? active.lastKnownIndex : index,
+      };
     }
   }
 
@@ -219,7 +222,11 @@ export class TtsPlaybackController {
       );
     }
 
-    this.#activeEntry = { index: entryIndex, key: entryKey(entry) };
+    this.#activeEntry = {
+      index: entryIndex,
+      lastKnownIndex: entryIndex,
+      key: entryKey(entry),
+    };
     this.#audioStarted = false;
     this.#player.setReadings(entry.requests);
     this.#player.playAll();
