@@ -1868,7 +1868,7 @@ export class ContentHandler {
     this.#currentPagePoint = undefined;
     this.#lastPointerTarget = null;
     this.#copyState = { kind: 'inactive' };
-    this.#ttsPlaybackController?.setEntries([]);
+    this.#ttsPlaybackController?.setEntries([], undefined);
 
     clearPopupTimeout(this.#popupState);
     this.#popupState = undefined;
@@ -2432,7 +2432,15 @@ export class ContentHandler {
       });
     }
 
-    this.#ttsPlaybackController?.setEntries(entries);
+    const matchLen = Math.max(
+      this.#currentSearchResult?.[this.#currentDict]?.matchLen || 0,
+      this.#currentLookupParams?.meta?.matchLen || 0
+    );
+    const lookupText = this.#currentLookupParams?.text.slice(0, matchLen);
+    const lookupKey = lookupText
+      ? JSON.stringify([this.#currentDict, lookupText])
+      : undefined;
+    this.#ttsPlaybackController?.setEntries(entries, lookupKey);
 
     return this.#config.playReadings ? this.#ttsPlaybackController : undefined;
   }

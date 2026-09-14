@@ -35,9 +35,8 @@ export type TtsPlaybackHandle = Pick<
 export class TtsPlaybackController {
   #player: TtsPlayer;
   #entries: ReadonlyArray<TtsEntry> = [];
-  #activeEntry:
-    | { index: number | undefined; lastKnownIndex: number; key: string }
-    | undefined;
+  #lookupKey: string | undefined;
+  #activeEntry: { index: number; key: string; lookupKey: string } | undefined;
   #audioStarted = false;
   #actions: Array<() => void> = [];
   #draining = false;
@@ -64,8 +63,11 @@ export class TtsPlaybackController {
     return () => this.#listeners.delete(listener);
   }
 
-  setEntries(entries: ReadonlyArray<TtsEntry>) {
-    this.#enqueue(() => this.#applySetEntries(entries));
+  setEntries(entries: ReadonlyArray<TtsEntry>, lookupKey: string | undefined) {
+    this.#enqueue(() => {
+      this.#entries = entries;
+      this.#lookupKey = lookupKey;
+    });
   }
 
   toggle(entryIndex: number) {
@@ -149,7 +151,14 @@ export class TtsPlaybackController {
   #currentState(): TtsPlaybackState {
     const playerState = this.#player.state;
     const active = this.#activeEntry;
-    if (playerState.kind === 'idle' || active?.index === undefined) {
+    const entry = active && this.#entries[active.index];
+    if (
+      playerState.kind === 'idle' ||
+      !active ||
+      active.lookupKey !== this.#lookupKey ||
+      !entry ||
+      entryKey(entry) !== active.key
+    ) {
       return { kind: 'idle' };
     }
 
@@ -177,31 +186,9 @@ export class TtsPlaybackController {
     }
   }
 
-  #applySetEntries(entries: ReadonlyArray<TtsEntry>) {
-    this.#entries = entries;
-
-    const active = this.#activeEntry;
-    if (!active) {
-      return;
-    }
-
-    const stillThere = entries[active.lastKnownIndex];
-    const index =
-      stillThere && entryKey(stillThere) === active.key
-        ? active.lastKnownIndex
-        : entries.findIndex((entry) => entryKey(entry) === active.key);
-    if (index !== active.index) {
-      this.#activeEntry = {
-        ...active,
-        index: index < 0 ? undefined : index,
-        lastKnownIndex: index < 0 ? active.lastKnownIndex : index,
-      };
-    }
-  }
-
   #applyToggle(entryIndex: number) {
     const entry = this.#entries[entryIndex];
-    if (!entry) {
+    if (!entry || this.#lookupKey === undefined) {
       return;
     }
 
@@ -224,8 +211,8 @@ export class TtsPlaybackController {
 
     this.#activeEntry = {
       index: entryIndex,
-      lastKnownIndex: entryIndex,
       key: entryKey(entry),
+      lookupKey: this.#lookupKey,
     };
     this.#audioStarted = false;
     this.#player.setReadings(entry.requests);
@@ -239,12 +226,10 @@ export class TtsPlaybackController {
   }
 
   #isRunningEntry(entryIndex: number): boolean {
-    // Read the player, not #state. #drain updates #state only once #actions is
-    // empty, so during a drain #state can lag behind the player.
-    const { kind } = this.#player.state;
+    const state = this.#currentState();
     return (
-      this.#activeEntry?.index === entryIndex &&
-      (kind === 'loading' || kind === 'playing')
+      (state.kind === 'loading' || state.kind === 'playing') &&
+      state.activeEntryIndex === entryIndex
     );
   }
 }
