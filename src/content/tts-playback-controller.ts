@@ -226,6 +226,8 @@ export class TtsPlaybackController {
   }
 
   #isRunningEntry(entryIndex: number): boolean {
+    // #state can lag behind queued actions. Read the current player and
+    // popup entries instead.
     const state = this.#currentState();
     return (
       (state.kind === 'loading' || state.kind === 'playing') &&
