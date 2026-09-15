@@ -2432,11 +2432,9 @@ export class ContentHandler {
       });
     }
 
-    const matchLen = Math.max(
-      this.#currentSearchResult?.[this.#currentDict]?.matchLen || 0,
-      this.#currentLookupParams?.meta?.matchLen || 0
-    );
-    const lookupText = this.#currentLookupParams?.text.slice(0, matchLen);
+    // Name previews can extend matchLen after playback starts. Use the
+    // lookup text so those updates keep the same key.
+    const lookupText = this.#currentLookupParams?.text;
     const lookupKey = lookupText
       ? JSON.stringify([this.#currentDict, lookupText])
       : undefined;
