@@ -46,6 +46,7 @@
 
 */
 import type { MajorDataSeries } from '@birchill/jpdict-idb';
+import { createRef } from 'preact';
 import * as s from 'superstruct';
 import browser from 'webextension-polyfill';
 
@@ -88,6 +89,7 @@ import { hasModifiers, normalizeKey, normalizeKeys } from './keyboard';
 import type { SelectionMeta } from './meta';
 import type { DisplayMode, PopupState } from './popup-state';
 import { clearPopupTimeout } from './popup-state';
+import type { KanjiStrokeAnimationHandle } from './popup/Kanji/KanjiStrokeAnimation';
 import { type CopyState, getCopyMode } from './popup/copy-state';
 import {
   hidePopup,
@@ -256,8 +258,9 @@ export class ContentHandler {
   // keyboard events to handle and how to interpret them.)
   #copyState: CopyState = { kind: 'inactive' };
 
-  // Reading playback
+  // Playback
   #ttsPlaybackController: TtsPlaybackController | undefined;
+  #kanjiStrokeAnimation = createRef<KanjiStrokeAnimationHandle>();
 
   // Manual positioning support
   #popupPositionMode: PopupPositionMode = PopupPositionMode.Auto;
@@ -417,6 +420,7 @@ export class ContentHandler {
     for (const { key, value } of changes) {
       switch (key) {
         case 'accentDisplay':
+        case 'keys':
         case 'posDisplay':
         case 'readingOnly':
         case 'showKanjiComponents':
@@ -1211,13 +1215,13 @@ export class ContentHandler {
     } else if (expandPopup.includes(key)) {
       this.expandPopup();
     } else if (
-      this.#canPlayReadings() &&
+      this.#canTogglePlayback() &&
       !hasModifiers(event) &&
       playReadings.includes(key)
     ) {
       // A held key repeats the keydown; treat the whole hold as one toggle.
       if (!event.repeat) {
-        this.togglePlayReadings();
+        this.togglePlayback();
       }
     }
     // This needs to come _after_ the above check so that if the user has
@@ -1264,11 +1268,11 @@ export class ContentHandler {
     return true;
   }
 
-  #canPlayReadings(): boolean {
+  #canTogglePlayback(): boolean {
     return (
-      this.#config.playReadings &&
+      !!this.#config.keys.playReadings.length &&
       this.isVisible() &&
-      !!this.#popupState?.hasTtsEntries &&
+      !!this.#popupState?.playbackAvailable &&
       // Entering copy mode stops playback, so don't let the key restart it.
       this.#copyState.kind === 'inactive'
     );
@@ -1377,6 +1381,7 @@ export class ContentHandler {
 
   onPageHide = () => {
     this.#ttsPlaybackController?.stop();
+    this.#kanjiStrokeAnimation.current?.stop();
   };
 
   onInterFrameMessage = (event: MessageEvent) => {
@@ -1598,8 +1603,8 @@ export class ContentHandler {
         this.movePopup(request.direction);
         break;
 
-      case 'playReadings':
-        this.togglePlayReadings();
+      case 'togglePlayback':
+        this.togglePlayback();
         break;
 
       case 'enterCopyMode':
@@ -1675,19 +1680,23 @@ export class ContentHandler {
     this.updatePopup();
   }
 
-  togglePlayReadings() {
+  togglePlayback() {
     if (!this.isTopMostWindow()) {
-      void browser.runtime.sendMessage({ type: 'top:playReadings' });
+      void browser.runtime.sendMessage({ type: 'top:togglePlayback' });
       return;
     }
 
     // Re-check here: a forwarded message can arrive after this frame's own
     // popup state moved on, so the sender's state can no longer be trusted.
-    if (!this.#canPlayReadings()) {
+    if (!this.#canTogglePlayback()) {
       return;
     }
 
-    this.#ttsPlaybackController?.toggle(0);
+    if (this.#currentDict === 'kanji') {
+      this.#kanjiStrokeAnimation.current?.toggle();
+    } else if (this.#config.playReadings) {
+      this.#ttsPlaybackController?.toggle(0);
+    }
   }
 
   enterCopyMode({
@@ -2316,6 +2325,7 @@ export class ContentHandler {
           this.#currentDict !== 'kanji'),
       isVerticalText: !!this.#currentTargetProps?.isVerticalText,
       kanjiReferences: this.#config.kanjiReferences,
+      kanjiStrokeAnimationRef: this.#kanjiStrokeAnimation,
       meta: this.#currentLookupParams?.meta,
       onCancelCopy: () => this.exitCopyMode(),
       onExpandPopup: () => this.expandPopup(),
@@ -2341,7 +2351,7 @@ export class ContentHandler {
         }
       },
       pinShortcuts: this.#config.keys.pinPopup,
-      playReadingsShortcuts: this.#config.keys.playReadings,
+      playbackShortcuts: this.#config.keys.playReadings,
       pointerType: this.#currentTargetProps?.fromPuck ? 'puck' : 'cursor',
       popupStyle: this.#config.popupStyle,
       posDisplay: this.#config.posDisplay,
@@ -2399,7 +2409,11 @@ export class ContentHandler {
         }),
       },
       contentType: this.#currentTargetProps?.contentType || 'text',
-      hasTtsEntries: !!this.#ttsPlaybackController?.hasEntries,
+      playbackAvailable:
+        this.#currentDict === 'kanji'
+          ? !!this.#kanjiStrokeAnimation.current
+          : this.#config.playReadings &&
+            !!this.#ttsPlaybackController?.hasEntries,
       display: this.getNextDisplay(displayMode),
     };
 
@@ -2676,6 +2690,8 @@ export class ContentHandler {
   }
 
   hidePopup() {
+    this.#kanjiStrokeAnimation.current?.stop();
+
     const wasShowing = !!this.#currentSearchResult;
 
     this.#currentLookupParams = undefined;

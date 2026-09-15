@@ -44,7 +44,7 @@ export class ContentConfig implements ContentConfigParams {
     this.#params = { ...params };
 
     const changes: Array<ContentConfigChange> = [];
-    const objectKeysWeCareAbout = ['autoExpand', 'puckState'];
+    const objectKeysWeCareAbout = ['autoExpand', 'keys', 'puckState'];
     for (const [key, value] of Object.entries(
       before
     ) as Entries<ContentConfigParams>) {

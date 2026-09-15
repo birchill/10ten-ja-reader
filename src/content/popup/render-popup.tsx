@@ -125,6 +125,8 @@ export function renderPopup(
             entries={resultToShow.data}
             kanjiReferences={options.kanjiReferences}
             onStartCopy={options.onStartCopy}
+            playbackRef={options.kanjiStrokeAnimationRef}
+            playbackShortcuts={options.playbackShortcuts}
             showComponents={options.showKanjiComponents}
           />
         </Expandable>
@@ -164,7 +166,7 @@ export function renderPopup(
               more={resultToShow.more}
               namePreview={result!.namePreview}
               onStartCopy={options.onStartCopy}
-              playReadingsShortcuts={options.playReadingsShortcuts}
+              playbackShortcuts={options.playbackShortcuts}
               title={result!.title}
               ttsPlayback={options.ttsPlayback}
             />

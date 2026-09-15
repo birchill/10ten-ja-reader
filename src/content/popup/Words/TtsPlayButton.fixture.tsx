@@ -15,7 +15,7 @@ export default {
       options: ['idle', 'loading', 'playing', 'between-readings', 'error'],
     });
     const [row] = useFixtureSelect('row', { options: ['normal', 'selected'] });
-    const [shortcut] = useFixtureInput('play readings key', 'p');
+    const [shortcut] = useFixtureInput('playback key', 'p');
 
     const state = states[kind];
     const controller = {

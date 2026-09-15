@@ -17,7 +17,6 @@ type Props = {
   keys: StoredKeyboardKeys;
   onUpdateKey: (key: keyof StoredKeyboardKeys, value: Array<string>) => void;
   isHoldToShowShiftEnabled: boolean;
-  playReadingsEnabled: boolean;
 };
 
 export function PopupKeysForm(props: Props) {
@@ -27,9 +26,7 @@ export function PopupKeysForm(props: Props) {
   return (
     <div class="grid grid-cols-(--keys-cols) items-baseline gap-x-8 gap-y-2">
       {PopupKeys.filter(
-        (key) =>
-          (key.name !== 'startCopy' || hasClipboardApi) &&
-          (key.name !== 'playReadings' || props.playReadingsEnabled)
+        (key) => key.name !== 'startCopy' || hasClipboardApi
       ).map((key) => (
         <PopupKey
           isMac={props.isMac}

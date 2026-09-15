@@ -107,7 +107,7 @@ export const BackgroundRequestSchema = discriminator('type', {
   'top:toggleDefinition': s.type({}),
   'top:expandPopup': s.type({}),
   'top:movePopup': s.type({ direction: s.enums(['up', 'down']) }),
-  'top:playReadings': s.type({}),
+  'top:togglePlayback': s.type({}),
 
   // Copy mode requests
   'top:enterCopyMode': s.type({}),
