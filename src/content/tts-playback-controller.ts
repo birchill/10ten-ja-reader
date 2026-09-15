@@ -40,7 +40,7 @@ export class TtsPlaybackController {
   #audioStarted = false;
   #actions: Array<() => void> = [];
   #draining = false;
-  #state: TtsPlaybackState = { kind: 'idle' };
+  #publishedPopupState: TtsPlaybackState = { kind: 'idle' };
   #listeners = new Set<TtsPlaybackListener>();
 
   constructor(options: TtsPlayerOptions) {
@@ -49,7 +49,7 @@ export class TtsPlaybackController {
   }
 
   get state(): TtsPlaybackState {
-    return this.#state;
+    return this.#publishedPopupState;
   }
 
   get hasEntries(): boolean {
@@ -58,7 +58,7 @@ export class TtsPlaybackController {
 
   subscribe(listener: TtsPlaybackListener): () => void {
     this.#listeners.add(listener);
-    notify(listener, this.#state);
+    notify(listener, this.#publishedPopupState);
 
     return () => this.#listeners.delete(listener);
   }
@@ -118,13 +118,13 @@ export class TtsPlaybackController {
         continue;
       }
 
-      const state = this.#currentState();
+      const popupState = this.#computePopupState();
       if (this.#player.state.kind === 'idle') {
         this.#activeEntry = undefined;
       }
-      if (!sameState(state, this.#state)) {
-        this.#state = state;
-        delivery = { state, recipients: [...this.#listeners] };
+      if (!sameState(popupState, this.#publishedPopupState)) {
+        this.#publishedPopupState = popupState;
+        delivery = { state: popupState, recipients: [...this.#listeners] };
       }
 
       const recipient = delivery?.recipients.shift();
@@ -148,7 +148,7 @@ export class TtsPlaybackController {
     }
   }
 
-  #currentState(): TtsPlaybackState {
+  #computePopupState(): TtsPlaybackState {
     const playerState = this.#player.state;
     const active = this.#activeEntry;
     const entry = active && this.#entries[active.index];
@@ -226,12 +226,12 @@ export class TtsPlaybackController {
   }
 
   #isRunningEntry(entryIndex: number): boolean {
-    // #state can lag behind queued actions. Read the current player and
-    // popup entries instead.
-    const state = this.#currentState();
+    // #publishedPopupState can lag behind queued actions. Compute from the
+    // current player and popup entries instead.
+    const popupState = this.#computePopupState();
     return (
-      (state.kind === 'loading' || state.kind === 'playing') &&
-      state.activeEntryIndex === entryIndex
+      (popupState.kind === 'loading' || popupState.kind === 'playing') &&
+      popupState.activeEntryIndex === entryIndex
     );
   }
 }
