@@ -1,8 +1,15 @@
 import type { WordResult } from '@birchill/jpdict-idb';
-import { countMora, moraSubstring } from '@birchill/normal-jp';
 
 import type { AccentDisplay } from '../../../common/content-config-params';
 import { classes } from '../../../utils/classes';
+
+import type { ReadingTokenAccent } from '../../tts/reading-tokens';
+import {
+  getAccentPos,
+  getReadingTokens,
+  groupReadingTokens,
+  groupText,
+} from '../../tts/reading-tokens';
 
 export function Reading({
   kana,
@@ -11,100 +18,89 @@ export function Reading({
   kana: WordResult['r'][0];
   accentDisplay: AccentDisplay;
 }) {
-  const accents = kana.a;
+  const accentPos = getAccentPos(kana.a);
 
-  if (
-    accentDisplay === 'none' ||
-    typeof accents === 'undefined' ||
-    (Array.isArray(accents) && !accents.length)
-  ) {
+  if (accentDisplay === 'none' || accentPos === undefined) {
     return kana.ent;
   }
 
-  const accentPos = typeof accents === 'number' ? accents : accents[0].i;
+  const tokens = getReadingTokens(kana.ent, accentPos, accentDisplay);
 
-  if (accentDisplay === 'downstep') {
-    if (!accentPos) {
-      // accentPos 0 (heiban) is special since there's no accent to show.
-      //
-      // At the same time we want to distinguish between heiban and
-      // "no accent information". So we indicate heiban with a dotted line
-      // across the top instead.
-      return (
-        <span
-          class={classes(
-            'tp:border-dotted tp:border-current',
-            'tp:border-0 tp:border-t-[1.5px]'
-          )}
-        >
-          {kana.ent}
-        </span>
-      );
-    } else {
-      return (
-        moraSubstring(kana.ent, 0, accentPos) +
-        'ꜜ' +
-        moraSubstring(kana.ent, accentPos)
-      );
-    }
+  // Heiban has no mark to insert, so it falls through to the accent layer
+  // below. Drop the accentPos test and heiban looks like missing accent data.
+  if (accentDisplay === 'downstep' && accentPos !== 0) {
+    return tokens
+      .map((token) => (token.downstep ? `${token.text}ꜜ` : token.text))
+      .join('');
   }
 
-  // Generate binary pitch display
-  const moraCount = countMora(kana.ent);
-
-  const highLow = classes(
-    'tp:border-0',
-    'tp:border-t-(length:--border-width)',
-    'tp:border-r-(length:--border-width)'
-  );
-  const lowHigh = classes(
-    'tp:border-0',
-    'tp:border-b-(length:--border-width)',
-    'tp:border-r-(length:--border-width)'
-  );
-  const high = classes('tp:border-0', 'tp:border-t-(length:--border-width)');
-  const low = classes('tp:border-0', 'tp:border-b-(length:--border-width)');
+  const layer = accentLayerStyles(accentDisplay);
 
   return (
     <span
       class={classes(
-        'tp:inline-block tp:mb-1',
-        'tp:*:m-0 tp:*:text-[90%] tp:*:border-dotted',
+        layer.classes,
+        'tp:*:border-dotted',
         accentDisplay === 'binary-hi-contrast'
           ? 'tp:*:border-(--hi-contrast-pitch-accent)'
           : 'tp:*:border-current'
       )}
-      style={
-        accentDisplay === 'binary-hi-contrast'
-          ? { '--border-width': '2px' }
-          : { '--border-width': '1.5px' }
-      }
+      style={{ '--border-width': layer.borderWidth }}
     >
-      {accentPos === 0 || accentPos === 1 ? (
-        // Accent position 0 (heiban: LHHHHH) and accent position 1 (atamadaka: HLLLL)
-        // are sufficiently similar that we handle them together.
-        <>
-          <span class={accentPos ? highLow : moraCount > 1 ? lowHigh : high}>
-            {moraSubstring(kana.ent, 0, 1)}
-          </span>
-
-          {moraCount > 1 && (
-            <span class={accentPos ? low : high}>
-              {moraSubstring(kana.ent, 1)}
-            </span>
-          )}
-        </>
-      ) : (
-        // Otherwise we have nakadaka (LHHHHL) or odaka (LHHHH)
-        <>
-          <span class={lowHigh}>{moraSubstring(kana.ent, 0, 1)}</span>
-          <span class={highLow}>{moraSubstring(kana.ent, 1, accentPos)}</span>
-
-          {accentPos < moraCount && (
-            <span class={low}>{moraSubstring(kana.ent, accentPos)}</span>
-          )}
-        </>
-      )}
+      {groupReadingTokens(tokens).map((group, index) => (
+        <span key={index} class={accentClasses(group.accent)}>
+          {groupText(group)}
+        </span>
+      ))}
     </span>
   );
+}
+
+export function accentLayerStyles(accentDisplay: AccentDisplay): {
+  classes: string | undefined;
+  borderWidth: string;
+} {
+  const scaled = 'tp:inline-block tp:mb-1 tp:*:m-0 tp:*:text-[90%]';
+
+  switch (accentDisplay) {
+    case 'binary':
+      return { classes: scaled, borderWidth: '1.5px' };
+
+    case 'binary-hi-contrast':
+      return { classes: scaled, borderWidth: '2px' };
+
+    // Downstep marks and a bare reading sit in the running text, at its size.
+    case 'downstep':
+    case 'none':
+      return { classes: undefined, borderWidth: '1.5px' };
+  }
+}
+
+export function accentClasses(
+  accent: ReadingTokenAccent | undefined
+): string | undefined {
+  switch (accent) {
+    case 'high':
+      return classes('tp:border-0', 'tp:border-t-(length:--border-width)');
+
+    case 'low':
+      return classes('tp:border-0', 'tp:border-b-(length:--border-width)');
+
+    case 'fall':
+      return classes(
+        'tp:border-0',
+        'tp:border-t-(length:--border-width)',
+        'tp:border-r-(length:--border-width)'
+      );
+
+    case 'rise':
+      return classes(
+        'tp:border-0',
+        'tp:border-b-(length:--border-width)',
+        'tp:border-r-(length:--border-width)'
+      );
+
+    case undefined:
+      return undefined;
+  }
 }
