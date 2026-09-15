@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { useValue } from 'react-cosmos/client';
 
 import '../../css/popup-fonts.css';
 
@@ -32,6 +33,10 @@ export default function PopupStyleFormFixture() {
     );
   };
 
+  const [playReadings] = useValue<boolean>('playReadings', {
+    defaultValue: false,
+  });
+
   const [posDisplay, setPosDisplay] = useState<PartOfSpeechDisplay>('expl');
 
   const [fontSize, setFontSize] = useState<FontSize>('normal');
@@ -54,6 +59,7 @@ export default function PopupStyleFormFixture() {
       onChangeShowRomaji={setShowRomaji}
       onChangeShowWaniKaniLevel={setShowWaniKaniLevel}
       onChangeTheme={setTheme}
+      playReadings={playReadings}
       posDisplay={posDisplay}
       showBunproDecks={showBunproDecks}
       showDefinitions={showDefinitions}

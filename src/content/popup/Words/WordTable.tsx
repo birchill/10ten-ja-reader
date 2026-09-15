@@ -37,6 +37,7 @@ export type WordTableProps = {
   copyState: CopyState;
   onStartCopy?: StartCopyCallback;
   ttsPlayback?: TtsPlaybackHandle;
+  playReadingsShortcuts?: ReadonlyArray<string>;
 };
 
 export const WordTable = (props: WordTableProps) => {
@@ -103,7 +104,7 @@ export const WordTable = (props: WordTableProps) => {
           copyState={props.copyState}
           onStartCopy={props.onStartCopy}
           ttsPlayback={props.ttsPlayback}
-          ttsEntryIndexOffset={entries.length}
+          playReadingsShortcuts={props.playReadingsShortcuts}
         />
       )}
 
@@ -145,7 +146,8 @@ export const WordTable = (props: WordTableProps) => {
               tts={
                 props.ttsPlayback && {
                   controller: props.ttsPlayback,
-                  entryIndex: index,
+                  entryIndex: index + numNames,
+                  shortcuts: props.playReadingsShortcuts,
                 }
               }
               onPointerUp={(evt) => {

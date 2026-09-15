@@ -16,6 +16,7 @@ type RenderNamesOptions = Pick<
   | 'interactive'
   | 'meta'
   | 'onStartCopy'
+  | 'playReadingsShortcuts'
   | 'preferredUnits'
   | 'ttsPlayback'
 >;
@@ -51,6 +52,7 @@ export function renderNamesEntries({
         copyState: options.copyState,
         onStartCopy: options.onStartCopy,
         ttsPlayback: options.ttsPlayback,
+        playReadingsShortcuts: options.playReadingsShortcuts,
       })
     ),
   });
