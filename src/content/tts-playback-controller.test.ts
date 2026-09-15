@@ -226,6 +226,30 @@ describe('TtsPlaybackController', () => {
     expect(controller.state).toEqual({ kind: 'idle' });
   });
 
+  it('keeps the same duplicate word highlighted when name previews appear', async () => {
+    const { controller, playbacks } = setUp([entryA, entryA]);
+
+    controller.toggle(1);
+    await flush();
+    const playingState = controller.state;
+
+    controller.setEntries([entryB, { ...entryA }, { ...entryA }], '入る');
+
+    expect(controller.state).toEqual({ ...playingState, activeEntryIndex: 2 });
+    expect(playbacks[0].signal.aborted).toBe(false);
+
+    controller.setEntries([], undefined);
+    controller.setEntries([{ ...entryA }, { ...entryA }], '入る');
+
+    expect(controller.state).toEqual(playingState);
+
+    controller.toggle(1);
+
+    expect(playbacks).toHaveLength(1);
+    expect(playbacks[0].signal.aborted).toBe(true);
+    expect(controller.state).toEqual({ kind: 'idle' });
+  });
+
   it('finishes all readings after the popup closes', async () => {
     const { controller, playbacks, unsubscribeAll } = setUp([
       { id: 4, requests: twoReadings },

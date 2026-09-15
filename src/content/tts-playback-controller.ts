@@ -36,7 +36,8 @@ export class TtsPlaybackController {
   #player: TtsPlayer;
   #entries: ReadonlyArray<TtsEntry> = [];
   #lookupKey: string | undefined;
-  #activeEntry: { index: number; key: string; lookupKey: string } | undefined;
+  #activeEntry:
+    { occurrence: number; key: string; lookupKey: string } | undefined;
   #audioStarted = false;
   #actions: Array<() => void> = [];
   #draining = false;
@@ -151,18 +152,23 @@ export class TtsPlaybackController {
   #computePopupState(): TtsPlaybackState {
     const playerState = this.#player.state;
     const active = this.#activeEntry;
-    const entry = active && this.#entries[active.index];
     if (
       playerState.kind === 'idle' ||
       !active ||
-      active.lookupKey !== this.#lookupKey ||
-      !entry ||
-      entryKey(entry) !== active.key
+      active.lookupKey !== this.#lookupKey
     ) {
       return { kind: 'idle' };
     }
 
-    const activeEntryIndex = active.index;
+    let occurrence = 0;
+    const activeEntryIndex = this.#entries.findIndex(
+      (entry) =>
+        entryKey(entry) === active.key && occurrence++ === active.occurrence
+    );
+    if (activeEntryIndex === -1) {
+      return { kind: 'idle' };
+    }
+
     switch (playerState.kind) {
       case 'loading':
         return {
@@ -209,9 +215,12 @@ export class TtsPlaybackController {
       );
     }
 
+    const key = entryKey(entry);
     this.#activeEntry = {
-      index: entryIndex,
-      key: entryKey(entry),
+      occurrence: this.#entries
+        .slice(0, entryIndex)
+        .filter((entry) => entryKey(entry) === key).length,
+      key,
       lookupKey: this.#lookupKey,
     };
     this.#audioStarted = false;
@@ -272,8 +281,7 @@ function sameState(a: TtsPlaybackState, b: TtsPlaybackState): boolean {
 }
 
 function entryKey(entry: TtsEntry): string {
-  // This key is not unique, so #activeEntry must keep the row index too. Two
-  // rows can have the same id (one entry reached by several deinflection
-  // paths) and the same audio. Only the row index tells them apart.
+  // Multiple deinflection paths can produce identical keys. Track the
+  // occurrence separately so prepended name previews do not change it.
   return `${entry.id}\n${entry.requests.map(buildTtsFilename).join('\n')}`;
 }
