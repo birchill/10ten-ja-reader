@@ -110,7 +110,7 @@ function StaticKanjiCharacter(props: KanjiCharacterProps) {
   return (
     <div
       class={classes(
-        'tp:text-(--primary-highlight) tp:text-big-kanji tp:text-center tp:pt-2 tp:rounded-md',
+        'tp:w-(--tp-text-big-kanji) tp:text-(--primary-highlight) tp:text-big-kanji tp:text-center tp:pt-2 tp:rounded-md',
         '[text-shadow:var(--shadow-color)_1px_1px_4px]',
         ...(interactive
           ? [
