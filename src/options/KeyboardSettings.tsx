@@ -143,7 +143,6 @@ export function KeyboardSettings(props: { config: Config }) {
     },
     [props.config]
   );
-  const playReadingsEnabled = useConfigValue(props.config, 'playReadings');
 
   return (
     <>
@@ -159,7 +158,6 @@ export function KeyboardSettings(props: { config: Config }) {
           onChangeHoldToShowKeys={setHoldToShowKeys}
           onChangeHoldToShowImageKeys={setHoldToShowImageKeys}
           onUpdatePopupKey={onUpdatePopupKey}
-          playReadingsEnabled={playReadingsEnabled}
           popupKeys={popupKeys}
         />
       </div>

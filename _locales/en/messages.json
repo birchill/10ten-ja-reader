@@ -1687,11 +1687,11 @@
   },
   "options_play_readings_description": {
     "message": "Experimental: this feature will be enabled by default in a future release.",
-    "description": "Note shown under the checkbox for playing an entry's readings, explaining that the setting is temporary"
+    "description": "Note under the temporary audio setting. This setting affects reading audio only, not kanji stroke animations."
   },
   "options_play_readings_label": {
     "message": "Enable play button for readings",
-    "description": "Checkbox label for the setting to enable the button for playing an entry's readings as audio"
+    "description": "Checkbox label to enable reading audio and its play buttons. This setting does not affect kanji stroke animations."
   },
   "options_popup_close_popup": { "message": "Close popup" },
   "options_popup_copy_entry": { "message": "Copy entry" },
@@ -1713,7 +1713,6 @@
     "description": "Note that it is important that down comes before up"
   },
   "options_popup_pin_popup": { "message": "Pin popup" },
-  "options_popup_play_readings": { "message": "Play readings" },
   "options_popup_start_copy": { "message": "Enter copy mode" },
   "options_popup_style_heading": {
     "message": "Popup style",
@@ -1721,6 +1720,10 @@
   },
   "options_popup_switch_dictionaries": { "message": "Switch dictionaries" },
   "options_popup_toggle_definition": { "message": "Toggle definition" },
+  "options_popup_toggle_playback": {
+    "message": "Play / stop readings or stroke animation",
+    "description": "Keyboard shortcut label. Plays or stops readings in the Words and Names tabs, or the stroke animation in the Kanji tab."
+  },
   "options_pos_display_code": {
     "message": "Code (e.g. “v5r”)",
     "description": "Label for simply displaying dictionary part-of-speech codes"

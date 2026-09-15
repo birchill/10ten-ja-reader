@@ -1687,11 +1687,11 @@
   },
   "options_play_readings_description": {
     "message": "実験的機能：今後のリリースでは既定で有効になります。",
-    "description": "Note shown under the checkbox for playing an entry's readings, explaining that the setting is temporary"
+    "description": "Note under the temporary audio setting. This setting affects reading audio only, not kanji stroke animations."
   },
   "options_play_readings_label": {
     "message": "読み方の再生ボタンを有効にする",
-    "description": "Checkbox label for the setting to enable the button for playing an entry's readings as audio"
+    "description": "Checkbox label to enable reading audio and its play buttons. This setting does not affect kanji stroke animations."
   },
   "options_popup_close_popup": { "message": "ポップアップを閉じる" },
   "options_popup_copy_entry": { "message": "項目をコピーする" },
@@ -1715,7 +1715,6 @@
     "description": "Note that it is important that down comes before up"
   },
   "options_popup_pin_popup": { "message": "ポップアップをピン留めする" },
-  "options_popup_play_readings": { "message": "読み方を再生する" },
   "options_popup_start_copy": { "message": "コピーモードを有効にする" },
   "options_popup_style_heading": {
     "message": "ポップアップ外観",
@@ -1724,6 +1723,10 @@
   "options_popup_switch_dictionaries": { "message": "辞書を切り替える" },
   "options_popup_toggle_definition": {
     "message": "定義の表示・非表示を切り替える"
+  },
+  "options_popup_toggle_playback": {
+    "message": "読み方または筆順アニメーションを再生・停止する",
+    "description": "Keyboard shortcut label. Plays or stops readings in the Words and Names tabs, or the stroke animation in the Kanji tab."
   },
   "options_pos_display_code": {
     "message": "辞書コード（例 ：「v5r」）",

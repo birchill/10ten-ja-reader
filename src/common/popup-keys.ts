@@ -70,6 +70,6 @@ export const PopupKeys: Array<KeySetting> = [
     name: 'playReadings',
     keys: ['p'],
     enabledKeys: ['p'],
-    l10nKey: 'options_popup_play_readings',
+    l10nKey: 'options_popup_toggle_playback',
   },
 ];

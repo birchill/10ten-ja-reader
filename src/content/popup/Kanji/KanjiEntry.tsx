@@ -1,4 +1,5 @@
 import type { KanjiResult } from '@birchill/jpdict-idb';
+import type { RefObject } from 'preact';
 import { useRef } from 'preact/hooks';
 
 import type { ReferenceAbbreviation } from '../../../common/refs';
@@ -9,13 +10,18 @@ import { containerHasSelectedText } from './../selection';
 import type { StartCopyCallback } from './../show-popup';
 import { KanjiInfo } from './KanjiInfo';
 import { KanjiReferencesTable } from './KanjiReferencesTable';
-import { KanjiStrokeAnimation } from './KanjiStrokeAnimation';
+import {
+  KanjiStrokeAnimation,
+  type KanjiStrokeAnimationHandle,
+} from './KanjiStrokeAnimation';
 
 export type Props = {
   entry: KanjiResult;
   index: number;
   kanjiReferences: Array<ReferenceAbbreviation>;
   onStartCopy?: StartCopyCallback;
+  playbackRef?: RefObject<KanjiStrokeAnimationHandle>;
+  playbackShortcuts?: ReadonlyArray<string>;
   selectState: 'unselected' | 'selected' | 'flash';
   showComponents?: boolean;
 };
@@ -51,6 +57,8 @@ export function KanjiEntry(props: Props) {
 
             props.onStartCopy?.(props.index, trigger);
           }}
+          playbackRef={props.playbackRef}
+          playbackShortcuts={props.playbackShortcuts}
           st={props.entry.st}
         />
         <div class="tp:mt-1.5 tp:grow">
@@ -72,16 +80,24 @@ export function KanjiEntry(props: Props) {
 type KanjiCharacterProps = {
   c: string;
   onClick?: (trigger: 'touch' | 'mouse') => void;
+  playbackRef?: RefObject<KanjiStrokeAnimationHandle>;
+  playbackShortcuts?: ReadonlyArray<string>;
   st?: string;
 };
 
 function KanjiCharacter(props: KanjiCharacterProps) {
   const { interactive } = usePopupOptions();
 
-  // There's no way to trigger the animation when we're not in "mouse
-  // interactive" mode so just show the static character in that case.
-  return props.st && interactive ? (
-    <KanjiStrokeAnimation onClick={props.onClick} st={props.st} />
+  return props.st && (interactive || props.playbackRef) ? (
+    <KanjiStrokeAnimation
+      onClick={props.onClick}
+      playbackRef={props.playbackRef}
+      shortcuts={props.playbackShortcuts}
+      st={props.st}
+      staticCharacter={
+        !interactive ? <StaticKanjiCharacter {...props} /> : undefined
+      }
+    />
   ) : (
     <StaticKanjiCharacter c={props.c} onClick={props.onClick} />
   );
