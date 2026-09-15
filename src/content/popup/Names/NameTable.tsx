@@ -25,7 +25,7 @@ export type NameTableProps = {
   copyState: CopyState;
   onStartCopy?: StartCopyCallback;
   ttsPlayback?: TtsPlaybackHandle;
-  playReadingsShortcuts?: ReadonlyArray<string>;
+  playbackShortcuts?: ReadonlyArray<string>;
 };
 
 export const NameTable = (props: NameTableProps) => {
@@ -69,7 +69,7 @@ export const NameTable = (props: NameTableProps) => {
               props.ttsPlayback && {
                 controller: props.ttsPlayback,
                 entryIndex: index,
-                shortcuts: props.playReadingsShortcuts,
+                shortcuts: props.playbackShortcuts,
               }
             }
             onPointerUp={(evt) => {

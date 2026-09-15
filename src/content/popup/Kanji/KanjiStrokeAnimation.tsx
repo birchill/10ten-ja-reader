@@ -1,8 +1,9 @@
-import type { RefObject } from 'preact';
+import type { RefObject, VNode } from 'preact';
 import {
   type MutableRef,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -14,9 +15,17 @@ import { classes } from '../../../utils/classes';
 
 import { PLAY_PATH, STOP_PATH } from '../play-stop-paths';
 
+export type KanjiStrokeAnimationHandle = {
+  stop: () => void;
+  toggle: () => void;
+};
+
 export type Props = {
   onClick?: (trigger: 'touch' | 'mouse') => void;
+  playbackRef?: RefObject<KanjiStrokeAnimationHandle>;
+  shortcuts?: ReadonlyArray<string>;
   st: string;
+  staticCharacter?: VNode;
 };
 
 const STROKE_SPEED = 150; // User units / second
@@ -34,6 +43,7 @@ const TIMELINE_OFFSET = 35; // px in SVG user unit space
 
 export function KanjiStrokeAnimation(props: Props) {
   const { t } = useLocale();
+  const isStatic = !!props.staticCharacter;
 
   // References
   const animatedStrokeContainer = useRef<SVGGElement>(null);
@@ -43,6 +53,12 @@ export function KanjiStrokeAnimation(props: Props) {
   // Animation state
   const [isPlaying, setIsPlaying] = useState(false);
   const currentAnimations = useRef<Array<Animation>>([]);
+  const toggle = useCallback(() => setIsPlaying((prev) => !prev), []);
+  useImperativeHandle(
+    props.playbackRef ?? null,
+    () => ({ stop: () => setIsPlaying(false), toggle }),
+    [toggle]
+  );
 
   // Scrubber handling
   const { applySeek, onScrubberPointerDown, onTimelineClick } = useScrubber(
@@ -94,7 +110,7 @@ export function KanjiStrokeAnimation(props: Props) {
     }
 
     // Scrubber animation
-    if (scrubberContainer.current) {
+    if (scrubberContainer.current && !isStatic) {
       animations.push(
         scrubberContainer.current.animate(
           {
@@ -119,7 +135,7 @@ export function KanjiStrokeAnimation(props: Props) {
       currentAnimations.current.forEach((animation) => animation.cancel());
       currentAnimations.current = [];
     };
-  }, [subpaths, isPlaying]);
+  }, [subpaths, isPlaying, isStatic]);
 
   // Rendering parameters
   const strokeWidth = subpaths.length > 16 ? 4 : 5;
@@ -127,8 +143,26 @@ export function KanjiStrokeAnimation(props: Props) {
   // Copy state
   const lastPointerType = useRef<string>('touch');
 
+  if (!isPlaying && props.staticCharacter) {
+    return props.staticCharacter;
+  }
+
+  const label = t(
+    isPlaying
+      ? 'content_stroke_animation_stop'
+      : 'content_stroke_animation_play'
+  );
+  const title = props.shortcuts?.length
+    ? `${label} (${props.shortcuts.join(' / ')})`
+    : label;
+
   return (
-    <div class="tp:flex tp:flex-col tp:items-center tp:gap-3">
+    <div
+      class={classes(
+        'tp:flex tp:flex-col tp:items-center',
+        isStatic ? 'tp:pt-2' : 'tp:gap-3'
+      )}
+    >
       <svg
         class={classes(
           'tp:group/kanji-anim',
@@ -199,7 +233,7 @@ export function KanjiStrokeAnimation(props: Props) {
           ))}
         </g>
       </svg>
-      <div>
+      <div hidden={isStatic}>
         {/* The content is only 25 user units high but we make it 50 so that we
          * can expand the hit regions vertically since iOS Safari doesn't do
          * very good hit detection of small targets. */}
@@ -211,18 +245,12 @@ export function KanjiStrokeAnimation(props: Props) {
         >
           {/* Play/stop button */}
           <g
-            onClick={() => setIsPlaying((prev) => !prev)}
+            onClick={toggle}
             pointer-events="all"
             class="tp:cursor-pointer tp:opacity-30 tp:hover:opacity-100 tp:fill-(--text-color) tp:hover:fill-(--primary-highlight) tp:transition-transform tp:duration-500"
             style={{ transform: isPlaying ? 'none' : 'translate(40px)' }}
           >
-            <title>
-              {t(
-                isPlaying
-                  ? 'content_stroke_animation_stop'
-                  : 'content_stroke_animation_play'
-              )}
-            </title>
+            <title>{title}</title>
             {/* Play/stop button hit region */}
             <rect
               x={isPlaying ? 0 : -40}
