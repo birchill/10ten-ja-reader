@@ -5,6 +5,7 @@ import type { ContentConfigParams } from '../../../common/content-config-params'
 import { classes } from '../../../utils/classes';
 
 import type { SelectionMeta } from '../../meta';
+import type { TtsPlaybackHandle } from '../../tts-playback-controller';
 
 import { MetadataContainer } from '../Metadata/MetadataContainer';
 import type { CopyState } from '../copy-state';
@@ -23,6 +24,7 @@ export type NameTableProps = {
   meta?: SelectionMeta;
   copyState: CopyState;
   onStartCopy?: StartCopyCallback;
+  ttsPlayback?: TtsPlaybackHandle;
 };
 
 export const NameTable = (props: NameTableProps) => {
@@ -62,6 +64,12 @@ export const NameTable = (props: NameTableProps) => {
             key={index}
             entry={entry}
             selectState={selectState}
+            tts={
+              props.ttsPlayback && {
+                controller: props.ttsPlayback,
+                entryIndex: index,
+              }
+            }
             onPointerUp={(evt) => {
               lastPointerType.current = evt.pointerType;
             }}
