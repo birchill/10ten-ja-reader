@@ -1368,6 +1368,7 @@ export class ContentHandler {
     if (this.isTopMostWindow()) {
       this.applyPuckConfig();
     } else {
+      this.#ttsPlaybackController?.stop();
       removePopup();
       this.clearResult();
       this.tearDownPuck();
@@ -1867,7 +1868,7 @@ export class ContentHandler {
     this.#currentPagePoint = undefined;
     this.#lastPointerTarget = null;
     this.#copyState = { kind: 'inactive' };
-    this.#ttsPlaybackController?.stop();
+    this.#ttsPlaybackController?.setEntries([], undefined);
 
     clearPopupTimeout(this.#popupState);
     this.#popupState = undefined;
@@ -2431,7 +2432,13 @@ export class ContentHandler {
       });
     }
 
-    this.#ttsPlaybackController?.setEntries(entries);
+    // Name previews can extend matchLen after playback starts. Use the
+    // lookup text so those updates keep the same key.
+    const lookupText = this.#currentLookupParams?.text;
+    const lookupKey = lookupText
+      ? JSON.stringify([this.#currentDict, lookupText])
+      : undefined;
+    this.#ttsPlaybackController?.setEntries(entries, lookupKey);
 
     return this.#config.playReadings ? this.#ttsPlaybackController : undefined;
   }
