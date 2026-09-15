@@ -80,9 +80,14 @@ describe('Kanji stroke playback', () => {
     expect(titles(container)).toEqual([]);
   });
 
-  it.each([false, true])(
-    'preserves the character and content dimensions during noninteractive playback (expanded: %s)',
-    (expanded) => {
+  it.each([
+    { expanded: false, letterSpacing: 'normal' },
+    { expanded: true, letterSpacing: 'normal' },
+    { expanded: false, letterSpacing: '-15px' },
+    { expanded: true, letterSpacing: '-15px' },
+  ])(
+    'preserves dimensions during noninteractive playback (expanded: $expanded, letter spacing: $letterSpacing)',
+    ({ expanded, letterSpacing }) => {
       const { container, playbackRef } = mountList({
         entries: [makeKanji('一'), makeKanji('二')],
         interactive: false,
@@ -91,6 +96,7 @@ describe('Kanji stroke playback', () => {
       if (expanded) {
         container.dataset.expanded = '';
       }
+      container.style.letterSpacing = letterSpacing;
       const list = container.firstElementChild!;
       const character = () =>
         list.firstElementChild!.firstElementChild!.firstElementChild!
