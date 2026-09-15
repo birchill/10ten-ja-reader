@@ -291,7 +291,7 @@ describe('TtsPlaybackController', () => {
     expect(statuses()).toEqual(['playing', 'idle']);
   });
 
-  it('can explicitly stop playback after the popup closes', async () => {
+  it('honours an explicit stop while the popup is closed and stays idle when it reopens', async () => {
     const { controller, playbacks } = setUp([entryA]);
 
     controller.toggle(0);
