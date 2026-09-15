@@ -226,7 +226,7 @@ describe('TtsPlaybackController', () => {
     expect(controller.state).toEqual({ kind: 'idle' });
   });
 
-  it('finishes all readings after the popup entries are cleared', async () => {
+  it('finishes all readings after the popup closes', async () => {
     const { controller, playbacks, unsubscribeAll } = setUp([
       { id: 4, requests: twoReadings },
     ]);
@@ -250,7 +250,7 @@ describe('TtsPlaybackController', () => {
     expect(controller.state).toEqual({ kind: 'idle' });
   });
 
-  it('continues loading after the popup entries are cleared', async () => {
+  it('continues loading after the popup closes', async () => {
     const { controller, fetches, playbacks } = setUp([entryA], {
       deferFetch: true,
     });
@@ -271,7 +271,7 @@ describe('TtsPlaybackController', () => {
     });
   });
 
-  it('keeps playback hidden for a different word with the same entry until clicked', async () => {
+  it('shows no highlight for a different lookup and starts new audio when play is clicked', async () => {
     const { controller, playbacks, statuses } = setUp([entryA]);
 
     controller.toggle(0);
@@ -291,7 +291,7 @@ describe('TtsPlaybackController', () => {
     expect(statuses()).toEqual(['playing', 'idle']);
   });
 
-  it('can explicitly stop playback after the popup entries are cleared', async () => {
+  it('can explicitly stop playback after the popup closes', async () => {
     const { controller, playbacks } = setUp([entryA]);
 
     controller.toggle(0);
