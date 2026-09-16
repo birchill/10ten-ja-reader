@@ -1,6 +1,6 @@
 import type { KanjiResult } from '@birchill/jpdict-idb';
 import type { RefObject } from 'preact';
-import { useRef } from 'preact/hooks';
+import { useImperativeHandle, useRef, useState } from 'preact/hooks';
 
 import type { ReferenceAbbreviation } from '../../../common/refs';
 import { classes } from '../../../utils/classes';
@@ -10,10 +10,12 @@ import { containerHasSelectedText } from './../selection';
 import type { StartCopyCallback } from './../show-popup';
 import { KanjiInfo } from './KanjiInfo';
 import { KanjiReferencesTable } from './KanjiReferencesTable';
-import {
-  KanjiStrokeAnimation,
-  type KanjiStrokeAnimationHandle,
-} from './KanjiStrokeAnimation';
+import { KanjiStrokeAnimation } from './KanjiStrokeAnimation';
+
+export type KanjiStrokeAnimationHandle = {
+  stop: () => void;
+  toggle: () => void;
+};
 
 export type Props = {
   entry: KanjiResult;
@@ -24,6 +26,7 @@ export type Props = {
   playbackShortcuts?: ReadonlyArray<string>;
   selectState: 'unselected' | 'selected' | 'flash';
   showComponents?: boolean;
+  showKeyboardShortcut?: boolean;
 };
 
 export function KanjiEntry(props: Props) {
@@ -59,6 +62,7 @@ export function KanjiEntry(props: Props) {
           }}
           playbackRef={props.playbackRef}
           playbackShortcuts={props.playbackShortcuts}
+          showKeyboardShortcut={props.showKeyboardShortcut}
           st={props.entry.st}
         />
         <div class="tp:mt-1.5 tp:grow">
@@ -82,24 +86,58 @@ type KanjiCharacterProps = {
   onClick?: (trigger: 'touch' | 'mouse') => void;
   playbackRef?: RefObject<KanjiStrokeAnimationHandle>;
   playbackShortcuts?: ReadonlyArray<string>;
+  showKeyboardShortcut?: boolean;
   st?: string;
 };
 
 function KanjiCharacter(props: KanjiCharacterProps) {
   const { interactive } = usePopupOptions();
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  return props.st && (interactive || props.playbackRef) ? (
-    <KanjiStrokeAnimation
-      onClick={props.onClick}
-      playbackRef={props.playbackRef}
-      shortcuts={props.playbackShortcuts}
-      st={props.st}
-      staticCharacter={
-        !interactive ? <StaticKanjiCharacter {...props} /> : undefined
-      }
-    />
-  ) : (
-    <StaticKanjiCharacter c={props.c} onClick={props.onClick} />
+  useImperativeHandle(
+    props.st ? (props.playbackRef ?? null) : null,
+    () => ({
+      stop: () => setIsPlaying(false),
+      toggle: () => setIsPlaying((prev) => !prev),
+    }),
+    []
+  );
+
+  const character =
+    !props.st || (!interactive && !isPlaying) ? (
+      <StaticKanjiCharacter c={props.c} onClick={props.onClick} />
+    ) : (
+      <KanjiStrokeAnimation
+        isPlaying={isPlaying}
+        onClick={props.onClick}
+        onTogglePlaying={() => setIsPlaying((prev) => !prev)}
+        shortcuts={props.playbackShortcuts}
+        st={props.st}
+      />
+    );
+
+  const shortcutHint =
+    props.showKeyboardShortcut && props.playbackRef && props.st
+      ? props.playbackShortcuts?.[0]
+      : undefined;
+  if (!shortcutHint) {
+    return character;
+  }
+
+  return (
+    <div class="tp:flex tp:flex-col tp:items-center tp:gap-1">
+      {character}
+      <kbd
+        class={classes(
+          'tp:leading-none tp:font-[monospace] tp:font-extrabold',
+          'tp:py-0.5 tp:px-1 tp:rounded-sm',
+          'tp:text-(--text-color) tp:opacity-40',
+          'tp:border tp:border-(--text-color)'
+        )}
+      >
+        {shortcutHint}
+      </kbd>
+    </div>
   );
 }
 
@@ -110,7 +148,7 @@ function StaticKanjiCharacter(props: KanjiCharacterProps) {
   return (
     <div
       class={classes(
-        'tp:w-(--tp-text-big-kanji) tp:text-(--primary-highlight) tp:text-big-kanji tp:text-center tp:pt-2 tp:rounded-md',
+        'tp:w-[1em] tp:text-(--primary-highlight) tp:text-big-kanji tp:text-center tp:pt-2 tp:rounded-md',
         '[text-shadow:var(--shadow-color)_1px_1px_4px]',
         ...(interactive
           ? [

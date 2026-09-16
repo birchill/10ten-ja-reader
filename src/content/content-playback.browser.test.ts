@@ -150,25 +150,27 @@ describe('Playback shortcut routing', () => {
     });
   });
 
-  it('toggles the first kanji with pointer interaction and reading audio disabled', async () => {
+  it('toggles the first kanji in a static popup with reading audio disabled', async () => {
     await lookupKanji();
     const root = document.getElementById('tenten-ja-window')!.shadowRoot!;
 
-    expect(root.querySelectorAll('svg title')).toHaveLength(0);
+    expect(root.querySelector('.entry-data')?.textContent).toContain('士');
+    expect(root.querySelector('svg path[pathLength]')).toBeNull();
+    expect(root.getAnimations()).toHaveLength(0);
 
     act(() => {
       pressKey();
     });
 
-    expect(root.querySelector('svg title')?.textContent).toBe(
-      'content_stroke_animation_stop (p)'
-    );
+    expect(root.querySelector('svg path[pathLength]')).not.toBeNull();
+    expect(root.getAnimations().length).toBeGreaterThan(0);
 
     act(() => {
       pressKey();
     });
 
-    expect(root.querySelectorAll('svg title')).toHaveLength(0);
+    expect(root.querySelector('svg path[pathLength]')).toBeNull();
+    expect(root.getAnimations()).toHaveLength(0);
   });
 
   it.each(['words', 'names'] as const)(
@@ -246,7 +248,7 @@ describe('Playback shortcut routing', () => {
     });
 
     const root = document.getElementById('tenten-ja-window')!.shadowRoot!;
-    expect(root.querySelectorAll('svg title')).toHaveLength(0);
+    expect(root.getAnimations()).toHaveLength(0);
   });
 
   it('refreshes the visible hint when the configured shortcut changes', async () => {
