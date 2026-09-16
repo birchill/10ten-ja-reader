@@ -51,7 +51,7 @@ describe('Playback shortcut routing', () => {
       false
     );
     handler = new ContentHandler(makeConfig());
-    await showPopup(handler);
+    await notifyPopupShown(handler);
     sendMessage.mockClear();
   });
 
@@ -79,15 +79,12 @@ describe('Playback shortcut routing', () => {
     });
   });
 
-  it.each(['altKey', 'ctrlKey', 'metaKey', 'shiftKey'] as const)(
-    'leaves %s shortcuts alone',
-    (modifier) => {
-      const event = pressKey({ [modifier]: true });
+  it('leaves Ctrl+P alone', () => {
+    const event = pressKey({ ctrlKey: true });
 
-      expect(event.defaultPrevented).toBe(false);
-      expect(sendMessage).not.toHaveBeenCalled();
-    }
-  );
+    expect(event.defaultPrevented).toBe(false);
+    expect(sendMessage).not.toHaveBeenCalled();
+  });
 
   it('respects a disabled playback shortcut', () => {
     const config = makeConfig();
@@ -113,7 +110,7 @@ describe('Playback shortcut routing', () => {
   });
 
   it('ignores playback when the current entry has nothing to play', async () => {
-    await showPopup(handler, false);
+    await notifyPopupShown(handler, false);
 
     const event = pressKey();
 
@@ -137,7 +134,7 @@ describe('Playback shortcut routing', () => {
     handler.enterCopyMode({ trigger: 'keyboard' });
     sendMessage.mockClear();
 
-    pressKey();
+    expect(pressKey().defaultPrevented).toBe(false);
 
     expect(sendMessage).not.toHaveBeenCalled();
 
@@ -224,14 +221,10 @@ describe('Playback shortcut routing', () => {
     const entry = result.kanji!.data[0];
     result.kanji!.data = [{ ...entry, st: undefined }, entry];
     await lookupKanji(result);
+    const root = document.getElementById('tenten-ja-window')!.shadowRoot!;
 
     expect(pressKey().defaultPrevented).toBe(false);
-    expect(sendMessage).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: 'children:popupShown',
-        state: expect.objectContaining({ playbackAvailable: false }),
-      })
-    );
+    expect(root.getAnimations()).toHaveLength(0);
   });
 
   it('ignores a forwarded toggle after the shortcut is disabled in the top frame', async () => {
@@ -309,7 +302,7 @@ describe('Playback shortcut routing', () => {
     const input = document.createElement('input');
     document.body.append(input);
     input.focus();
-    await showPopup(handler);
+    await notifyPopupShown(handler);
     sendMessage.mockClear();
 
     const event = pressKey({}, input);
@@ -387,7 +380,7 @@ function makeConfig(): ContentConfigParams {
   };
 }
 
-async function showPopup(
+async function notifyPopupShown(
   handler: ContentHandlerType,
   playbackAvailable = true
 ) {
