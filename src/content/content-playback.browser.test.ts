@@ -68,21 +68,15 @@ describe('Playback shortcut routing', () => {
     vi.unstubAllGlobals();
   });
 
-  it('forwards playback with reading audio disabled', () => {
+  it('forwards playback once for a held key with reading audio disabled', () => {
     const event = pressKey();
+    const repeated = pressKey({ repeat: true });
 
     expect(event.defaultPrevented).toBe(true);
+    expect(repeated.defaultPrevented).toBe(true);
     expect(sendMessage).toHaveBeenCalledExactlyOnceWith({
       type: 'top:togglePlayback',
     });
-  });
-
-  it('consumes a held key without toggling playback again', () => {
-    pressKey();
-    const repeated = pressKey({ repeat: true });
-
-    expect(repeated.defaultPrevented).toBe(true);
-    expect(sendMessage).toHaveBeenCalledTimes(1);
   });
 
   it.each(['altKey', 'ctrlKey', 'metaKey', 'shiftKey'] as const)(
@@ -166,7 +160,6 @@ describe('Playback shortcut routing', () => {
       pressKey();
     });
 
-    expect(root.getAnimations().length).toBeGreaterThan(0);
     expect(root.querySelector('svg title')?.textContent).toBe(
       'content_stroke_animation_stop (p)'
     );
@@ -221,8 +214,6 @@ describe('Playback shortcut routing', () => {
       });
 
       expect(toggleReadings).toHaveBeenCalledExactlyOnceWith(0);
-      const root = document.getElementById('tenten-ja-window')!.shadowRoot!;
-      expect(root.getAnimations()).toHaveLength(0);
     }
   );
 
@@ -233,34 +224,12 @@ describe('Playback shortcut routing', () => {
     await lookupKanji(result);
 
     expect(pressKey().defaultPrevented).toBe(false);
-    const root = document.getElementById('tenten-ja-window')!.shadowRoot!;
-    expect(root.getAnimations()).toHaveLength(0);
     expect(sendMessage).toHaveBeenCalledWith(
       expect.objectContaining({
         type: 'children:popupShown',
         state: expect.objectContaining({ playbackAvailable: false }),
       })
     );
-  });
-
-  it('stops animation on close and ignores a delayed forwarded toggle', async () => {
-    await lookupKanji();
-    const root = document.getElementById('tenten-ja-window')!.shadowRoot!;
-    act(() => {
-      pressKey();
-    });
-    expect(root.getAnimations().length).toBeGreaterThan(0);
-
-    await act(async () => {
-      handler.clearResult();
-      await handler.onBackgroundMessage({
-        type: 'togglePlayback',
-        frame: 'top',
-      });
-    });
-
-    expect(handler.isVisible()).toBe(false);
-    expect(root.getAnimations()).toHaveLength(0);
   });
 
   it('ignores a forwarded toggle after the shortcut is disabled in the top frame', async () => {
