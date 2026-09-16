@@ -88,7 +88,7 @@ describe('Playback shortcut routing', () => {
 
   it('respects a disabled playback shortcut', () => {
     const config = makeConfig();
-    config.keys.playReadings = [];
+    config.keys.togglePlayback = [];
     handler.setConfig(config);
 
     const event = pressKey();
@@ -99,7 +99,7 @@ describe('Playback shortcut routing', () => {
 
   it('uses the existing configured shortcut case-insensitively', () => {
     const config = makeConfig();
-    config.keys.playReadings = ['a'];
+    config.keys.togglePlayback = ['a'];
     handler.setConfig(config);
 
     expect(pressKey().defaultPrevented).toBe(false);
@@ -230,7 +230,7 @@ describe('Playback shortcut routing', () => {
   it('ignores a forwarded toggle after the shortcut is disabled in the top frame', async () => {
     await lookupKanji();
     const config = makeConfig();
-    config.keys.playReadings = [];
+    config.keys.togglePlayback = [];
     handler.setConfig(config);
 
     await act(async () => {
@@ -279,7 +279,7 @@ describe('Playback shortcut routing', () => {
     act(() => {
       handler.setConfig({
         ...config,
-        keys: { ...config.keys, playReadings: ['a'] },
+        keys: { ...config.keys, togglePlayback: ['a'] },
       });
     });
     expect(root.querySelector('svg title')?.textContent).toBe(
@@ -289,7 +289,7 @@ describe('Playback shortcut routing', () => {
     act(() => {
       handler.setConfig({
         ...config,
-        keys: { ...config.keys, playReadings: [] },
+        keys: { ...config.keys, togglePlayback: [] },
       });
     });
     expect(root.querySelector('svg title')?.textContent).toBe(
@@ -360,7 +360,7 @@ function makeConfig(): ContentConfigParams {
       movePopupUp: [],
       movePopupDown: [],
       startCopy: ['c'],
-      playReadings: ['p'],
+      togglePlayback: ['p'],
     },
     noTextHighlight: true,
     playReadings: false,
