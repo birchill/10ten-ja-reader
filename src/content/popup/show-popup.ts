@@ -20,7 +20,7 @@ import { toScreenCoords } from '../scroll-offset';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from '../svg';
 import type { TtsPlaybackHandle } from '../tts-playback-controller';
 
-import type { KanjiStrokeAnimationHandle } from './Kanji/KanjiStrokeAnimation';
+import type { KanjiStrokeAnimationHandle } from './Kanji/KanjiEntry';
 import type { CopyState } from './copy-state';
 import {
   type PopupPosition,

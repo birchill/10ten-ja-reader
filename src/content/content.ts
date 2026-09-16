@@ -89,7 +89,7 @@ import { hasModifiers, normalizeKey, normalizeKeys } from './keyboard';
 import type { SelectionMeta } from './meta';
 import type { DisplayMode, PopupState } from './popup-state';
 import { clearPopupTimeout } from './popup-state';
-import type { KanjiStrokeAnimationHandle } from './popup/Kanji/KanjiStrokeAnimation';
+import type { KanjiStrokeAnimationHandle } from './popup/Kanji/KanjiEntry';
 import { type CopyState, getCopyMode } from './popup/copy-state';
 import {
   hidePopup,
