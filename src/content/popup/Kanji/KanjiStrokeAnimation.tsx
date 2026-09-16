@@ -122,7 +122,7 @@ export function KanjiStrokeAnimation(props: Props) {
       currentAnimations.current.forEach((animation) => animation.cancel());
       currentAnimations.current = [];
     };
-  }, [subpaths, props.isPlaying]);
+  }, [subpaths, props.isPlaying, interactive]);
 
   // Rendering parameters
   const strokeWidth = subpaths.length > 16 ? 4 : 5;
