@@ -43,7 +43,7 @@ const TIMELINE_OFFSET = 35; // px in SVG user unit space
 
 export function KanjiStrokeAnimation(props: Props) {
   const { t } = useLocale();
-  const isStatic = !!props.staticCharacter;
+  const showStaticWhenIdle = !!props.staticCharacter;
 
   // References
   const animatedStrokeContainer = useRef<SVGGElement>(null);
@@ -110,7 +110,7 @@ export function KanjiStrokeAnimation(props: Props) {
     }
 
     // Scrubber animation
-    if (scrubberContainer.current && !isStatic) {
+    if (scrubberContainer.current && !showStaticWhenIdle) {
       animations.push(
         scrubberContainer.current.animate(
           {
@@ -135,7 +135,7 @@ export function KanjiStrokeAnimation(props: Props) {
       currentAnimations.current.forEach((animation) => animation.cancel());
       currentAnimations.current = [];
     };
-  }, [subpaths, isPlaying, isStatic]);
+  }, [subpaths, isPlaying, showStaticWhenIdle]);
 
   // Rendering parameters
   const strokeWidth = subpaths.length > 16 ? 4 : 5;
@@ -160,7 +160,7 @@ export function KanjiStrokeAnimation(props: Props) {
     <div
       class={classes(
         'tp:flex tp:flex-col tp:items-center',
-        isStatic ? 'tp:pt-2' : 'tp:gap-3'
+        showStaticWhenIdle ? 'tp:pt-2' : 'tp:gap-3'
       )}
     >
       <svg
@@ -233,7 +233,7 @@ export function KanjiStrokeAnimation(props: Props) {
           ))}
         </g>
       </svg>
-      <div hidden={isStatic}>
+      <div hidden={showStaticWhenIdle}>
         {/* The content is only 25 user units high but we make it 50 so that we
          * can expand the hit regions vertically since iOS Safari doesn't do
          * very good hit detection of small targets. */}
