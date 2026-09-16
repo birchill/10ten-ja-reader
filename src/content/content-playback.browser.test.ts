@@ -150,7 +150,7 @@ describe('Playback shortcut routing', () => {
     });
   });
 
-  it('toggles the first kanji in a static popup with reading audio disabled', async () => {
+  it('toggles the first kanji with pointer interaction and reading audio disabled', async () => {
     await lookupKanji();
     const root = document.getElementById('tenten-ja-window')!.shadowRoot!;
 
