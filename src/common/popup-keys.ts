@@ -67,7 +67,7 @@ export const PopupKeys: Array<KeySetting> = [
     l10nKey: 'options_popup_start_copy',
   },
   {
-    name: 'playReadings',
+    name: 'togglePlayback',
     keys: ['p'],
     enabledKeys: ['p'],
     l10nKey: 'options_popup_toggle_playback',

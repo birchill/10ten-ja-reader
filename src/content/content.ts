@@ -1157,7 +1157,7 @@ export class ContentHandler {
       movePopupUp,
       movePopupDown,
       startCopy,
-      playReadings,
+      togglePlayback,
     ] = [
       normalizeKeys(keys.nextDictionary),
       normalizeKeys(keys.toggleDefinition),
@@ -1167,7 +1167,7 @@ export class ContentHandler {
       normalizeKeys(keys.movePopupUp),
       normalizeKeys(keys.movePopupDown),
       normalizeKeys(keys.startCopy),
-      normalizeKeys(keys.playReadings),
+      normalizeKeys(keys.togglePlayback),
     ];
 
     const key = normalizeKey(event.key);
@@ -1218,7 +1218,7 @@ export class ContentHandler {
     } else if (
       this.#canTogglePlayback() &&
       !hasModifiers(event) &&
-      playReadings.includes(key)
+      togglePlayback.includes(key)
     ) {
       // A held key repeats the keydown; treat the whole hold as one toggle.
       if (!event.repeat) {
@@ -1271,7 +1271,7 @@ export class ContentHandler {
 
   #canTogglePlayback(): boolean {
     return (
-      !!this.#config.keys.playReadings.length &&
+      !!this.#config.keys.togglePlayback.length &&
       this.isVisible() &&
       !!this.#popupState?.playbackAvailable &&
       // Entering copy mode stops playback, so don't let the key restart it.
@@ -2349,7 +2349,7 @@ export class ContentHandler {
         }
       },
       pinShortcuts: this.#config.keys.pinPopup,
-      playbackShortcuts: this.#config.keys.playReadings,
+      playbackShortcuts: this.#config.keys.togglePlayback,
       pointerType: this.#currentTargetProps?.fromPuck ? 'puck' : 'cursor',
       popupStyle: this.#config.popupStyle,
       posDisplay: this.#config.posDisplay,

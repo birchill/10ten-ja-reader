@@ -9,7 +9,7 @@ import { KeyBox, KeyCheckbox } from './KeyBox';
 import { NewBadge } from './NewBadge';
 
 const newKeys: Array<{ name: keyof StoredKeyboardKeys; expiry: Date }> = [
-  { name: 'playReadings', expiry: new Date('2027-02-20') },
+  { name: 'togglePlayback', expiry: new Date('2027-02-20') },
 ];
 
 type Props = {

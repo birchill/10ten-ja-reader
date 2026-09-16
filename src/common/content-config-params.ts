@@ -35,7 +35,7 @@ export type KeyboardKeys = {
   startCopy: Array<string>;
 
   // The key(s) to play or stop readings or the kanji stroke animation.
-  playReadings: Array<string>;
+  togglePlayback: Array<string>;
 };
 
 export type AccentDisplay =
