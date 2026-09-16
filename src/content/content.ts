@@ -261,6 +261,7 @@ export class ContentHandler {
   // Playback
   #ttsPlaybackController: TtsPlaybackController | undefined;
   #kanjiStrokeAnimation = createRef<KanjiStrokeAnimationHandle>();
+  #playbackTarget: { toggle: () => void } | undefined;
 
   // Manual positioning support
   #popupPositionMode: PopupPositionMode = PopupPositionMode.Auto;
@@ -1692,11 +1693,7 @@ export class ContentHandler {
       return;
     }
 
-    if (this.#currentDict === 'kanji') {
-      this.#kanjiStrokeAnimation.current?.toggle();
-    } else if (this.#config.playReadings) {
-      this.#ttsPlaybackController?.toggle(0);
-    }
+    this.#playbackTarget?.toggle();
   }
 
   enterCopyMode({
@@ -1716,6 +1713,7 @@ export class ContentHandler {
     //
     this.#copyState = { kind: 'active', index, mode: trigger };
     this.#ttsPlaybackController?.stop();
+    this.#kanjiStrokeAnimation.current?.stop();
 
     if (!this.isTopMostWindow()) {
       console.assert(
@@ -2393,6 +2391,8 @@ export class ContentHandler {
 
     clearPopupTimeout(this.#popupState);
 
+    this.#playbackTarget = this.#resolvePlaybackTarget();
+
     this.#popupState = {
       pos: {
         frameId: this.getFrameId() || 0,
@@ -2409,11 +2409,7 @@ export class ContentHandler {
         }),
       },
       contentType: this.#currentTargetProps?.contentType || 'text',
-      playbackAvailable:
-        this.#currentDict === 'kanji'
-          ? !!this.#kanjiStrokeAnimation.current
-          : this.#config.playReadings &&
-            !!this.#ttsPlaybackController?.hasEntries,
+      playbackAvailable: !!this.#playbackTarget,
       display: this.getNextDisplay(displayMode),
     };
 
@@ -2432,6 +2428,19 @@ export class ContentHandler {
       type: 'children:popupShown',
       state: childState,
     });
+  }
+
+  #resolvePlaybackTarget(): { toggle: () => void } | undefined {
+    if (this.#currentDict === 'kanji') {
+      return this.#kanjiStrokeAnimation.current ?? undefined;
+    }
+
+    const controller = this.#ttsPlaybackController;
+    if (this.#config.playReadings && controller?.hasEntries) {
+      return { toggle: () => controller.toggle(0) };
+    }
+
+    return undefined;
   }
 
   #syncTtsPlayback(): TtsPlaybackHandle | undefined {
@@ -2692,7 +2701,10 @@ export class ContentHandler {
   }
 
   hidePopup() {
+    // The hidePopup() below only hides the popup and leaves the tree mounted,
+    // so the animation keeps running unless we stop it here.
     this.#kanjiStrokeAnimation.current?.stop();
+    this.#playbackTarget = undefined;
 
     const wasShowing = !!this.#currentSearchResult;
 
