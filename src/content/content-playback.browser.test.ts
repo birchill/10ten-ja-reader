@@ -251,6 +251,26 @@ describe('Playback shortcut routing', () => {
     expect(root.getAnimations()).toHaveLength(0);
   });
 
+  it('stops the animation on close and ignores a delayed forwarded toggle', async () => {
+    await lookupKanji();
+    const root = document.getElementById('tenten-ja-window')!.shadowRoot!;
+    act(() => {
+      pressKey();
+    });
+    expect(root.getAnimations().length).toBeGreaterThan(0);
+
+    await act(async () => {
+      handler.clearResult();
+      await handler.onBackgroundMessage({
+        type: 'togglePlayback',
+        frame: 'top',
+      });
+    });
+
+    expect(handler.isVisible()).toBe(false);
+    expect(root.getAnimations()).toHaveLength(0);
+  });
+
   it('refreshes the visible hint when the configured shortcut changes', async () => {
     await lookupKanji();
     const config = makeConfig();
