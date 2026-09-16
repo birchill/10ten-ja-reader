@@ -12,7 +12,7 @@ jobs:
     # Keep the Safari build/sign/upload steps in this job in sync with
     # `.github/workflows/release.yml`'s `build_macos` job.
     name: Build Safari apps
-    runs-on: macos-26
+    runs-on: blacksmith-6vcpu-macos-26
     concurrency:
       group: app-store-connect-build-number
       cancel-in-progress: false
