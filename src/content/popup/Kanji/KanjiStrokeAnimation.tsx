@@ -140,12 +140,7 @@ export function KanjiStrokeAnimation(props: Props) {
     : label;
 
   return (
-    <div
-      class={classes(
-        'tp:flex tp:flex-col tp:items-center',
-        interactive ? 'tp:gap-3' : 'tp:pt-2'
-      )}
-    >
+    <div class="tp:flex tp:flex-col tp:items-center tp:gap-3">
       <svg
         class={classes(
           'tp:group/kanji-anim',
