@@ -151,22 +151,20 @@ describe('Playback shortcut routing', () => {
     await lookupKanji();
     const root = document.getElementById('tenten-ja-window')!.shadowRoot!;
 
-    expect(root.querySelector('.entry-data')?.textContent).toContain('士');
-    expect(root.querySelector('svg path[pathLength]')).toBeNull();
+    expect(root.querySelector('svg path[pathLength]')).not.toBeNull();
+    expect(root.querySelector('svg title')).toBeNull();
     expect(root.getAnimations()).toHaveLength(0);
 
     act(() => {
       pressKey();
     });
 
-    expect(root.querySelector('svg path[pathLength]')).not.toBeNull();
     expect(root.getAnimations().length).toBeGreaterThan(0);
 
     act(() => {
       pressKey();
     });
 
-    expect(root.querySelector('svg path[pathLength]')).toBeNull();
     expect(root.getAnimations()).toHaveLength(0);
   });
 

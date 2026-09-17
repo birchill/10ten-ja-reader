@@ -88,7 +88,6 @@ type KanjiCharacterProps = {
 };
 
 function KanjiCharacter(props: KanjiCharacterProps) {
-  const { interactive } = usePopupOptions();
   const [isPlaying, setIsPlaying] = useState(false);
 
   useImperativeHandle(
@@ -100,7 +99,7 @@ function KanjiCharacter(props: KanjiCharacterProps) {
     []
   );
 
-  return !props.st || (!interactive && !isPlaying) ? (
+  return !props.st ? (
     <StaticKanjiCharacter c={props.c} onClick={props.onClick} />
   ) : (
     <KanjiStrokeAnimation
