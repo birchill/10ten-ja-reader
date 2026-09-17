@@ -128,7 +128,6 @@ export function renderPopup(
             playbackRef={options.kanjiStrokeAnimationRef}
             playbackShortcuts={options.playbackShortcuts}
             showComponents={options.showKanjiComponents}
-            showKeyboardShortcut={expandableProps.showKeyboardShortcut}
           />
         </Expandable>
       );

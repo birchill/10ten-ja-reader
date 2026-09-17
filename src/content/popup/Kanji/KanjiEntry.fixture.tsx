@@ -68,7 +68,6 @@ export default {
         playbackRef={playbackRef.current}
         playbackShortcuts={['p']}
         selectState="unselected"
-        showKeyboardShortcut
       />
     );
   },

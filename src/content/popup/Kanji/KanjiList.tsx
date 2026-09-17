@@ -18,7 +18,6 @@ export type KanjiListProps = {
   playbackRef?: RefObject<KanjiStrokeAnimationHandle>;
   playbackShortcuts?: ReadonlyArray<string>;
   showComponents?: boolean;
-  showKeyboardShortcut?: boolean;
 };
 
 export function KanjiList(props: KanjiListProps) {
@@ -61,9 +60,6 @@ export function KanjiList(props: KanjiListProps) {
                   : 'unselected'
               }
               showComponents={props.showComponents}
-              showKeyboardShortcut={
-                i === 0 ? props.showKeyboardShortcut : undefined
-              }
             />
           </div>
         </Fragment>
