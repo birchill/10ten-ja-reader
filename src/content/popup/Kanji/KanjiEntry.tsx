@@ -26,7 +26,6 @@ export type Props = {
   playbackShortcuts?: ReadonlyArray<string>;
   selectState: 'unselected' | 'selected' | 'flash';
   showComponents?: boolean;
-  showKeyboardShortcut?: boolean;
 };
 
 export function KanjiEntry(props: Props) {
@@ -62,7 +61,6 @@ export function KanjiEntry(props: Props) {
           }}
           playbackRef={props.playbackRef}
           playbackShortcuts={props.playbackShortcuts}
-          showKeyboardShortcut={props.showKeyboardShortcut}
           st={props.entry.st}
         />
         <div class="tp:mt-1.5 tp:grow">
@@ -86,7 +84,6 @@ type KanjiCharacterProps = {
   onClick?: (trigger: 'touch' | 'mouse') => void;
   playbackRef?: RefObject<KanjiStrokeAnimationHandle>;
   playbackShortcuts?: ReadonlyArray<string>;
-  showKeyboardShortcut?: boolean;
   st?: string;
 };
 
@@ -103,41 +100,16 @@ function KanjiCharacter(props: KanjiCharacterProps) {
     []
   );
 
-  const character =
-    !props.st || (!interactive && !isPlaying) ? (
-      <StaticKanjiCharacter c={props.c} onClick={props.onClick} />
-    ) : (
-      <KanjiStrokeAnimation
-        isPlaying={isPlaying}
-        onClick={props.onClick}
-        onTogglePlaying={() => setIsPlaying((prev) => !prev)}
-        shortcuts={props.playbackShortcuts}
-        st={props.st}
-      />
-    );
-
-  const shortcutHint =
-    props.showKeyboardShortcut && props.playbackRef && props.st
-      ? props.playbackShortcuts?.[0]
-      : undefined;
-  if (!shortcutHint) {
-    return character;
-  }
-
-  return (
-    <div class="tp:flex tp:flex-col tp:items-center tp:gap-1">
-      {character}
-      <kbd
-        class={classes(
-          'tp:leading-none tp:font-[monospace] tp:font-extrabold',
-          'tp:py-0.5 tp:px-1 tp:rounded-sm',
-          'tp:text-(--text-color) tp:opacity-40',
-          'tp:border tp:border-(--text-color)'
-        )}
-      >
-        {shortcutHint}
-      </kbd>
-    </div>
+  return !props.st || (!interactive && !isPlaying) ? (
+    <StaticKanjiCharacter c={props.c} onClick={props.onClick} />
+  ) : (
+    <KanjiStrokeAnimation
+      isPlaying={isPlaying}
+      onClick={props.onClick}
+      onTogglePlaying={() => setIsPlaying((prev) => !prev)}
+      shortcuts={props.playbackShortcuts}
+      st={props.st}
+    />
   );
 }
 
