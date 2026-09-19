@@ -10,6 +10,7 @@ import { classes } from '../../../utils/classes';
 
 import type { SelectionMeta } from '../../meta';
 import type { NamePreview as QueryNamePreview } from '../../query';
+import type { TtsPlaybackHandle } from '../../tts-playback-controller';
 
 import { MetadataContainer } from '../Metadata/MetadataContainer';
 import type { CopyState } from '../copy-state';
@@ -35,6 +36,7 @@ export type WordTableProps = {
   config: WordTableConfig;
   copyState: CopyState;
   onStartCopy?: StartCopyCallback;
+  ttsPlayback?: TtsPlaybackHandle;
 };
 
 export const WordTable = (props: WordTableProps) => {
@@ -100,6 +102,8 @@ export const WordTable = (props: WordTableProps) => {
           selectedIndex={selectedIndex}
           copyState={props.copyState}
           onStartCopy={props.onStartCopy}
+          ttsPlayback={props.ttsPlayback}
+          ttsEntryIndexOffset={entries.length}
         />
       )}
 
@@ -138,6 +142,12 @@ export const WordTable = (props: WordTableProps) => {
               entry={entry}
               config={props.config}
               selectState={selectState}
+              tts={
+                props.ttsPlayback && {
+                  controller: props.ttsPlayback,
+                  entryIndex: index,
+                }
+              }
               onPointerUp={(evt) => {
                 lastPointerType.current = evt.pointerType;
               }}

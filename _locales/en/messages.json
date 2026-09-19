@@ -201,10 +201,22 @@
   "content_names_tag_surname": { "message": "surname" },
   "content_names_tag_unclass": { "message": "unclassified" },
   "content_names_tag_work": { "message": "work" },
+  "content_play_readings_error": {
+    "message": "Could not play readings",
+    "description": "Screen reader announcement when an entry's reading audio fails to play"
+  },
+  "content_play_readings_label": {
+    "message": "Play readings",
+    "description": "Button label and title for playing an entry's readings"
+  },
   "content_sk_match_src": {
     "message": "From $src$",
     "description": "The text used to show the sK/sk (search only) text that was used to look up the entry",
     "placeholders": { "src": { "content": "$1", "example": "御久しぶり" } }
+  },
+  "content_stop_readings_label": {
+    "message": "Stop readings",
+    "description": "Button label and title for stopping reading audio while it loads or plays"
   },
   "content_stroke_animation_play": {
     "message": "Play stroke animation",
