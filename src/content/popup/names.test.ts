@@ -58,7 +58,7 @@ it('shows the play shortcut on a standalone name popup button', () => {
         fontSize: 'normal',
         fxData: undefined,
         interactive: true,
-        playReadingsShortcuts: ['p'],
+        playbackShortcuts: ['p'],
         preferredUnits: 'metric',
         ttsPlayback: controller,
       },

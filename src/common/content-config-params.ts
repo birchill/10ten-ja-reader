@@ -34,8 +34,8 @@ export type KeyboardKeys = {
   // The key(s) to entry copy mode.
   startCopy: Array<string>;
 
-  // The key(s) to play or stop the readings of the first entry.
-  playReadings: Array<string>;
+  // The key(s) to play or stop readings or the kanji stroke animation.
+  togglePlayback: Array<string>;
 };
 
 export type AccentDisplay =
