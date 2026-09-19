@@ -17,10 +17,11 @@ import { PLAY_PATH_OPTICALLY_CENTERED, STOP_PATH } from '../play-stop-paths';
 export type TtsPlayButtonProps = {
   controller: TtsPlaybackHandle;
   entryIndex: number;
+  shortcuts?: ReadonlyArray<string>;
 };
 
 export function TtsPlayButton(props: TtsPlayButtonProps) {
-  const { controller, entryIndex } = props;
+  const { controller, entryIndex, shortcuts } = props;
   const { t, langTag } = useLocale();
   const shouldAnimate = useShouldAnimate();
 
@@ -35,6 +36,12 @@ export function TtsPlayButton(props: TtsPlayButtonProps) {
   const label = t(
     isActive ? 'content_stop_readings_label' : 'content_play_readings_label'
   );
+  // The key only plays the first entry, so a hint on a lower row would
+  // promise the wrong row.
+  const title =
+    entryIndex === 0 && shortcuts?.length
+      ? `${label} (${shortcuts.join(' / ')})`
+      : label;
 
   // Follow the icon color so the circle darkens on light highlighted rows.
   const discBackground = 'color-mix(in srgb, currentColor 20%, transparent)';
@@ -66,7 +73,7 @@ export function TtsPlayButton(props: TtsPlayButtonProps) {
         type="button"
         lang={langTag}
         aria-label={label}
-        title={label}
+        title={title}
         style={{
           '--tts-disc-bg': discBackground,
           '--tts-pad': hitAreaPadding,

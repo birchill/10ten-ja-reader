@@ -26,6 +26,9 @@ export default function PopupThemeRadioFixture() {
     defaultValue: 'normal',
     options: ['xs', 'small', 'normal', 'large', 'xl'],
   });
+  const [playReadings] = useValue<boolean>('playReadings', {
+    defaultValue: false,
+  });
   const [posDisplay] = useSelect<PartOfSpeechDisplay>('posDisplay', {
     defaultValue: 'expl',
     options: ['expl', 'code', 'none'],
@@ -56,6 +59,7 @@ export default function PopupThemeRadioFixture() {
         fontFace={fontFace}
         fontSize={fontSize}
         onChangeTheme={setTheme}
+        playReadings={playReadings}
         posDisplay={posDisplay}
         showBunproDecks={showBunproDecks}
         showDefinitions={showDefinitions}

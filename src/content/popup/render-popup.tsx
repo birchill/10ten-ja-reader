@@ -164,6 +164,7 @@ export function renderPopup(
               more={resultToShow.more}
               namePreview={result!.namePreview}
               onStartCopy={options.onStartCopy}
+              playReadingsShortcuts={options.playReadingsShortcuts}
               title={result!.title}
               ttsPlayback={options.ttsPlayback}
             />

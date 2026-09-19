@@ -39,7 +39,12 @@ export type WordEntryProps = {
   entry: WordResult;
   config: WordEntryConfig;
   selectState: SelectState;
-  tts?: { controller: TtsPlaybackHandle; entryIndex: number };
+  tts?: {
+    controller: TtsPlaybackHandle;
+    entryIndex: number;
+    shortcuts?: ReadonlyArray<string>;
+  };
+  showPlayButton?: boolean;
   onPointerUp?: (evt: PointerEvent) => void;
   onClick?: (evt: MouseEvent) => void;
 };
@@ -48,6 +53,9 @@ export function WordEntry(props: WordEntryProps) {
   const { entry } = props;
   const { t, langTag } = useLocale();
   const { interactive } = usePopupOptions();
+
+  // The options page preview asks for the button in a non-interactive popup.
+  const showPlayButton = props.showPlayButton ?? interactive;
 
   const matchedOnKana = entry.r.some((r) => r.matchRange);
 
@@ -315,10 +323,11 @@ export function WordEntry(props: WordEntryProps) {
           </span>
         )}
 
-        {interactive && props.tts && (
+        {showPlayButton && props.tts && (
           <TtsPlayButton
             controller={props.tts.controller}
             entryIndex={props.tts.entryIndex}
+            shortcuts={props.tts.shortcuts}
           />
         )}
       </div>
