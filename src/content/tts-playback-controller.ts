@@ -35,11 +35,13 @@ export type TtsPlaybackHandle = Pick<
 export class TtsPlaybackController {
   #player: TtsPlayer;
   #entries: ReadonlyArray<TtsEntry> = [];
-  #activeEntry: { index: number; key: string } | undefined;
+  #lookupKey: string | undefined;
+  #activeEntry:
+    { occurrence: number; key: string; lookupKey: string } | undefined;
   #audioStarted = false;
   #actions: Array<() => void> = [];
   #draining = false;
-  #state: TtsPlaybackState = { kind: 'idle' };
+  #publishedPopupState: TtsPlaybackState = { kind: 'idle' };
   #listeners = new Set<TtsPlaybackListener>();
 
   constructor(options: TtsPlayerOptions) {
@@ -48,7 +50,7 @@ export class TtsPlaybackController {
   }
 
   get state(): TtsPlaybackState {
-    return this.#state;
+    return this.#publishedPopupState;
   }
 
   get hasEntries(): boolean {
@@ -57,13 +59,16 @@ export class TtsPlaybackController {
 
   subscribe(listener: TtsPlaybackListener): () => void {
     this.#listeners.add(listener);
-    notify(listener, this.#state);
+    notify(listener, this.#publishedPopupState);
 
     return () => this.#listeners.delete(listener);
   }
 
-  setEntries(entries: ReadonlyArray<TtsEntry>) {
-    this.#enqueue(() => this.#applySetEntries(entries));
+  setEntries(entries: ReadonlyArray<TtsEntry>, lookupKey: string | undefined) {
+    this.#enqueue(() => {
+      this.#entries = entries;
+      this.#lookupKey = lookupKey;
+    });
   }
 
   toggle(entryIndex: number) {
@@ -114,13 +119,13 @@ export class TtsPlaybackController {
         continue;
       }
 
-      const state = this.#currentState();
-      if (state.kind === 'idle') {
+      const popupState = this.#computePopupState();
+      if (this.#player.state.kind === 'idle') {
         this.#activeEntry = undefined;
       }
-      if (!sameState(state, this.#state)) {
-        this.#state = state;
-        delivery = { state, recipients: [...this.#listeners] };
+      if (!sameState(popupState, this.#publishedPopupState)) {
+        this.#publishedPopupState = popupState;
+        delivery = { state: popupState, recipients: [...this.#listeners] };
       }
 
       const recipient = delivery?.recipients.shift();
@@ -144,14 +149,26 @@ export class TtsPlaybackController {
     }
   }
 
-  #currentState(): TtsPlaybackState {
+  #computePopupState(): TtsPlaybackState {
     const playerState = this.#player.state;
     const active = this.#activeEntry;
-    if (playerState.kind === 'idle' || !active) {
+    if (
+      playerState.kind === 'idle' ||
+      !active ||
+      active.lookupKey !== this.#lookupKey
+    ) {
       return { kind: 'idle' };
     }
 
-    const activeEntryIndex = active.index;
+    let occurrence = 0;
+    const activeEntryIndex = this.#entries.findIndex(
+      (entry) =>
+        entryKey(entry) === active.key && occurrence++ === active.occurrence
+    );
+    if (activeEntryIndex === -1) {
+      return { kind: 'idle' };
+    }
+
     switch (playerState.kind) {
       case 'loading':
         return {
@@ -175,32 +192,9 @@ export class TtsPlaybackController {
     }
   }
 
-  #applySetEntries(entries: ReadonlyArray<TtsEntry>) {
-    this.#entries = entries;
-
-    const active = this.#activeEntry;
-    if (!active) {
-      return;
-    }
-
-    const stillThere = entries[active.index];
-    const index =
-      stillThere && entryKey(stillThere) === active.key
-        ? active.index
-        : entries.findIndex((entry) => entryKey(entry) === active.key);
-    if (index < 0) {
-      this.#applyStop();
-      return;
-    }
-
-    if (index !== active.index) {
-      this.#activeEntry = { ...active, index };
-    }
-  }
-
   #applyToggle(entryIndex: number) {
     const entry = this.#entries[entryIndex];
-    if (!entry) {
+    if (!entry || this.#lookupKey === undefined) {
       return;
     }
 
@@ -221,7 +215,14 @@ export class TtsPlaybackController {
       );
     }
 
-    this.#activeEntry = { index: entryIndex, key: entryKey(entry) };
+    const key = entryKey(entry);
+    this.#activeEntry = {
+      occurrence: this.#entries
+        .slice(0, entryIndex)
+        .filter((entry) => entryKey(entry) === key).length,
+      key,
+      lookupKey: this.#lookupKey,
+    };
     this.#audioStarted = false;
     this.#player.setReadings(entry.requests);
     this.#player.playAll();
@@ -234,12 +235,12 @@ export class TtsPlaybackController {
   }
 
   #isRunningEntry(entryIndex: number): boolean {
-    // Read the player, not #state. #drain updates #state only once #actions is
-    // empty, so during a drain #state can lag behind the player.
-    const { kind } = this.#player.state;
+    // #publishedPopupState can lag behind queued actions. Compute from the
+    // current player and popup entries instead.
+    const popupState = this.#computePopupState();
     return (
-      this.#activeEntry?.index === entryIndex &&
-      (kind === 'loading' || kind === 'playing')
+      (popupState.kind === 'loading' || popupState.kind === 'playing') &&
+      popupState.activeEntryIndex === entryIndex
     );
   }
 }
@@ -280,8 +281,7 @@ function sameState(a: TtsPlaybackState, b: TtsPlaybackState): boolean {
 }
 
 function entryKey(entry: TtsEntry): string {
-  // This key is not unique, so #activeEntry must keep the row index too. Two
-  // rows can have the same id (one entry reached by several deinflection
-  // paths) and the same audio. Only the row index tells them apart.
+  // Multiple deinflection paths can produce identical keys. Track the
+  // occurrence separately so prepended name previews do not change it.
   return `${entry.id}\n${entry.requests.map(buildTtsFilename).join('\n')}`;
 }
