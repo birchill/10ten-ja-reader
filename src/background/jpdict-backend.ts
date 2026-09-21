@@ -13,6 +13,7 @@ import {
 } from '@birchill/jpdict-idb';
 
 import { requestIdleCallbackPromise } from '../utils/request-idle-callback';
+import { serializeError } from '../utils/serialize-error';
 
 import type { JpdictState } from './jpdict';
 import type { JpdictEvent } from './jpdict-events';
@@ -42,6 +43,8 @@ export class JpdictLocalBackend implements JpdictBackend {
     { lang: string; series: MajorDataSeries; forceUpdate: boolean } | undefined;
 
   #lastUpdateError: UpdateErrorState | undefined;
+  #needsRebuild = false;
+  #rebuilding = false;
   #listeners: Array<JpdictListener> = [];
 
   constructor() {
@@ -64,6 +67,8 @@ export class JpdictLocalBackend implements JpdictBackend {
     try {
       await this.#updateAllSeries({ lang, forceUpdate: force });
     } catch (error) {
+      this.#lastUpdateError = serializeError(error);
+      this.#doDbStateNotification();
       this.#notifyListeners(notifyError({ error }));
     }
   }
@@ -142,6 +147,46 @@ export class JpdictLocalBackend implements JpdictBackend {
   }) {
     if (!(await this.#dbIsInitialized)) {
       return;
+    }
+
+    if (this.#rebuilding) {
+      return;
+    }
+
+    if (this.#needsRebuild) {
+      // Only a forced update may replace corrupt dictionary data. Keep this
+      // flag if deletion fails so the next manual attempt can try again.
+      if (!forceUpdate) {
+        return;
+      }
+
+      this.cancelUpdateDb();
+      this.#rebuilding = true;
+
+      try {
+        this.#notifyListeners(
+          leaveBreadcrumb({
+            message: `Rebuilding dictionary (${lang}): deleting corrupt database`,
+          })
+        );
+        await this.#db!.destroy();
+        this.#needsRebuild = false;
+        this.#lastUpdateError = undefined;
+        this.#notifyListeners(
+          leaveBreadcrumb({
+            message: `Deleted corrupt dictionary database; restarting updates (${lang})`,
+          })
+        );
+      } catch (error) {
+        this.#notifyListeners(
+          leaveBreadcrumb({
+            message: `Failed to delete corrupt dictionary database: ${serializeError(error).name}`,
+          })
+        );
+        throw error;
+      } finally {
+        this.#rebuilding = false;
+      }
     }
 
     // Check for a current update
@@ -232,6 +277,16 @@ export class JpdictLocalBackend implements JpdictBackend {
       (series: DataSeries) =>
       (params: { error: Error; nextRetry?: Date; retryCount?: number }) => {
         const { error, nextRetry, retryCount } = params;
+
+        if (error.name === 'NotReadableError') {
+          this.#needsRebuild = true;
+          this.#notifyListeners(
+            leaveBreadcrumb({
+              message: `Unreadable ${series} dictionary data; rebuild required`,
+            })
+          );
+        }
+
         if (nextRetry) {
           const diffInMs = nextRetry.getTime() - Date.now();
           this.#notifyListeners(

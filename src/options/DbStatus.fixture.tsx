@@ -58,6 +58,17 @@ const ONE_ZERO_ZERO_DB_STATE: JpdictState = {
 };
 
 export default {
+  'corrupt dictionary': () => (
+    <DbStatus
+      dbState={{
+        ...ONE_ZERO_ZERO_DB_STATE,
+        updateError: {
+          name: 'NotReadableError',
+          message: 'Cannot read dictionary data',
+        },
+      }}
+    />
+  ),
   offline: () => (
     <DbStatus
       dbState={{
