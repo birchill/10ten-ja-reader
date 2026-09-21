@@ -62,8 +62,11 @@ async function main() {
   archive.glob('tests/playground.*', { cwd: rootDir });
   archive.glob('tests/playground-*.*', { cwd: rootDir });
 
-  // Add `src` while excluding fixtures
-  archive.glob('src/**/*', { cwd: rootDir, ignore: '**/*.fixture.tsx' });
+  // Add `src` while excluding tests and fixtures
+  archive.glob('src/**/*', {
+    cwd: rootDir,
+    ignore: ['**/*.test.ts', '**/*.fixture.tsx'],
+  });
 
   const files = [
     'CHANGELOG.md',
