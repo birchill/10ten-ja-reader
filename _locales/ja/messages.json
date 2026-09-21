@@ -1449,6 +1449,10 @@
     "message": "データベースストレージ利用不可。Firefoxが「履歴を一切記憶させない」に設定されているかどうかご確認ください。",
     "description": "Label when IndexedDB is unusable with Firefox-specific help."
   },
+  "options_db_corrupt": {
+    "message": "ダウンロードした辞書データを読み込めませんでした。破損したデータを置き換えるには、辞書データを再ダウンロードしてください。設定は保持されます。"
+  },
+  "options_db_rebuild_button": { "message": "辞書データを再ダウンロード" },
   "options_db_update_error": {
     "message": "更新失敗しました。「 $errormessage$ 」",
     "description": "Label when we failed to update the data for some reason",

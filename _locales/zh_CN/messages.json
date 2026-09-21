@@ -1447,6 +1447,10 @@
     "message": "数据库存储不可用。请检查 Firefox 是否设置为“不记录历史”。",
     "description": "Label when IndexedDB is unusable with Firefox-specific help."
   },
+  "options_db_corrupt": {
+    "message": "无法读取已下载的词典数据。请重新下载以替换损坏的数据。您的设置将会保留。"
+  },
+  "options_db_rebuild_button": { "message": "重新下载词典数据" },
   "options_db_update_error": {
     "message": "更新失败： $errormessage$",
     "description": "Label when we failed to update the data for some reason",

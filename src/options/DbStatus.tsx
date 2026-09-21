@@ -215,7 +215,13 @@ function IdleStateSummary(props: {
           </div>
         )}
         <UpdateButton
-          label={isUnavailable ? 'retry' : 'check'}
+          label={
+            props.dbState.updateError?.name === 'NotReadableError'
+              ? 'rebuild'
+              : isUnavailable
+                ? 'retry'
+                : 'check'
+          }
           lastCheck={props.dbState.updateState.lastCheck}
           onClick={props.onUpdateDb}
         />
@@ -272,6 +278,11 @@ function useErrorDetails(
       errorMessage: t('options_db_update_quota_error', formatSize(quota)),
       nextRetry: updateError.nextRetry,
     };
+  }
+
+  // Corrupt dictionary data needs a full download instead of an update.
+  if (updateError?.name === 'NotReadableError') {
+    return { class: 'error', errorMessage: t('options_db_corrupt') };
   }
 
   // Generic update errors
@@ -392,16 +403,18 @@ function DataSeriesVersion(props: {
 }
 
 function UpdateButton(props: {
-  label: 'retry' | 'check';
+  label: 'retry' | 'check' | 'rebuild';
   lastCheck?: Date | null;
   onClick?: () => void;
 }) {
   const { t } = useLocale();
 
   const buttonLabel = t(
-    props.label === 'retry'
-      ? 'options_update_retry_button_label'
-      : 'options_update_check_button_label'
+    props.label === 'rebuild'
+      ? 'options_db_rebuild_button'
+      : props.label === 'retry'
+        ? 'options_update_retry_button_label'
+        : 'options_update_check_button_label'
   );
 
   return (
