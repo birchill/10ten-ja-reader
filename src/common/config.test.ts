@@ -217,7 +217,6 @@ describe('Config', () => {
       togglePlayback: ['p'],
     });
     expect(config.noTextHighlight).toEqual(false);
-    expect(config.playReadings).toEqual(false);
     expect(config.popupStyle).toEqual('default');
     expect(config.posDisplay).toEqual('expl');
     expect(config.readingOnly).toEqual(false);
@@ -228,6 +227,18 @@ describe('Config', () => {
     expect(config.showRomaji).toEqual(false);
     expect(config.tabDisplay).toEqual('top');
     expect(config.toolbarIcon).toEqual('default');
+  });
+
+  it('does not pass the retired audio setting to content scripts', async () => {
+    await mockStorage.sync.set({ playReadings: false });
+    const config = new Config();
+
+    await config.ready;
+
+    expect(config.contentConfig).not.toHaveProperty('playReadings');
+    expect(await mockStorage.sync.get('playReadings')).toEqual({
+      playReadings: false,
+    });
   });
 
   it('reports changes to all listeners', async () => {

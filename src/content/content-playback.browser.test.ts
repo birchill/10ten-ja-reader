@@ -68,7 +68,7 @@ describe('Playback shortcut routing', () => {
     vi.unstubAllGlobals();
   });
 
-  it('forwards playback once for a held key with reading audio disabled', () => {
+  it('forwards playback once for a held key', () => {
     const event = pressKey();
     const repeated = pressKey({ repeat: true });
 
@@ -147,7 +147,7 @@ describe('Playback shortcut routing', () => {
     });
   });
 
-  it('toggles the first kanji in a static popup with reading audio disabled', async () => {
+  it('toggles the first kanji in a static popup', async () => {
     await lookupKanji();
     const root = document.getElementById('tenten-ja-window')!.shadowRoot!;
 
@@ -205,7 +205,6 @@ describe('Playback shortcut routing', () => {
         .spyOn(TtsPlaybackController.prototype, 'toggle')
         .mockImplementation(() => {});
       act(() => {
-        handler.setConfig({ ...makeConfig(), playReadings: true });
         handler.showDictionary(tab);
         pressKey();
       });
@@ -361,7 +360,6 @@ function makeConfig(): ContentConfigParams {
       togglePlayback: ['p'],
     },
     noTextHighlight: true,
-    playReadings: false,
     popupInteractive: false,
     popupStyle: 'default',
     posDisplay: 'none',
