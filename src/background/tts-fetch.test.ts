@@ -18,7 +18,7 @@ beforeEach(async () => {
   vi.stubGlobal('fetch', vi.fn());
 
   const Bugsnag = (await import('@birchill/bugsnag-zero')).default;
-  notifySpy = vi.spyOn(Bugsnag, 'notify').mockResolvedValue(undefined);
+  notifySpy = vi.spyOn(Bugsnag, 'notify').mockResolvedValue({ status: 'sent' });
 
   const mod = await import('./tts-fetch');
   fetchTtsClip = mod.fetchTtsClip;
