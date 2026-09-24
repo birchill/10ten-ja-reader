@@ -144,19 +144,15 @@ export function KanjiStrokeAnimation(props: Props) {
       <svg
         class={classes(
           'tp:group/kanji-anim',
-          // The size utilities can't read the theme's kanji size, so set it as
-          // a font size. `tp:size-(--tp-text-big-kanji)` would freeze at 60px.
+          // The inline font-size utility tracks the popup font size. The
+          // equivalent theme variable is computed at the root and stays 60px.
           'tp:text-big-kanji tp:size-[1em] tp:rounded-md',
-          ...(interactive
-            ? [
-                'tp:hover:bg-(--hover-bg)',
-                'tp:hover:cursor-pointer',
-                // Fade _out_ the color change
-                'tp:transition-colors tp:interactive:duration-100',
-                'tp:ease-out',
-                'tp:hover:transition-none',
-              ]
-            : []),
+          'tp:hover:bg-(--hover-bg)',
+          'tp:hover:cursor-pointer',
+          // Fade _out_ the color change
+          'tp:transition-colors tp:interactive:duration-100',
+          'tp:ease-out',
+          'tp:hover:transition-none',
           // Ensure any selection colors are applied before fading in the
           // overlay
           'tp:no-overlay:group-data-selected:text-(--selected-highlight)',
@@ -189,15 +185,10 @@ export function KanjiStrokeAnimation(props: Props) {
         </g>
         <g
           class={classes(
-            'tp:stroke-(--primary-highlight)',
-            ...(interactive
-              ? [
-                  'tp:group-hover/kanji-anim:stroke-(--selected-highlight)',
-                  'tp:transition-colors tp:interactive:duration-100',
-                  'tp:ease-out',
-                  'tp:hover:transition-none',
-                ]
-              : []),
+            'tp:stroke-(--primary-highlight) tp:group-hover/kanji-anim:stroke-(--selected-highlight)',
+            'tp:transition-colors tp:interactive:duration-100',
+            'tp:ease-out',
+            'tp:hover:transition-none',
             'tp:no-overlay:group-data-selected:stroke-(--selected-highlight)'
           )}
           stroke-width={strokeWidth}

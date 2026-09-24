@@ -1721,7 +1721,7 @@
   "options_popup_switch_dictionaries": { "message": "Switch dictionaries" },
   "options_popup_toggle_definition": { "message": "Toggle definition" },
   "options_popup_toggle_playback": {
-    "message": "Play / stop readings or stroke animation",
+    "message": "Play readings or stroke animation",
     "description": "Keyboard shortcut label. Plays or stops readings in the Words and Names tabs, or the stroke animation in the Kanji tab."
   },
   "options_pos_display_code": {
