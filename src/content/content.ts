@@ -123,6 +123,11 @@ import type { TextRange } from './text-range';
 import { textRangesEqual } from './text-range';
 import { hasReasonableTimerResolution } from './timer-precision';
 import { TouchClickTracker } from './touch-click-tracker';
+import type { TtsPlaybackHandle } from './tts-playback-controller';
+import { TtsPlaybackController } from './tts-playback-controller';
+import { playClip } from './tts/audio-clip-player';
+import { fetchTtsClip } from './tts/tts-clip-fetcher';
+import { resolveNameTtsParams, resolveTtsParams } from './tts/tts-params';
 
 const enum HoldToShowKeyType {
   None = 0,
@@ -251,6 +256,9 @@ export class ContentHandler {
   // keyboard events to handle and how to interpret them.)
   #copyState: CopyState = { kind: 'inactive' };
 
+  // Reading playback
+  #ttsPlaybackController: TtsPlaybackController | undefined;
+
   // Manual positioning support
   #popupPositionMode: PopupPositionMode = PopupPositionMode.Auto;
 
@@ -277,6 +285,7 @@ export class ContentHandler {
     window.addEventListener('keyup', this.onKeyUp, { capture: true });
     window.addEventListener('focusin', this.onFocusIn);
     window.addEventListener('fullscreenchange', this.onFullScreenChange);
+    window.addEventListener('pagehide', this.onPageHide);
     window.addEventListener('message', this.onInterFrameMessage, {
       capture: true,
     });
@@ -441,6 +450,15 @@ export class ContentHandler {
           this.#puck?.setHandedness(value);
           break;
 
+        case 'playReadings':
+          if (this.isTopMostWindow()) {
+            if (!value) {
+              this.#ttsPlaybackController?.stop();
+            }
+            this.updatePopup();
+          }
+          break;
+
         case 'popupInteractive':
           if (this.isTopMostWindow()) {
             // We can't use updatePopup here since it will try to re-use the
@@ -508,6 +526,7 @@ export class ContentHandler {
     window.removeEventListener('keyup', this.onKeyUp, { capture: true });
     window.removeEventListener('focusin', this.onFocusIn);
     window.removeEventListener('fullscreenchange', this.onFullScreenChange);
+    window.removeEventListener('pagehide', this.onPageHide);
     window.removeEventListener('message', this.onInterFrameMessage, {
       capture: true,
     });
@@ -518,6 +537,8 @@ export class ContentHandler {
 
     this.#textHighlighter.detach();
     this.#copyState = { kind: 'inactive' };
+    this.#ttsPlaybackController?.stop();
+    this.#ttsPlaybackController = undefined;
     this.#isPopupExpanded = false;
     this.#safeAreaProvider.destroy();
     this.#touchClickTracker.destroy();
@@ -1332,6 +1353,10 @@ export class ContentHandler {
     }
   };
 
+  onPageHide = () => {
+    this.#ttsPlaybackController?.stop();
+  };
+
   onInterFrameMessage = (event: MessageEvent) => {
     // NOTE: Please do not add additional messages here.
     //
@@ -1640,6 +1665,7 @@ export class ContentHandler {
     //   how to handle copyMode-specific keystrokes.
     //
     this.#copyState = { kind: 'active', index, mode: trigger };
+    this.#ttsPlaybackController?.stop();
 
     if (!this.isTopMostWindow()) {
       console.assert(
@@ -1801,6 +1827,7 @@ export class ContentHandler {
     this.#currentPagePoint = undefined;
     this.#lastPointerTarget = null;
     this.#copyState = { kind: 'inactive' };
+    this.#ttsPlaybackController?.stop();
 
     clearPopupTimeout(this.#popupState);
     this.#popupState = undefined;
@@ -2207,6 +2234,8 @@ export class ContentHandler {
     const { textBoxSizes: pageTextBoxSizes } = this.#currentTargetProps || {};
     const screenTextBoxSizes = selectionSizesToScreenCoords(pageTextBoxSizes);
 
+    const ttsPlayback = this.#syncTtsPlayback();
+
     const popupOptions: ShowPopupOptions = {
       allowOverlap: options.allowOverlap,
       accentDisplay: this.#config.accentDisplay,
@@ -2284,6 +2313,7 @@ export class ContentHandler {
       showRomaji: this.#config.showRomaji,
       switchDictionaryKeys: this.#config.keys.nextDictionary,
       tabDisplay: this.#config.tabDisplay,
+      ttsPlayback,
       waniKaniVocabDisplay: this.#config.waniKaniVocabDisplay,
     };
 
@@ -2345,6 +2375,37 @@ export class ContentHandler {
       type: 'children:popupShown',
       state: childState,
     });
+  }
+
+  #syncTtsPlayback(): TtsPlaybackHandle | undefined {
+    const entries =
+      this.#config.playReadings && this.#currentDict === 'words'
+        ? [
+            ...(this.#currentSearchResult?.words?.data ?? []).map((word) => ({
+              id: word.id,
+              requests: resolveTtsParams(word),
+            })),
+            ...(this.#currentSearchResult?.namePreview?.names ?? []).map(
+              (name) => ({ id: name.id, requests: resolveNameTtsParams(name) })
+            ),
+          ]
+        : this.#config.playReadings && this.#currentDict === 'names'
+          ? (this.#currentSearchResult?.names?.data ?? []).map((name) => ({
+              id: name.id,
+              requests: resolveNameTtsParams(name),
+            }))
+          : [];
+
+    if (entries.length) {
+      this.#ttsPlaybackController ??= new TtsPlaybackController({
+        fetchClip: fetchTtsClip,
+        playClip,
+      });
+    }
+
+    this.#ttsPlaybackController?.setEntries(entries);
+
+    return this.#config.playReadings ? this.#ttsPlaybackController : undefined;
   }
 
   getCursorClearanceAndPos(screenTextBoxSizes: SelectionSizes | undefined) {
