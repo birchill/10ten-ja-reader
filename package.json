@@ -116,7 +116,7 @@
     "tailwindcss": "4.3.3",
     "terser-webpack-plugin": "5.6.1",
     "ts-checker-rspack-plugin": "1.6.1",
-    "tsx": "4.23.13",
+    "tsx": "4.23.15",
     "typescript": "7.0.2",
     "vitest": "5.0.1",
     "web-ext": "10.6.0",
