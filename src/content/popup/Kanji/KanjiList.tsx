@@ -1,5 +1,5 @@
 import type { KanjiResult } from '@birchill/jpdict-idb';
-import { Fragment } from 'preact';
+import { Fragment, type RefObject } from 'preact';
 
 import type { ReferenceAbbreviation } from '../../../common/refs';
 import { classes } from '../../../utils/classes';
@@ -8,13 +8,15 @@ import type { CopyState } from '../copy-state';
 import { getSelectedIndex } from '../selected-index';
 import type { StartCopyCallback } from '../show-popup';
 
-import { KanjiEntry } from './KanjiEntry';
+import { KanjiEntry, type KanjiStrokeAnimationHandle } from './KanjiEntry';
 
 export type KanjiListProps = {
   copyState: CopyState;
   entries: ReadonlyArray<KanjiResult>;
   kanjiReferences: Array<ReferenceAbbreviation>;
   onStartCopy?: StartCopyCallback;
+  playbackRef?: RefObject<KanjiStrokeAnimationHandle>;
+  playbackShortcuts?: ReadonlyArray<string>;
   showComponents?: boolean;
 };
 
@@ -48,6 +50,8 @@ export function KanjiList(props: KanjiListProps) {
               index={i}
               kanjiReferences={props.kanjiReferences}
               onStartCopy={props.onStartCopy}
+              playbackRef={i === 0 ? props.playbackRef : undefined}
+              playbackShortcuts={i === 0 ? props.playbackShortcuts : undefined}
               selectState={
                 selectedIndex === i
                   ? props.copyState.kind === 'active'

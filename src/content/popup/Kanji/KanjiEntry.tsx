@@ -1,5 +1,6 @@
 import type { KanjiResult } from '@birchill/jpdict-idb';
-import { useRef } from 'preact/hooks';
+import type { RefObject } from 'preact';
+import { useImperativeHandle, useRef, useState } from 'preact/hooks';
 
 import type { ReferenceAbbreviation } from '../../../common/refs';
 import { classes } from '../../../utils/classes';
@@ -11,11 +12,18 @@ import { KanjiInfo } from './KanjiInfo';
 import { KanjiReferencesTable } from './KanjiReferencesTable';
 import { KanjiStrokeAnimation } from './KanjiStrokeAnimation';
 
+export type KanjiStrokeAnimationHandle = {
+  stop: () => void;
+  toggle: () => void;
+};
+
 export type Props = {
   entry: KanjiResult;
   index: number;
   kanjiReferences: Array<ReferenceAbbreviation>;
   onStartCopy?: StartCopyCallback;
+  playbackRef?: RefObject<KanjiStrokeAnimationHandle>;
+  playbackShortcuts?: ReadonlyArray<string>;
   selectState: 'unselected' | 'selected' | 'flash';
   showComponents?: boolean;
 };
@@ -51,6 +59,8 @@ export function KanjiEntry(props: Props) {
 
             props.onStartCopy?.(props.index, trigger);
           }}
+          playbackRef={props.playbackRef}
+          playbackShortcuts={props.playbackShortcuts}
           st={props.entry.st}
         />
         <div class="tp:mt-1.5 tp:grow">
@@ -72,18 +82,33 @@ export function KanjiEntry(props: Props) {
 type KanjiCharacterProps = {
   c: string;
   onClick?: (trigger: 'touch' | 'mouse') => void;
+  playbackRef?: RefObject<KanjiStrokeAnimationHandle>;
+  playbackShortcuts?: ReadonlyArray<string>;
   st?: string;
 };
 
 function KanjiCharacter(props: KanjiCharacterProps) {
-  const { interactive } = usePopupOptions();
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  // There's no way to trigger the animation when we're not in "mouse
-  // interactive" mode so just show the static character in that case.
-  return props.st && interactive ? (
-    <KanjiStrokeAnimation onClick={props.onClick} st={props.st} />
-  ) : (
+  useImperativeHandle(
+    props.st ? (props.playbackRef ?? null) : null,
+    () => ({
+      stop: () => setIsPlaying(false),
+      toggle: () => setIsPlaying((prev) => !prev),
+    }),
+    []
+  );
+
+  return !props.st ? (
     <StaticKanjiCharacter c={props.c} onClick={props.onClick} />
+  ) : (
+    <KanjiStrokeAnimation
+      isPlaying={isPlaying}
+      onClick={props.onClick}
+      onTogglePlaying={() => setIsPlaying((prev) => !prev)}
+      shortcuts={props.playbackShortcuts}
+      st={props.st}
+    />
   );
 }
 

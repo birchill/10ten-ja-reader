@@ -1,46 +1,76 @@
-import { KanjiEntry } from './KanjiEntry';
+import type { KanjiResult } from '@birchill/jpdict-idb';
+import { createRef } from 'preact';
+import { useEffect, useRef } from 'preact/hooks';
+import { useFixtureInput } from 'react-cosmos/client';
+
+import { KanjiEntry, type KanjiStrokeAnimationHandle } from './KanjiEntry';
+
+const SHI_ENTRY: KanjiResult = {
+  c: '士',
+  r: { py: ['shi4'], on: ['シ'], kun: ['さむらい'], na: ['お', 'ま'] },
+  m: ['gentleman', 'scholar', 'samurai', 'samurai radical (no. 33)'],
+  rad: {
+    x: {
+      r: 33,
+      c: '⼠',
+      na: ['さむらい'],
+      m: ['gentleman', 'scholar', 'samurai'],
+      m_lang: 'en',
+    },
+  },
+  refs: {
+    nelson_c: 1160,
+    nelson_n: 1117,
+    halpern_njecd: 3405,
+    halpern_kkld_2ed: 2877,
+    heisig6: 341,
+    henshall: 494,
+    sh_kk2: 581,
+    kanji_in_context: 755,
+    kodansha_compact: 393,
+    skip: '4-3-2',
+    sh_desc: '3p0.1',
+    conning: 350,
+  },
+  misc: { sc: 3, gr: 5, freq: 526, jlpt: 1, kk: 6, wk: 13, jlptn: 2 },
+  st: 'M13.1 55c3.9.9 7.7.4 11.4.1 18.8-1.4 45-3 61.9-3.3q5-.1 9.7.8M52.3 17.3q1.6 1.7 1.7 4.2l.3 66M21.8 89.5c2.7.8 5.8.5 8.6.4 12.7-.6 34-2 45.9-2.2q4.4 0 8.7.7',
+  m_lang: 'en',
+  comp: [],
+  cf: [],
+};
 
 export default {
   default: (
     <KanjiEntry
       index={0}
-      entry={{
-        c: '士',
-        r: { py: ['shi4'], on: ['シ'], kun: ['さむらい'], na: ['お', 'ま'] },
-        m: ['gentleman', 'scholar', 'samurai', 'samurai radical (no. 33)'],
-        rad: {
-          x: {
-            r: 33,
-            c: '⼠',
-            na: ['さむらい'],
-            m: ['gentleman', 'scholar', 'samurai'],
-            m_lang: 'en',
-          },
-        },
-        refs: {
-          nelson_c: 1160,
-          nelson_n: 1117,
-          halpern_njecd: 3405,
-          halpern_kkld_2ed: 2877,
-          heisig6: 341,
-          henshall: 494,
-          sh_kk2: 581,
-          kanji_in_context: 755,
-          kodansha_compact: 393,
-          skip: '4-3-2',
-          sh_desc: '3p0.1',
-          conning: 350,
-        },
-        misc: { sc: 3, gr: 5, freq: 526, jlpt: 1, kk: 6, wk: 13, jlptn: 2 },
-        st: 'M13.1 55c3.9.9 7.7.4 11.4.1 18.8-1.4 45-3 61.9-3.3q5-.1 9.7.8M52.3 17.3q1.6 1.7 1.7 4.2l.3 66M21.8 89.5c2.7.8 5.8.5 8.6.4 12.7-.6 34-2 45.9-2.2q4.4 0 8.7.7',
-        m_lang: 'en',
-        comp: [],
-        cf: [],
-      }}
+      entry={SHI_ENTRY}
       kanjiReferences={['radical', 'nelson_r', 'kk', 'unicode', 'henshall']}
       selectState="unselected"
     />
   ),
+  'playback shortcut': function PlaybackShortcut() {
+    const playbackRef = useRef(createRef<KanjiStrokeAnimationHandle>());
+    const [playing] = useFixtureInput('playing', false);
+
+    useEffect(() => {
+      if (playing) {
+        playbackRef.current.current?.toggle();
+      } else {
+        playbackRef.current.current?.stop();
+      }
+    }, [playing]);
+
+    return (
+      <KanjiEntry
+        index={0}
+        entry={SHI_ENTRY}
+        kanjiReferences={['radical', 'nelson_r', 'kk', 'unicode', 'henshall']}
+        playbackRef={playbackRef.current}
+        playbackShortcuts={['p']}
+        selectState="unselected"
+      />
+    );
+  },
   wide: (
     <KanjiEntry
       index={0}

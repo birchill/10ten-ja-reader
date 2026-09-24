@@ -1,4 +1,5 @@
 import type { MajorDataSeries } from '@birchill/jpdict-idb';
+import type { RefObject } from 'preact';
 
 import type {
   AccentDisplay,
@@ -19,6 +20,7 @@ import { toScreenCoords } from '../scroll-offset';
 import { isForeignObjectElement, isSvgDoc, isSvgSvgElement } from '../svg';
 import type { TtsPlaybackHandle } from '../tts-playback-controller';
 
+import type { KanjiStrokeAnimationHandle } from './Kanji/KanjiEntry';
 import type { CopyState } from './copy-state';
 import {
   type PopupPosition,
@@ -57,6 +59,7 @@ export type ShowPopupOptions = {
   isExpanded: boolean;
   isVerticalText: boolean;
   kanjiReferences: Array<ReferenceAbbreviation>;
+  kanjiStrokeAnimationRef?: RefObject<KanjiStrokeAnimationHandle>;
   meta?: SelectionMeta;
   onCancelCopy?: () => void;
   onStartCopy?: StartCopyCallback;
@@ -67,7 +70,7 @@ export type ShowPopupOptions = {
   onSwitchDictionary?: (newDict: MajorDataSeries | 'next' | 'prev') => void;
   onTogglePin?: () => void;
   pinShortcuts?: ReadonlyArray<string>;
-  playReadingsShortcuts?: ReadonlyArray<string>;
+  playbackShortcuts?: ReadonlyArray<string>;
   pointerType: 'cursor' | 'puck';
   posDisplay: PartOfSpeechDisplay;
   positionMode: PopupPositionMode;

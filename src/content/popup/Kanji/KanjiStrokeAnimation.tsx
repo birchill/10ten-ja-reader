@@ -6,16 +6,19 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
-  useState,
 } from 'preact/hooks';
 
 import { useLocale } from '../../../common/i18n';
 import { classes } from '../../../utils/classes';
 
+import { usePopupOptions } from '../options-context';
 import { PLAY_PATH, STOP_PATH } from '../play-stop-paths';
 
 export type Props = {
+  isPlaying: boolean;
   onClick?: (trigger: 'touch' | 'mouse') => void;
+  onTogglePlaying: () => void;
+  shortcuts?: ReadonlyArray<string>;
   st: string;
 };
 
@@ -34,6 +37,7 @@ const TIMELINE_OFFSET = 35; // px in SVG user unit space
 
 export function KanjiStrokeAnimation(props: Props) {
   const { t } = useLocale();
+  const { interactive } = usePopupOptions();
 
   // References
   const animatedStrokeContainer = useRef<SVGGElement>(null);
@@ -41,7 +45,6 @@ export function KanjiStrokeAnimation(props: Props) {
   const scrubberContainer = useRef<SVGGElement>(null);
 
   // Animation state
-  const [isPlaying, setIsPlaying] = useState(false);
   const currentAnimations = useRef<Array<Animation>>([]);
 
   // Scrubber handling
@@ -53,7 +56,7 @@ export function KanjiStrokeAnimation(props: Props) {
   // Update the animation parameters
   const subpaths = useMemo(() => props.st.split(/(?=M[0-9])/), [props.st]);
   useLayoutEffect(() => {
-    if (!animatedStrokeContainer.current || !isPlaying) {
+    if (!animatedStrokeContainer.current || !props.isPlaying) {
       currentAnimations.current = [];
       return;
     }
@@ -119,7 +122,7 @@ export function KanjiStrokeAnimation(props: Props) {
       currentAnimations.current.forEach((animation) => animation.cancel());
       currentAnimations.current = [];
     };
-  }, [subpaths, isPlaying]);
+  }, [subpaths, props.isPlaying, interactive]);
 
   // Rendering parameters
   const strokeWidth = subpaths.length > 16 ? 4 : 5;
@@ -127,12 +130,23 @@ export function KanjiStrokeAnimation(props: Props) {
   // Copy state
   const lastPointerType = useRef<string>('touch');
 
+  const label = t(
+    props.isPlaying
+      ? 'content_stroke_animation_stop'
+      : 'content_stroke_animation_play'
+  );
+  const title = props.shortcuts?.length
+    ? `${label} (${props.shortcuts.join(' / ')})`
+    : label;
+
   return (
     <div class="tp:flex tp:flex-col tp:items-center tp:gap-3">
       <svg
         class={classes(
           'tp:group/kanji-anim',
-          'tp:h-(--tp-text-big-kanji) tp:w-(--tp-text-big-kanji) tp:rounded-md',
+          // The inline font-size utility tracks the popup font size. The
+          // equivalent theme variable is computed at the root and stays 60px.
+          'tp:text-big-kanji tp:size-[1em] tp:rounded-md',
           'tp:hover:bg-(--hover-bg)',
           'tp:hover:cursor-pointer',
           // Fade _out_ the color change
@@ -182,7 +196,7 @@ export function KanjiStrokeAnimation(props: Props) {
           stroke-linejoin="round"
           stroke="var(--primary-highlight)"
           stroke-dasharray="100 100"
-          stroke-dashoffset={isPlaying ? 100 : 0}
+          stroke-dashoffset={props.isPlaying ? 100 : 0}
           fill="none"
           ref={animatedStrokeContainer}
         >
@@ -199,137 +213,137 @@ export function KanjiStrokeAnimation(props: Props) {
           ))}
         </g>
       </svg>
-      <div>
-        {/* The content is only 25 user units high but we make it 50 so that we
-         * can expand the hit regions vertically since iOS Safari doesn't do
-         * very good hit detection of small targets. */}
-        <svg
-          class="tp:w-(--tp-text-big-kanji)"
-          ref={timelineSvg}
-          viewBox="0 0 100 50"
-          style={{ webkitTapHighlightColor: 'transparent' }}
-        >
-          {/* Play/stop button */}
-          <g
-            onClick={() => setIsPlaying((prev) => !prev)}
-            pointer-events="all"
-            class="tp:cursor-pointer tp:opacity-30 tp:hover:opacity-100 tp:fill-(--text-color) tp:hover:fill-(--primary-highlight) tp:transition-transform tp:duration-500"
-            style={{ transform: isPlaying ? 'none' : 'translate(40px)' }}
+      {interactive && (
+        <div>
+          {/* The content is only 25 user units high but we make it 50 so that
+           * we can expand the hit regions vertically since iOS Safari doesn't
+           * do very good hit detection of small targets. */}
+          <svg
+            class="tp:text-big-kanji tp:w-[1em]"
+            ref={timelineSvg}
+            viewBox="0 0 100 50"
+            style={{ webkitTapHighlightColor: 'transparent' }}
           >
-            <title>
-              {t(
-                isPlaying
-                  ? 'content_stroke_animation_stop'
-                  : 'content_stroke_animation_play'
-              )}
-            </title>
-            {/* Play/stop button hit region */}
-            <rect
-              x={isPlaying ? 0 : -40}
-              width={isPlaying ? 25 : 100}
-              height={50}
-              fill="none"
-            />
-            <path
-              d={isPlaying ? STOP_PATH : PLAY_PATH}
-              class="tp:transition-[d] tp:duration-500"
-              transform="scale(0.9)"
-              transform-origin="10px 12.5px"
-            />
-          </g>
-          {/* Timeline and scrubber */}
-          <g
-            style={{
-              transform: isPlaying ? 'translate(25px)' : 'translate(65px)',
-            }}
-            class={classes(
-              'tp:transition-transform tp:duration-500',
-              isPlaying ? 'tp:delay-100' : 'tp:pointer-events-none'
-            )}
-          >
-            {/* Timeline */}
+            {/* Play/stop button */}
             <g
-              fill="var(--primary-highlight)"
-              opacity="0.1"
+              onClick={props.onTogglePlaying}
+              pointer-events="all"
+              class="tp:cursor-pointer tp:opacity-30 tp:hover:opacity-100 tp:fill-(--text-color) tp:hover:fill-(--primary-highlight) tp:transition-transform tp:duration-500"
               style={{
-                transform: isPlaying ? 'scale(1)' : 'scale(0)',
-                transformOrigin: '12.5px 12.5px',
+                transform: props.isPlaying ? 'none' : 'translate(40px)',
               }}
-              class={classes(
-                'tp:transition-transform',
-                !isPlaying && 'tp:delay-[450ms]'
-              )}
-              onClick={onTimelineClick}
             >
-              {/* Timeline middle rectangle */}
+              <title>{title}</title>
+              {/* Play/stop button hit region */}
               <rect
-                x={12.5}
-                // Add an extra pixel to the width to avoid a gap between the
-                // scrubber and the right end of the timeline.
-                width={TIMELINE_RANGE + 1}
-                height={25}
-                style={{
-                  transform: isPlaying ? 'scale(1)' : 'scale(0, 1)',
-                  transformOrigin: '12.5px 12.5px',
-                }}
-                class={classes(
-                  'tp:transition-transform tp:duration-500',
-                  isPlaying && 'tp:delay-100'
-                )}
+                x={props.isPlaying ? 0 : -40}
+                width={props.isPlaying ? 25 : 100}
+                height={50}
+                fill="none"
               />
-              {/* Timeline rounded left end */}
-              <path d="M12.5 0a12.5 12.5 0 0 0 0 25z" />
-              {/* Timeline rounded right end */}
               <path
-                d={`M${TIMELINE_RANGE + 12.5} 0a12.5 12.5 0 0 1 0 25z`}
-                style={{
-                  transform: isPlaying
-                    ? 'translate(0)'
-                    : `translate(-${TIMELINE_RANGE}px)`,
-                }}
-                class={classes(
-                  'tp:transition-transform tp:duration-500',
-                  isPlaying && 'tp:delay-100'
-                )}
+                d={props.isPlaying ? STOP_PATH : PLAY_PATH}
+                class="tp:transition-[d] tp:duration-500"
+                transform="scale(0.9)"
+                transform-origin="10px 12.5px"
               />
             </g>
-            {/* Scrubber group -- translation animation is applied here */}
-            <g ref={scrubberContainer}>
-              {/* Scrubber scale group */}
+            {/* Timeline and scrubber */}
+            <g
+              style={{
+                transform: props.isPlaying
+                  ? 'translate(25px)'
+                  : 'translate(65px)',
+              }}
+              class={classes(
+                'tp:transition-transform tp:duration-500',
+                props.isPlaying ? 'tp:delay-100' : 'tp:pointer-events-none'
+              )}
+            >
+              {/* Timeline */}
               <g
+                fill="var(--primary-highlight)"
+                opacity="0.1"
                 style={{
-                  transform: isPlaying ? 'scale(1)' : 'scale(0)',
+                  transform: props.isPlaying ? 'scale(1)' : 'scale(0)',
                   transformOrigin: '12.5px 12.5px',
                 }}
                 class={classes(
                   'tp:transition-transform',
-                  !isPlaying ? 'tp:delay-[400ms]' : 'tp:delay-50'
+                  !props.isPlaying && 'tp:delay-[450ms]'
                 )}
+                onClick={onTimelineClick}
               >
-                {/* Hit region for scrubber */}
+                {/* Timeline middle rectangle */}
                 <rect
-                  x={-10}
-                  width={40}
-                  height={50}
-                  fill="none"
-                  class="tp:cursor-pointer tp:peer"
-                  pointer-events="all"
-                  onPointerDown={onScrubberPointerDown}
-                  // This is needed to prevent the container from scrolling
-                  onTouchStart={(evt) => evt.preventDefault()}
+                  x={12.5}
+                  // Add an extra pixel to the width to avoid a gap between the
+                  // scrubber and the right end of the timeline.
+                  width={TIMELINE_RANGE + 1}
+                  height={25}
+                  style={{
+                    transform: props.isPlaying ? 'scale(1)' : 'scale(0, 1)',
+                    transformOrigin: '12.5px 12.5px',
+                  }}
+                  class={classes(
+                    'tp:transition-transform tp:duration-500',
+                    props.isPlaying && 'tp:delay-100'
+                  )}
                 />
-                <circle
-                  cx={12.5}
-                  cy={12.5}
-                  r={8}
-                  class="tp:fill-(--primary-highlight) tp:opacity-50 tp:peer-hover:opacity-100"
-                  pointer-events="none"
+                {/* Timeline rounded left end */}
+                <path d="M12.5 0a12.5 12.5 0 0 0 0 25z" />
+                {/* Timeline rounded right end */}
+                <path
+                  d={`M${TIMELINE_RANGE + 12.5} 0a12.5 12.5 0 0 1 0 25z`}
+                  style={{
+                    transform: props.isPlaying
+                      ? 'translate(0)'
+                      : `translate(-${TIMELINE_RANGE}px)`,
+                  }}
+                  class={classes(
+                    'tp:transition-transform tp:duration-500',
+                    props.isPlaying && 'tp:delay-100'
+                  )}
                 />
               </g>
+              {/* Scrubber group -- translation animation is applied here */}
+              <g ref={scrubberContainer}>
+                {/* Scrubber scale group */}
+                <g
+                  style={{
+                    transform: props.isPlaying ? 'scale(1)' : 'scale(0)',
+                    transformOrigin: '12.5px 12.5px',
+                  }}
+                  class={classes(
+                    'tp:transition-transform',
+                    !props.isPlaying ? 'tp:delay-[400ms]' : 'tp:delay-50'
+                  )}
+                >
+                  {/* Hit region for scrubber */}
+                  <rect
+                    x={-10}
+                    width={40}
+                    height={50}
+                    fill="none"
+                    class="tp:cursor-pointer tp:peer"
+                    pointer-events="all"
+                    onPointerDown={onScrubberPointerDown}
+                    // This is needed to prevent the container from scrolling
+                    onTouchStart={(evt) => evt.preventDefault()}
+                  />
+                  <circle
+                    cx={12.5}
+                    cy={12.5}
+                    r={8}
+                    class="tp:fill-(--primary-highlight) tp:opacity-50 tp:peer-hover:opacity-100"
+                    pointer-events="none"
+                  />
+                </g>
+              </g>
             </g>
-          </g>
-        </svg>
-      </div>
+          </svg>
+        </div>
+      )}
     </div>
   );
 }

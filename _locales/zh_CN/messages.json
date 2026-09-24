@@ -1683,11 +1683,11 @@
   },
   "options_play_readings_description": {
     "message": "实验性功能：此功能将在未来版本中默认启用。",
-    "description": "Note shown under the checkbox for playing an entry's readings, explaining that the setting is temporary"
+    "description": "Note under the temporary audio setting. This setting affects reading audio only, not kanji stroke animations."
   },
   "options_play_readings_label": {
     "message": "启用读音播放按钮",
-    "description": "Checkbox label for the setting to enable the button for playing an entry's readings as audio"
+    "description": "Checkbox label to enable reading audio and its play buttons. This setting does not affect kanji stroke animations."
   },
   "options_popup_close_popup": { "message": "关闭弹出窗口" },
   "options_popup_copy_entry": { "message": "复制词条" },
@@ -1709,7 +1709,6 @@
     "description": "Note that it is important that down comes before up"
   },
   "options_popup_pin_popup": { "message": "固定弹出窗口" },
-  "options_popup_play_readings": { "message": "播放读音" },
   "options_popup_start_copy": { "message": "进入复制模式" },
   "options_popup_style_heading": {
     "message": "窗口样式",
@@ -1717,6 +1716,10 @@
   },
   "options_popup_switch_dictionaries": { "message": "切换词典" },
   "options_popup_toggle_definition": { "message": "显示/隐藏释义" },
+  "options_popup_toggle_playback": {
+    "message": "播放读音或笔顺动画",
+    "description": "Keyboard shortcut label. Plays or stops readings in the Words and Names tabs, or the stroke animation in the Kanji tab."
+  },
   "options_pos_display_code": {
     "message": "词典缩写（例 ：“v5r”）",
     "description": "Label for simply display dictionary part-of-speech codes"
