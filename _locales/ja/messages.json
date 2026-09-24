@@ -201,10 +201,22 @@
   "content_names_tag_surname": { "message": "姓" },
   "content_names_tag_unclass": { "message": "人名" },
   "content_names_tag_work": { "message": "作品" },
+  "content_play_readings_error": {
+    "message": "読み方を再生できませんでした",
+    "description": "Screen reader announcement when an entry's reading audio fails to play"
+  },
+  "content_play_readings_label": {
+    "message": "読み方を再生",
+    "description": "Button label and title for playing an entry's readings"
+  },
   "content_sk_match_src": {
     "message": "「 $src$ 」から",
     "description": "The text used to show the sK/sk (search only) text that was used to look up the entry",
     "placeholders": { "src": { "content": "$1", "example": "御久しぶり" } }
+  },
+  "content_stop_readings_label": {
+    "message": "読み方を停止",
+    "description": "Button label and title for stopping reading audio while it loads or plays"
   },
   "content_stroke_animation_play": {
     "message": "筆順アニメーションを再生",

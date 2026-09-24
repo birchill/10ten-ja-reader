@@ -6,6 +6,8 @@ import type {
   PartOfSpeechDisplay,
 } from '../../../common/content-config-params';
 
+import type { TtsPlaybackState } from '../../tts-playback-controller';
+
 import { WordTable } from './WordTable';
 
 const namePreviewData = {
@@ -279,6 +281,22 @@ export default Object.fromEntries(
       const [title] = useFixtureInput('title', false);
       const [namePreview] = useFixtureInput('namePreview', false);
       const [more] = useFixtureInput('more', false);
+      const [playback] = useFixtureSelect<
+        'disabled' | TtsPlaybackState['kind']
+      >('playback', {
+        options: ['disabled', 'idle', 'loading', 'playing', 'error'],
+      });
+      const state = playbackStates[playback];
+      const ttsPlayback = state
+        ? {
+            state,
+            subscribe: (listener: (state: TtsPlaybackState) => void) => {
+              listener(state);
+              return () => {};
+            },
+            toggle: () => {},
+          }
+        : undefined;
 
       return (
         <WordTable
@@ -305,8 +323,30 @@ export default Object.fromEntries(
             waniKaniVocabDisplay,
           }}
           copyState={{ kind: 'inactive' }}
+          ttsPlayback={ttsPlayback}
         />
       );
     },
   ])
 );
+
+const playbackStates: Record<
+  'disabled' | TtsPlaybackState['kind'],
+  TtsPlaybackState | undefined
+> = {
+  disabled: undefined,
+  idle: { kind: 'idle' },
+  loading: {
+    kind: 'loading',
+    activeEntryIndex: 0,
+    readingIndex: 0,
+    audioStarted: false,
+  },
+  playing: {
+    kind: 'playing',
+    activeEntryIndex: 0,
+    readingIndex: 0,
+    startedAt: 0,
+  },
+  error: { kind: 'error', activeEntryIndex: 0 },
+};
