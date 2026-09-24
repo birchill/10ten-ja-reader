@@ -75,6 +75,7 @@ export const BackgroundMessageSchema = discriminator('type', {
     direction: s.enums(['up', 'down']),
     frame: s.literal('top'),
   }),
+  playReadings: s.type({ frame: s.literal('top') }),
 
   // Copy mode messages
   enterCopyMode: s.type({ frame: s.literal('top') }),

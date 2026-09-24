@@ -113,7 +113,7 @@ describe('WordTable row click vs. the play button', () => {
     expect(onStartCopy).toHaveBeenCalledWith(0, 'mouse');
   });
 
-  it('clicking the name preview then the word uses word-first playback indices', () => {
+  it('numbers the name preview before the words, matching copy order', () => {
     const onStartCopy =
       vi.fn<(index: number, trigger: 'touch' | 'mouse') => void>();
     const toggles: Array<number> = [];
@@ -159,7 +159,7 @@ describe('WordTable row click vs. the play button', () => {
     act(() => nameButton.click());
     act(() => wordButton.click());
 
-    expect(toggles).toEqual([1, 0]);
+    expect(toggles).toEqual([0, 1]);
     expect(onStartCopy).not.toHaveBeenCalled();
   });
 });

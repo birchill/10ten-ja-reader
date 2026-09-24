@@ -358,6 +358,18 @@ describe('TtsPlaybackController', () => {
       moraTiming
     );
   });
+
+  it('reports whether it has entries to play', () => {
+    const { controller } = setUp([]);
+
+    expect(controller.hasEntries).toBe(false);
+
+    controller.setEntries([entryA]);
+    expect(controller.hasEntries).toBe(true);
+
+    controller.setEntries([]);
+    expect(controller.hasEntries).toBe(false);
+  });
 });
 
 const entryA: TtsEntry = {
