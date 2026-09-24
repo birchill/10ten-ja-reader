@@ -114,6 +114,67 @@
 }
 
 /*
+ * Inline styles reference these keyframes directly, without a theme animation
+ * variable. Keep them outside @theme so Tailwind includes them in the output.
+ */
+@keyframes tts-mora-grow-a {
+  0%,
+  100% {
+    scale: 1;
+  }
+
+  50% {
+    scale: 1.05;
+  }
+}
+
+/*
+ * Replays alternate between matching keyframe pairs. Changing the animation
+ * name restarts it while keeping the one visible glyph node mounted.
+ */
+@keyframes tts-mora-grow-b {
+  /* Keep this in lockstep with the matching replay animation above. */
+  0%,
+  100% {
+    scale: 1;
+  }
+
+  50% {
+    scale: 1.05;
+  }
+}
+
+@keyframes tts-mora-highlight-a {
+  to {
+    color: var(--tts-highlight);
+  }
+}
+
+@keyframes tts-mora-highlight-b {
+  to {
+    color: var(--tts-highlight);
+  }
+}
+
+@keyframes tts-mora-unhighlight {
+  from {
+    color: var(--tts-highlight);
+  }
+}
+
+@keyframes tts-mora-reveal-a {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes tts-mora-reveal-b {
+  to {
+    opacity: 1;
+  }
+}
+
+/*
  * TODO Convert the following to more Tailwind-like utilities.
  */
 @layer components {

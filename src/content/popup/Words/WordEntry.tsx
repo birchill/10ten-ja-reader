@@ -17,6 +17,7 @@ import { Definitions } from './Definitions';
 import { HeadwordInfo } from './HeadwordInfo';
 import { Reading } from './Reading';
 import { TtsPlayButton } from './TtsPlayButton';
+import { TtsReading } from './TtsReading';
 import type { BunproDeckType } from './bunpro-url';
 import { getBunproUrl } from './bunpro-url';
 
@@ -252,10 +253,20 @@ export function WordEntry(props: WordEntryProps) {
                   >
                     <span class="tp:space-x-1">
                       <span>
-                        <Reading
-                          kana={kana}
-                          accentDisplay={props.config.accentDisplay}
-                        />
+                        {props.tts ? (
+                          <TtsReading
+                            controller={props.tts.controller}
+                            entryIndex={props.tts.entryIndex}
+                            readingIndex={index}
+                            kana={kana}
+                            accentDisplay={props.config.accentDisplay}
+                          />
+                        ) : (
+                          <Reading
+                            kana={kana}
+                            accentDisplay={props.config.accentDisplay}
+                          />
+                        )}
                       </span>
                       {!!kana.i?.length && <HeadwordInfo info={kana.i} />}
                       {props.config.showPriority && !!kana.p?.length && (
