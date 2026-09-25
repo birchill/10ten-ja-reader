@@ -169,7 +169,7 @@ describe('Playback shortcut routing', () => {
   });
 
   it.each(['words', 'names'] as const)(
-    'routes playback to readings after switching to %s',
+    'offers reading playback by default after switching to %s',
     async (tab) => {
       const result = makeKanjiResult();
       result.words = {
@@ -200,12 +200,21 @@ describe('Playback shortcut routing', () => {
           },
         ],
       };
+      handler.setConfig({ ...makeConfig(), popupInteractive: true });
       await lookupKanji(result);
       const toggleReadings = vi
         .spyOn(TtsPlaybackController.prototype, 'toggle')
         .mockImplementation(() => {});
       act(() => {
         handler.showDictionary(tab);
+      });
+
+      const root = document.getElementById('tenten-ja-window')!.shadowRoot!;
+      expect(
+        root.querySelector('button[aria-label="content_play_readings_label"]')
+      ).not.toBeNull();
+
+      act(() => {
         pressKey();
       });
 

@@ -229,18 +229,6 @@ describe('Config', () => {
     expect(config.toolbarIcon).toEqual('default');
   });
 
-  it('does not pass the retired audio setting to content scripts', async () => {
-    await mockStorage.sync.set({ playReadings: false });
-    const config = new Config();
-
-    await config.ready;
-
-    expect(config.contentConfig).not.toHaveProperty('playReadings');
-    expect(await mockStorage.sync.get('playReadings')).toEqual({
-      playReadings: false,
-    });
-  });
-
   it('reports changes to all listeners', async () => {
     const receivedChanges1: Array<ChangeDict> = [];
     const receivedChanges2: Array<ChangeDict> = [];
