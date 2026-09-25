@@ -80,7 +80,6 @@ interface Settings {
     puckState?: PuckState;
   };
   noTextHighlight?: boolean;
-  playReadings?: boolean;
   popupStyle?: string;
   posDisplay?: PartOfSpeechDisplay;
   preferredUnits?: 'metric' | 'imperial';
@@ -1069,26 +1068,6 @@ export class Config {
     void browser.storage.sync.set({ noTextHighlight: value });
   }
 
-  // playReadings: Defaults to false
-
-  get playReadings(): boolean {
-    return !!this.#settings.playReadings;
-  }
-
-  set playReadings(value: boolean) {
-    if (this.#settings.playReadings === (value || undefined)) {
-      return;
-    }
-
-    if (!value) {
-      delete this.#settings.playReadings;
-      void browser.storage.sync.remove('playReadings');
-    } else {
-      this.#settings.playReadings = value;
-      void browser.storage.sync.set({ playReadings: value });
-    }
-  }
-
   // popupInteractive (local): Defaults to true
 
   get popupInteractive(): boolean {
@@ -1407,7 +1386,6 @@ export class Config {
       kanjiReferences: this.kanjiReferences,
       keys: this.keysNormalized,
       noTextHighlight: this.noTextHighlight,
-      playReadings: this.playReadings,
       popupInteractive: this.popupInteractive,
       popupStyle: this.popupStyle,
       posDisplay: this.posDisplay,

@@ -110,8 +110,6 @@ export function PopupStyleSettings(props: Props) {
     [props.config]
   );
 
-  const playReadings = useConfigValue(props.config, 'playReadings');
-
   return (
     <>
       <SectionHeading>{t('options_popup_style_heading')}</SectionHeading>
@@ -132,7 +130,6 @@ export function PopupStyleSettings(props: Props) {
           onChangeShowRomaji={onChangeShowRomaji}
           onChangeShowWaniKaniLevel={onChangeShowWaniKaniLevel}
           onChangeTheme={onChangeTheme}
-          playReadings={playReadings}
           posDisplay={posDisplay}
           showBunproDecks={showBunproDecks}
           showDefinitions={showDefinitions}
