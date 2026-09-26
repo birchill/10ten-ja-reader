@@ -15,7 +15,7 @@
       "es2025.regexp",
       "webworker"
     ],
-    "module": "es2020",
+    "module": "preserve",
     "moduleResolution": "bundler",
     "noImplicitAny": true,
     "noImplicitReturns": true,
