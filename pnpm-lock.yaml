@@ -77,7 +77,7 @@ importers:
         version: 17.0.35
       '@vitest/browser-webdriverio':
         specifier: 5.0.0
-        version: 5.0.0(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))(vitest@5.0.1)(webdriverio@9.22.0(supports-color@8.1.1))
+        version: 5.0.0(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.0.1)(webdriverio@9.22.0(supports-color@8.1.1))
       archiver:
         specifier: 8.0.0
         version: 8.0.0
@@ -176,7 +176,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: 5.0.1
-        version: 5.0.1(@types/node@24.3.0)(@vitest/browser-webdriverio@5.0.0)(jsdom@30.0.1)(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))
+        version: 5.0.1(@types/node@24.3.0)(@vitest/browser-webdriverio@5.0.0)(jsdom@30.0.1)(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
       web-ext:
         specifier: 10.6.0
         version: 10.6.0(express@5.2.1(supports-color@8.1.1))(jiti@2.7.0)(supports-color@8.1.1)
@@ -3106,8 +3106,8 @@ packages:
   fast-string-width@3.0.2:
     resolution: {integrity: sha512-gX8LrtNEI5hq8DVUfRQMbr5lpaS4nMIWV+7XEbXk2b8kiQIizgnlr12B4dA3ZEx3308ze0O4Q1R+cHts8kyUJg==}
 
-  fast-uri@3.0.6:
-    resolution: {integrity: sha512-Atfo14OibSv5wAp4VWNsFYE1AchQRTv9cBGWET4pZWHzYshFSS9NQI6I57rdKn9croWVMbYFbLhJ+yJvmZIIHw==}
+  fast-uri@3.1.8:
+    resolution: {integrity: sha512-GZMtZUTNRpOVIECoXwLNZS5xUGE+mVNbTB8h/7Rwh2TFWcBQiPzTgyZi05BF9UMZKkLJv8XBRJTlU7zg8+ZfMg==}
 
   fast-wrap-ansi@0.2.2:
     resolution: {integrity: sha512-7F2Fl+TjRSenLqlU3UjSH0iyqopqoZIu7eZVpEirP2g1GtWa2G/ecEmBdgz31+Mxr+ELclgg6sokpSFIQiZ02Q==}
@@ -6935,10 +6935,10 @@ snapshots:
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
 
-  '@vitest/browser-webdriverio@5.0.0(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))(vitest@5.0.1)(webdriverio@9.22.0(supports-color@8.1.1))':
+  '@vitest/browser-webdriverio@5.0.0(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.0.1)(webdriverio@9.22.0(supports-color@8.1.1))':
     dependencies:
-      '@vitest/browser': 5.0.0(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))(vitest@5.0.1)
-      vitest: 5.0.1(@types/node@24.3.0)(@vitest/browser-webdriverio@5.0.0)(jsdom@30.0.1)(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))
+      '@vitest/browser': 5.0.0(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.0.1)
+      vitest: 5.0.1(@types/node@24.3.0)(@vitest/browser-webdriverio@5.0.0)(jsdom@30.0.1)(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
       webdriverio: 9.22.0(supports-color@8.1.1)
     transitivePeerDependencies:
       - bufferutil
@@ -6946,17 +6946,17 @@ snapshots:
       - utf-8-validate
       - vite
 
-  '@vitest/browser@5.0.0(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))(vitest@5.0.1)':
+  '@vitest/browser@5.0.0(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.0.1)':
     dependencies:
       '@blazediff/core': 1.10.0
-      '@vitest/mocker': 5.0.0(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))
+      '@vitest/mocker': 5.0.0(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
       '@vitest/ui': 5.0.0(vitest@5.0.1)
       '@vitest/utils': 5.0.0
       magic-string: 1.2.3
       pngjs: 7.0.0
       sirv: 3.0.2
       tinyrainbow: 3.1.1
-      vitest: 5.0.1(@types/node@24.3.0)(@vitest/browser-webdriverio@5.0.0)(jsdom@30.0.1)(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))
+      vitest: 5.0.1(@types/node@24.3.0)(@vitest/browser-webdriverio@5.0.0)(jsdom@30.0.1)(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
       ws: 8.21.3
     transitivePeerDependencies:
       - bufferutil
@@ -6964,23 +6964,23 @@ snapshots:
       - utf-8-validate
       - vite
 
-  '@vitest/mocker@5.0.0(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))':
+  '@vitest/mocker@5.0.0(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.0.0
       estree-walker: 3.0.3
       magic-string: 1.2.3
     optionalDependencies:
-      vite: 7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0)
+      vite: 7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1)
 
-  '@vitest/mocker@5.0.1(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))':
+  '@vitest/mocker@5.0.1(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.0.1
       estree-walker: 3.0.3
       magic-string: 1.2.3
     optionalDependencies:
-      vite: 7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0)
+      vite: 7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1)
 
   '@vitest/pretty-format@5.0.0':
     dependencies:
@@ -6998,7 +6998,7 @@ snapshots:
       pathe: 2.0.3
       sirv: 3.0.2
       tinyrainbow: 3.1.1
-      vitest: 5.0.1(@types/node@24.3.0)(@vitest/browser-webdriverio@5.0.0)(jsdom@30.0.1)(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))
+      vitest: 5.0.1(@types/node@24.3.0)(@vitest/browser-webdriverio@5.0.0)(jsdom@30.0.1)(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
   '@vitest/utils@5.0.0':
     dependencies:
@@ -7234,7 +7234,7 @@ snapshots:
   ajv@8.20.0:
     dependencies:
       fast-deep-equal: 3.1.3
-      fast-uri: 3.0.6
+      fast-uri: 3.1.8
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
@@ -8132,7 +8132,7 @@ snapshots:
     dependencies:
       fast-string-truncated-width: 3.0.3
 
-  fast-uri@3.0.6: {}
+  fast-uri@3.1.8: {}
 
   fast-wrap-ansi@0.2.2:
     dependencies:
@@ -10123,7 +10123,7 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0):
+  vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.7)
@@ -10138,12 +10138,12 @@ snapshots:
       lightningcss: 1.32.0
       terser: 5.51.2
       tsx: 4.23.15
-      yaml: 2.9.0
+      yaml: 2.9.1
 
-  vitest@5.0.1(@types/node@24.3.0)(@vitest/browser-webdriverio@5.0.0)(jsdom@30.0.1)(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0)):
+  vitest@5.0.1(@types/node@24.3.0)(@vitest/browser-webdriverio@5.0.0)(jsdom@30.0.1)(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1)):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.0.1(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))
+      '@vitest/mocker': 5.0.1(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
       chai: 6.2.2
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
@@ -10154,11 +10154,11 @@ snapshots:
       tinybench: 6.1.4
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
-      vite: 7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0)
+      vite: 7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.3.0
-      '@vitest/browser-webdriverio': 5.0.0(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.0))(vitest@5.0.1)(webdriverio@9.22.0(supports-color@8.1.1))
+      '@vitest/browser-webdriverio': 5.0.0(vite@7.1.3(@types/node@24.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.0.1)(webdriverio@9.22.0(supports-color@8.1.1))
       jsdom: 30.0.1
     transitivePeerDependencies:
       - msw
