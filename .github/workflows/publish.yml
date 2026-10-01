@@ -5,7 +5,7 @@ on:
 
 jobs:
   publish-firefox:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     name: Publish to AMO
 
     steps:
@@ -61,7 +61,7 @@ jobs:
           release_notes: ${{ steps.parse_firefox_release.outputs.release_notes }}
 
   publish-edge:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     name: Publish to Edge store
 
     steps:
@@ -110,7 +110,7 @@ jobs:
           product_id: ${{ secrets.EDGE_PRODUCT_ID }}
 
   publish-chrome:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     name: Publish to Chrome Web Store
 
     steps:
