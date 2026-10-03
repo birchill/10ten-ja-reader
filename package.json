@@ -118,7 +118,7 @@
     "ts-checker-rspack-plugin": "1.6.1",
     "tsx": "4.23.15",
     "typescript": "7.0.2",
-    "vitest": "5.0.2",
+    "vitest": "5.0.3",
     "web-ext": "10.7.0",
     "web-ext-plugin": "2.13.0",
     "webpack": "5.111.1",
