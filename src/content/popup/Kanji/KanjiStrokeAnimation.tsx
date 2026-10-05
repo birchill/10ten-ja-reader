@@ -1,6 +1,5 @@
 import type { RefObject } from 'preact';
 import {
-  type MutableRef,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -349,8 +348,8 @@ export function KanjiStrokeAnimation(props: Props) {
 }
 
 function useScrubber(
-  timelineSvg: RefObject<SVGSVGElement>,
-  currentAnimations: MutableRef<Array<Animation>>
+  timelineSvg: RefObject<SVGSVGElement | null>,
+  currentAnimations: RefObject<Array<Animation>>
 ): {
   applySeek: (animations: Array<Animation>) => void;
   onScrubberPointerDown: (event: PointerEvent) => void;

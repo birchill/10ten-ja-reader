@@ -67,7 +67,7 @@
     "@birchill/normal-jp": "1.8.0",
     "classname-variants": "1.7.1",
     "lru_map": "0.4.1",
-    "preact": "10.29.8",
+    "preact": "11.0.0",
     "superstruct": "2.0.2",
     "webextension-polyfill": "0.12.0"
   },

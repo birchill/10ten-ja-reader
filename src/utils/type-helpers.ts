@@ -1,3 +1,8 @@
+/** Omit properties from each member of a union, preserving its variants. */
+export type DistributiveOmit<T, K extends PropertyKey> = T extends unknown
+  ? Omit<T, K>
+  : never;
+
 export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 
 export type Split<
