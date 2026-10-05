@@ -22,7 +22,7 @@ export type Props = {
   index: number;
   kanjiReferences: Array<ReferenceAbbreviation>;
   onStartCopy?: StartCopyCallback;
-  playbackRef?: RefObject<KanjiStrokeAnimationHandle>;
+  playbackRef?: RefObject<KanjiStrokeAnimationHandle | null>;
   playbackShortcuts?: ReadonlyArray<string>;
   selectState: 'unselected' | 'selected' | 'flash';
   showComponents?: boolean;
@@ -82,7 +82,7 @@ export function KanjiEntry(props: Props) {
 type KanjiCharacterProps = {
   c: string;
   onClick?: (trigger: 'touch' | 'mouse') => void;
-  playbackRef?: RefObject<KanjiStrokeAnimationHandle>;
+  playbackRef?: RefObject<KanjiStrokeAnimationHandle | null>;
   playbackShortcuts?: ReadonlyArray<string>;
   st?: string;
 };
