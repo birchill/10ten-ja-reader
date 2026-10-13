@@ -154,8 +154,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0(@rspack/core@2.2.8)(react-cosmos@7.4.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@8.1.1))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)(webpack@5.111.1(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.29))
       semver-parser:
-        specifier: 4.2.1
-        version: 4.2.1
+        specifier: 4.2.2
+        version: 4.2.2
       source-map-loader:
         specifier: 5.0.0
         version: 5.0.0(webpack@5.111.1(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.29))
@@ -4665,8 +4665,8 @@ packages:
     resolution: {integrity: sha512-zJlMCZ0cAR5p/Y4oVpRoqioDMJcGxaXRrQ/4rP4WyR84vc5z/DolXdbvXeDpTwbtocDFr2rhPqHPErDCUtz2kA==}
     engines: {node: '>= 10.13.0'}
 
-  semver-parser@4.2.1:
-    resolution: {integrity: sha512-JZ2DLMzJ+jiNAl5+uc+gnXvo4K/pPtkpo0SuxFBB8dU1FRIviTwqv01sbqPlslMVGaJdsSpRVfb9vGUeAgHN0Q==}
+  semver-parser@4.2.2:
+    resolution: {integrity: sha512-ZvOv58J8vDKC9b+Y4QD3veCkaTbL1E/+1r4eoYfZJoM/0CQgliHYPzhlDZMZNoJMkuHDZLgv4Y53XOFQROfNFg==}
 
   semver@7.7.4:
     resolution: {integrity: sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==}
@@ -9689,7 +9689,7 @@ snapshots:
       ajv-formats: 3.0.1(ajv@8.20.0)
       ajv-keywords: 5.1.0(ajv@8.20.0)
 
-  semver-parser@4.2.1: {}
+  semver-parser@4.2.2: {}
 
   semver@7.7.4: {}
 
