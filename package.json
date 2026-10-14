@@ -111,7 +111,7 @@
     "react-cosmos": "7.4.1",
     "react-cosmos-plugin-boolean-input": "7.4.0",
     "react-cosmos-plugin-rspack": "3.0.0",
-    "semver-parser": "4.2.1",
+    "semver-parser": "4.2.2",
     "source-map-loader": "5.0.0",
     "tailwindcss": "4.3.3",
     "terser-webpack-plugin": "5.6.1",
