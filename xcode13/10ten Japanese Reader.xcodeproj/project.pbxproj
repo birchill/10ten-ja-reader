@@ -838,7 +838,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.28.0;
+				MARKETING_VERSION = 1.29.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.birchill.tenten-ja-reader.Extension";
 				PRODUCT_NAME = "10ten Japanese Reader Extension";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -868,7 +868,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.28.0;
+				MARKETING_VERSION = 1.29.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.birchill.tenten-ja-reader.Extension";
 				PRODUCT_NAME = "10ten Japanese Reader Extension";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -907,7 +907,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.28.0;
+				MARKETING_VERSION = 1.29.0;
 				OTHER_LDFLAGS = (
 					"-framework",
 					WebKit,
@@ -948,7 +948,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.28.0;
+				MARKETING_VERSION = 1.29.0;
 				OTHER_LDFLAGS = (
 					"-framework",
 					WebKit,
@@ -987,7 +987,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.28.0;
+				MARKETING_VERSION = 1.29.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.birchill.tenten-ja-reader.Extension";
 				PRODUCT_NAME = "10ten Japanese Reader Extension";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1021,7 +1021,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.28.0;
+				MARKETING_VERSION = 1.29.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.birchill.tenten-ja-reader.Extension";
 				PRODUCT_NAME = "10ten Japanese Reader Extension";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1059,7 +1059,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.28.0;
+				MARKETING_VERSION = 1.29.0;
 				OTHER_LDFLAGS = (
 					"-framework",
 					WebKit,
@@ -1100,7 +1100,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.28.0;
+				MARKETING_VERSION = 1.29.0;
 				OTHER_LDFLAGS = (
 					"-framework",
 					WebKit,
