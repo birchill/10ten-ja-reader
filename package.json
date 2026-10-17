@@ -101,7 +101,7 @@
     "oxlint": "1.87.0",
     "oxlint-tsgolint": "7.0.2004",
     "playwright": "1.64.0",
-    "postcss": "8.5.29",
+    "postcss": "8.5.30",
     "postcss-load-config": "6.0.1",
     "postcss-loader": "8.2.1",
     "prettier": "3.9.10",
