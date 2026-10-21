@@ -297,6 +297,15 @@ After publishing the release, it should automatically be uploaded to AMO
 (Firefox), the Edge Store, and the Chrome Web Store but we need to manually
 upload it to the Thunderbird add-ons site.
 
+If publishing a GitHub release does not trigger the
+[Publish workflow](https://github.com/birchill/10ten-ja-reader/actions/workflows/publish.yml),
+open that workflow in Actions, choose **Run workflow**, select `main`, and enter
+its existing release tag (e.g. `v1.29.0`). The release must already be published
+and have its release notes and assets attached. This runs all store publishing
+jobs using the selected branch's workflow and the specified release's assets.
+If a Publish run started but only some jobs failed, use **Re-run failed jobs**
+on that run to retry those stores.
+
 ### Releasing on Safari
 
 The release process will automatically upload the Mac and iOS packages to

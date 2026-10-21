@@ -2,9 +2,36 @@ name: Publish
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing published release tag (e.g. v1.29.0)'
+        required: true
+        type: string
 
 jobs:
+  resolve-release:
+    name: Resolve release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      release_id: ${{ steps.release.outputs.release_id }}
+
+    steps:
+      - name: Get published release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ inputs.tag || github.event.release.tag_name }}
+        run: |
+          release_id=$(gh api "repos/${GH_REPO}/releases/tags/${RELEASE_TAG}" \
+            --jq 'if .draft then error("Cannot publish a draft release") else .id end')
+          echo "release_id=$release_id" >> "$GITHUB_OUTPUT"
+
   publish-firefox:
+    needs: resolve-release
     runs-on: ubuntu-latest
     name: Publish to AMO
 
@@ -32,19 +59,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          release_id: ${{ github.event.release.id }}
+          release_id: ${{ needs.resolve-release.outputs.release_id }}
           target: Firefox
 
       - name: Download Firefox binary
         uses: robinraju/release-downloader@v1.13
         with:
-          releaseId: ${{ github.event.release.id }}
+          releaseId: ${{ needs.resolve-release.outputs.release_id }}
           fileName: ${{ steps.parse_firefox_release.outputs.addon_asset_name }}
 
       - name: Download source archive
         uses: robinraju/release-downloader@v1.13
         with:
-          releaseId: ${{ github.event.release.id }}
+          releaseId: ${{ needs.resolve-release.outputs.release_id }}
           fileName: ${{ steps.parse_firefox_release.outputs.src_asset_name }}
 
       - name: Publish
@@ -61,6 +88,7 @@ jobs:
           release_notes: ${{ steps.parse_firefox_release.outputs.release_notes }}
 
   publish-edge:
+    needs: resolve-release
     runs-on: ubuntu-latest
     name: Publish to Edge store
 
@@ -88,14 +116,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          release_id: ${{ github.event.release.id }}
+          release_id: ${{ needs.resolve-release.outputs.release_id }}
           target: Edge
 
       - name: Download Edge binary
         uses: robinraju/release-downloader@v1.13
         if: ${{ !steps.parse_edge_release.outputs.skip }}
         with:
-          releaseId: ${{ github.event.release.id }}
+          releaseId: ${{ needs.resolve-release.outputs.release_id }}
           fileName: ${{ steps.parse_edge_release.outputs.addon_asset_name }}
 
       - name: Publish
@@ -110,6 +138,7 @@ jobs:
           product_id: ${{ secrets.EDGE_PRODUCT_ID }}
 
   publish-chrome:
+    needs: resolve-release
     runs-on: ubuntu-latest
     name: Publish to Chrome Web Store
 
@@ -137,14 +166,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          release_id: ${{ github.event.release.id }}
+          release_id: ${{ needs.resolve-release.outputs.release_id }}
           target: Chrome
 
       - name: Download Chrome binary
         uses: robinraju/release-downloader@v1.13
         if: ${{ !steps.parse_chrome_release.outputs.skip }}
         with:
-          releaseId: ${{ github.event.release.id }}
+          releaseId: ${{ needs.resolve-release.outputs.release_id }}
           fileName: ${{ steps.parse_chrome_release.outputs.addon_asset_name }}
 
       - name: Publish
