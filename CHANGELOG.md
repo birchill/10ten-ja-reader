@@ -6,6 +6,17 @@ The format is based roughly on [Keep a Changelog](https://keepachangelog.com/en/
 This project does _not_ adhere to semantic versioning—it's a consumer
 app.
 
+## 1.29.0
+
+- Added an experimental, off-by-default setting (Settings → Audio) that shows a
+  button to play an entry's readings as audio, with a karaoke-style overlay
+  highlighting each mora as it's spoken.
+- (Safari) Keep 10ten enabled when switching tabs and websites.
+- Press <kbd>p</kbd> to play or stop the first entry's readings in the Words and
+  Names tabs, or its stroke animation in the Kanji tab. Reading playback
+  requires enabling audio in Settings → Audio.
+- Offer to re-download dictionary data when a dictionary update detects corrupted storage, preserving the user's settings.
+
 ## [1.28.0] - 2026-09-02
 
 - Avoid looking up text when the cursor is far off the end of the line ([#2813](https://github.com/birchill/10ten-ja-reader/issues/2813)).
