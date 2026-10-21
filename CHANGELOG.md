@@ -6,7 +6,7 @@ The format is based roughly on [Keep a Changelog](https://keepachangelog.com/en/
 This project does _not_ adhere to semantic versioning—it's a consumer
 app.
 
-## 1.29.0
+## [1.29.0] - 2026-10-21
 
 - Added an experimental, off-by-default setting (Settings → Audio) that shows a
   button to play an entry's readings as audio, with a karaoke-style overlay
@@ -1361,6 +1361,7 @@ app.
 
 - Initial version (yes, it took me four attempts to publish).
 
+[1.29.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.28.0...v1.29.0
 [1.28.0]: https://github.com/birchill/10ten-ja-reader/compare/v1.27.2...v1.28.0
 [1.27.2]: https://github.com/birchill/10ten-ja-reader/compare/v1.27.1...v1.27.2
 [1.27.1]: https://github.com/birchill/10ten-ja-reader/compare/v1.27.0...v1.27.1
