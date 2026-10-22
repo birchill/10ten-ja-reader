@@ -27,7 +27,6 @@ type Props = {
   onChangeShowRomaji: (value: boolean) => void;
   onChangeShowWaniKaniLevel: (value: boolean) => void;
   onChangeTheme: (theme: string) => void;
-  playReadings: boolean;
   posDisplay: PartOfSpeechDisplay;
   showBunproDecks: boolean;
   showDefinitions: boolean;
