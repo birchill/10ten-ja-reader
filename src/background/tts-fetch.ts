@@ -136,7 +136,7 @@ async function fetchAttempt(
       }
       // A 5xx is a fault that rarely clears within the budget.
       if (response.status >= 500) {
-        void Bugsnag.notify('TTS clip fetch failed', {
+        void Bugsnag.notify(new Error('TTS clip fetch failed'), {
           severity: 'warning',
           metadata: { status: response.status },
         });
@@ -189,10 +189,10 @@ function notifyThrottledOnce(): void {
   }
   reportedThrottling = true;
 
-  void Bugsnag.notify('TTS clip fetch still throttled after retries', {
-    severity: 'warning',
-    metadata: { attempts: MAX_FETCH_ATTEMPTS },
-  });
+  void Bugsnag.notify(
+    new Error('TTS clip fetch still throttled after retries'),
+    { severity: 'warning', metadata: { attempts: MAX_FETCH_ATTEMPTS } }
+  );
 }
 
 // Jitter keeps a client's concurrent fetches from retrying in lockstep.
@@ -228,7 +228,7 @@ function parseMoraTimingHeaders(
   const rawDuration = response.headers.get('x-amz-meta-audio-duration');
 
   if (!rawTimings || !rawDuration) {
-    notifyTimingAnomalyOnce('TTS mora-timing headers missing', {
+    notifyTimingAnomalyOnce(new Error('TTS mora-timing headers missing'), {
       rawTimings,
       rawDuration,
     });
@@ -249,7 +249,7 @@ function parseMoraTimingHeaders(
         return { charTimingsMs, totalDurationMs };
       }
     }
-    notifyTimingAnomalyOnce('TTS mora-timing headers invalid', {
+    notifyTimingAnomalyOnce(new Error('TTS mora-timing headers invalid'), {
       rawTimings,
       rawDuration,
       expectedCount,
@@ -267,10 +267,10 @@ function parseMoraTimingHeaders(
 const reportedTimingAnomalies = new Set<string>();
 
 function notifyTimingAnomalyOnce(
-  error: string | Error,
+  error: Error,
   metadata: Record<string, unknown>
 ): void {
-  const anomaly = `${typeof error === 'string' ? error : error.message}|${JSON.stringify(metadata)}`;
+  const anomaly = `${error.message}|${JSON.stringify(metadata)}`;
   if (
     reportedTimingAnomalies.has(anomaly) ||
     reportedTimingAnomalies.size >= MAX_TIMING_ANOMALY_REPORTS
@@ -331,10 +331,10 @@ function declaresOversizedClip(contentLength: string | null): boolean {
 }
 
 function notifyOversizedClip(metadata: Record<string, unknown>): void {
-  void Bugsnag.notify(`TTS clip exceeds the ${MAX_CLIP_BYTES}-byte cap`, {
-    severity: 'warning',
-    metadata,
-  });
+  void Bugsnag.notify(
+    new Error(`TTS clip exceeds the ${MAX_CLIP_BYTES}-byte cap`),
+    { severity: 'warning', metadata }
+  );
 }
 
 function encodeBase64(buffer: ArrayBuffer): string {
