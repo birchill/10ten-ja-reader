@@ -85,8 +85,8 @@ importers:
         specifier: 7.1.5
         version: 7.1.5(@rspack/core@2.2.9)(webpack@5.111.1(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.30))
       fake-indexeddb:
-        specifier: 6.2.5
-        version: 6.2.5
+        specifier: 6.2.6
+        version: 6.2.6
       fast-glob:
         specifier: 3.3.3
         version: 3.3.3
@@ -2850,8 +2850,8 @@ packages:
     engines: {node: '>= 10.17.0'}
     hasBin: true
 
-  fake-indexeddb@6.2.5:
-    resolution: {integrity: sha512-CGnyrvbhPlWYMngksqrSSUT1BAVP49dZocrHuK0SvtR0D5TMs5wP0o3j7jexDJW01KSadjBp1M/71o/KR3nD1w==}
+  fake-indexeddb@6.2.6:
+    resolution: {integrity: sha512-ihhmr0KoET51jT8R4YhbUYuLLvr1qqO6INISygtN16i8loR8kAxtAUr4+EKHTSMjL+lggaAn4OC7DRqzrNgnuQ==}
     engines: {node: '>=18'}
 
   fast-content-type-parse@3.0.0:
@@ -7827,7 +7827,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  fake-indexeddb@6.2.5: {}
+  fake-indexeddb@6.2.6: {}
 
   fast-content-type-parse@3.0.0: {}
 
