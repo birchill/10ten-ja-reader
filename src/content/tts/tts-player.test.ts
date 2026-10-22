@@ -423,8 +423,8 @@ describe('TtsPlayer', () => {
     expect(player.state).toEqual({ kind: 'idle' });
   });
 
-  it('skips a reading whose fetch never settles', async () => {
-    const { player, playbacks } = makePlayer(readings, {
+  it('skips a reading whose fetch never settles and frees its slot', async () => {
+    const { player, fetches, playbacks } = makePlayer(readings, {
       deferFetch: true,
       fetchIgnoresAbort: true,
     });
@@ -434,6 +434,8 @@ describe('TtsPlayer', () => {
 
     expect(playbacks).toHaveLength(0);
     expect(player.state).toEqual({ kind: 'loading', readingIndex: 1 });
+    expect(fetches).toHaveLength(3);
+    expect(fetches[2].request).toBe(readings[2]);
   });
 
   it('keeps a started clip playing and gives the next clip a fresh deadline', async () => {
