@@ -38,59 +38,7 @@ export async function fetchTtsClip(
 
   try {
     const url = `${TTS_BASE_URL}/${buildTtsFilename(request)}`;
-
-    let response: Response;
-    try {
-      response = await rejectWhenAborted(
-        fetch(url, { signal: controller.signal }),
-        controller.signal
-      );
-    } catch (e) {
-      if (isNetworkFailure(e)) {
-        return { ok: false };
-      }
-      throw e;
-    }
-
-    if (!response.ok) {
-      controller.abort();
-      if (response.status >= 500) {
-        void Bugsnag.notify('TTS clip fetch failed', {
-          severity: 'warning',
-          metadata: { status: response.status },
-        });
-      }
-      return { ok: false };
-    }
-
-    const moraTiming = parseMoraTimingHeaders(response, request.reading);
-
-    const contentLength = response.headers.get('content-length');
-    if (declaresOversizedClip(contentLength)) {
-      controller.abort();
-      notifyOversizedClip({ contentLength });
-      return { ok: false };
-    }
-
-    let buffer: ArrayBuffer;
-    try {
-      buffer = await rejectWhenAborted(
-        response.arrayBuffer(),
-        controller.signal
-      );
-    } catch (e) {
-      if (isNetworkFailure(e)) {
-        return { ok: false };
-      }
-      throw e;
-    }
-
-    if (buffer.byteLength > MAX_CLIP_BYTES) {
-      notifyOversizedClip({ byteLength: buffer.byteLength, contentLength });
-      return { ok: false };
-    }
-
-    return { ok: true, audioBase64: encodeBase64(buffer), moraTiming };
+    return await fetchAttempt(url, request.reading, controller.signal);
   } catch (e) {
     if (isAbortError(e)) {
       return { ok: false };
@@ -120,6 +68,78 @@ export function cancelTtsFetch(key: TtsFetchKey): void {
     if (oldestKey !== undefined) {
       cancelledKeys.delete(oldestKey);
     }
+  }
+}
+
+async function fetchAttempt(
+  url: string,
+  reading: string,
+  clipSignal: AbortSignal
+): Promise<TtsFetchResult> {
+  // A bad response aborts only this attempt's request. The clip's own signal
+  // belongs to the caller, who may still try again.
+  const controller = new AbortController();
+  const abortAttempt = () => controller.abort();
+  clipSignal.addEventListener('abort', abortAttempt, { once: true });
+  if (clipSignal.aborted) {
+    abortAttempt();
+  }
+
+  try {
+    let response: Response;
+    try {
+      response = await rejectWhenAborted(
+        fetch(url, { signal: controller.signal }),
+        controller.signal
+      );
+    } catch (e) {
+      if (isNetworkFailure(e)) {
+        return { ok: false };
+      }
+      throw e;
+    }
+
+    if (!response.ok) {
+      controller.abort();
+      if (response.status >= 500) {
+        void Bugsnag.notify('TTS clip fetch failed', {
+          severity: 'warning',
+          metadata: { status: response.status },
+        });
+      }
+      return { ok: false };
+    }
+
+    const moraTiming = parseMoraTimingHeaders(response, reading);
+
+    const contentLength = response.headers.get('content-length');
+    if (declaresOversizedClip(contentLength)) {
+      controller.abort();
+      notifyOversizedClip({ contentLength });
+      return { ok: false };
+    }
+
+    let buffer: ArrayBuffer;
+    try {
+      buffer = await rejectWhenAborted(
+        response.arrayBuffer(),
+        controller.signal
+      );
+    } catch (e) {
+      if (isNetworkFailure(e)) {
+        return { ok: false };
+      }
+      throw e;
+    }
+
+    if (buffer.byteLength > MAX_CLIP_BYTES) {
+      notifyOversizedClip({ byteLength: buffer.byteLength, contentLength });
+      return { ok: false };
+    }
+
+    return { ok: true, audioBase64: encodeBase64(buffer), moraTiming };
+  } finally {
+    clipSignal.removeEventListener('abort', abortAttempt);
   }
 }
 
