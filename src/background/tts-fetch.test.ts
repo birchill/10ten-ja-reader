@@ -68,7 +68,7 @@ describe('fetchTtsClip', () => {
       audioBase64: Buffer.from(bytes).toString('base64'),
     });
     expect(notifySpy).toHaveBeenCalledWith(
-      expect.anything(),
+      expect.any(Error),
       expect.objectContaining({ severity: 'warning' })
     );
   });
@@ -92,7 +92,7 @@ describe('fetchTtsClip', () => {
       audioBase64: Buffer.from(bytes).toString('base64'),
     });
     expect(notifySpy).toHaveBeenCalledWith(
-      expect.anything(),
+      expect.any(Error),
       expect.objectContaining({
         severity: 'warning',
         metadata: expect.objectContaining({ expectedCount: 2 }),
@@ -159,7 +159,7 @@ describe('fetchTtsClip', () => {
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(call.signal?.aborted).toBe(true);
     expect(notifySpy).toHaveBeenCalledWith(
-      expect.anything(),
+      expect.any(Error),
       expect.objectContaining({
         severity: 'warning',
         metadata: expect.objectContaining({ status: 500 }),
@@ -249,8 +249,11 @@ describe('fetchTtsClip', () => {
 
     expect(result).toEqual({ ok: false });
     expect(notifySpy).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({ severity: 'warning' })
+      expect.any(Error),
+      expect.objectContaining({
+        severity: 'warning',
+        metadata: expect.objectContaining({ byteLength: 2 * 1024 * 1024 + 1 }),
+      })
     );
   });
 
@@ -278,7 +281,7 @@ describe('fetchTtsClip', () => {
         audioBase64: Buffer.from(bytes).toString('base64'),
       });
       expect(notifySpy).toHaveBeenCalledWith(
-        expect.anything(),
+        expect.any(Error),
         expect.objectContaining({ severity: 'warning' })
       );
     }
@@ -312,7 +315,7 @@ describe('fetchTtsClip', () => {
       });
       expect(notifySpy).toHaveBeenCalledTimes(1);
       expect(notifySpy).toHaveBeenCalledWith(
-        expect.anything(),
+        expect.any(Error),
         expect.objectContaining({ severity: 'warning' })
       );
     }
@@ -413,7 +416,7 @@ describe('fetchTtsClip retries', () => {
     expect(fetch).toHaveBeenCalledTimes(4);
     expect(notifySpy).toHaveBeenCalledTimes(1);
     expect(notifySpy).toHaveBeenCalledWith(
-      expect.anything(),
+      expect.any(Error),
       expect.objectContaining({
         severity: 'warning',
         metadata: { attempts: 4 },
