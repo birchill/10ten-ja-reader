@@ -88,7 +88,7 @@
     "@vitest/browser-webdriverio": "5.0.0",
     "archiver": "8.0.0",
     "css-loader": "7.1.5",
-    "fake-indexeddb": "6.2.5",
+    "fake-indexeddb": "6.2.6",
     "fast-glob": "3.3.3",
     "fetch-mock": "12.6.0",
     "file-loader": "6.2.0",
