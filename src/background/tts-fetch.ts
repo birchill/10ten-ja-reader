@@ -8,6 +8,9 @@ import { rejectWhenAborted } from '../utils/reject-when-aborted';
 const TTS_BASE_URL = 'https://data.10ten.life/audio';
 const CLIP_FETCH_BUDGET_MS = 10_000;
 const MAX_CLIP_BYTES = 2 * 1024 * 1024;
+const MAX_FETCH_ATTEMPTS = 4;
+// The audio API usually has capacity again within about 250ms.
+const RETRY_BASE_DELAY_MS = 250;
 const MAX_CANCELLED_KEYS = 50;
 const MAX_TIMING_ANOMALY_REPORTS = 32;
 
@@ -16,6 +19,8 @@ export type TtsFetchResult =
   | { ok: false };
 
 export type TtsFetchKey = { tabId: number; frameId: number; requestId: string };
+
+type AttemptResult = TtsFetchResult | { ok: false; retry: true };
 
 const pendingFetches = new Map<string, AbortController>();
 // Remember cancels that arrive before their matching fetch message.
@@ -34,11 +39,31 @@ export async function fetchTtsClip(
 
   const controller = new AbortController();
   pendingFetches.set(mapKey, controller);
+  // Every attempt, and every wait between them, shares this one budget.
+  const deadlineAt = Date.now() + CLIP_FETCH_BUDGET_MS;
   const deadline = setTimeout(() => controller.abort(), CLIP_FETCH_BUDGET_MS);
 
   try {
     const url = `${TTS_BASE_URL}/${buildTtsFilename(request)}`;
-    return await fetchAttempt(url, request.reading, controller.signal);
+    for (let attempt = 1; ; attempt++) {
+      const result = await fetchAttempt(
+        url,
+        request.reading,
+        controller.signal
+      );
+      if (!('retry' in result)) {
+        return result;
+      }
+
+      const delayMs = retryDelayMs(attempt);
+      if (
+        attempt === MAX_FETCH_ATTEMPTS ||
+        Date.now() + delayMs >= deadlineAt
+      ) {
+        return { ok: false };
+      }
+      await wait(delayMs, controller.signal);
+    }
   } catch (e) {
     if (isAbortError(e)) {
       return { ok: false };
@@ -75,7 +100,7 @@ async function fetchAttempt(
   url: string,
   reading: string,
   clipSignal: AbortSignal
-): Promise<TtsFetchResult> {
+): Promise<AttemptResult> {
   // A bad response aborts only this attempt's request. The clip's own signal
   // belongs to the caller, who may still try again.
   const controller = new AbortController();
@@ -94,13 +119,18 @@ async function fetchAttempt(
       );
     } catch (e) {
       if (isNetworkFailure(e)) {
-        return { ok: false };
+        return { ok: false, retry: true };
       }
       throw e;
     }
 
     if (!response.ok) {
       controller.abort();
+      // A 429 means the audio API is briefly busy, so try again.
+      if (response.status === 429) {
+        return { ok: false, retry: true };
+      }
+      // A 5xx is a fault that rarely clears within the budget.
       if (response.status >= 500) {
         void Bugsnag.notify('TTS clip fetch failed', {
           severity: 'warning',
@@ -127,7 +157,7 @@ async function fetchAttempt(
       );
     } catch (e) {
       if (isNetworkFailure(e)) {
-        return { ok: false };
+        return { ok: false, retry: true };
       }
       throw e;
     }
@@ -141,6 +171,20 @@ async function fetchAttempt(
   } finally {
     clipSignal.removeEventListener('abort', abortAttempt);
   }
+}
+
+// Jitter keeps a client's concurrent fetches from retrying in lockstep.
+function retryDelayMs(attempt: number): number {
+  const baseMs = RETRY_BASE_DELAY_MS * 2 ** (attempt - 1);
+  return baseMs + Math.random() * (baseMs / 2);
+}
+
+function wait(ms: number, signal: AbortSignal): Promise<void> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const elapsed = new Promise<void>((resolve) => {
+    timer = setTimeout(resolve, ms);
+  });
+  return rejectWhenAborted(elapsed, signal, () => clearTimeout(timer));
 }
 
 function keyFor(key: TtsFetchKey): string {

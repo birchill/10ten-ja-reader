@@ -140,6 +140,7 @@ describe('fetchTtsClip', () => {
     const result = await fetchTtsClip(key, request);
 
     expect(result).toEqual({ ok: false });
+    expect(fetch).toHaveBeenCalledTimes(1);
     expect(notifySpy).not.toHaveBeenCalled();
   });
 
@@ -155,6 +156,7 @@ describe('fetchTtsClip', () => {
     const result = await fetchTtsClip(key, request);
 
     expect(result).toEqual({ ok: false });
+    expect(fetch).toHaveBeenCalledTimes(1);
     expect(call.signal?.aborted).toBe(true);
     expect(notifySpy).toHaveBeenCalledWith(
       expect.anything(),
@@ -179,18 +181,20 @@ describe('fetchTtsClip', () => {
     { engine: 'Chrome', message: 'Failed to fetch' },
     { engine: 'Safari', message: 'Load failed' },
   ])(
-    'skips a TypeError from fetch() silently, regardless of its message ($engine wording)',
+    'retries a TypeError from fetch(), then gives up silently, regardless of its message ($engine wording)',
     async ({ message }) => {
       vi.mocked(fetch).mockRejectedValue(new TypeError(message));
 
-      const result = await fetchTtsClip(key, request);
+      const pending = fetchTtsClip(key, request);
+      await vi.advanceTimersByTimeAsync(10_000);
 
-      expect(result).toEqual({ ok: false });
+      await expect(pending).resolves.toEqual({ ok: false });
+      expect(fetch).toHaveBeenCalledTimes(4);
       expect(notifySpy).not.toHaveBeenCalled();
     }
   );
 
-  it('skips a TypeError from the body read silently, just like one from fetch() itself', async () => {
+  it('retries a TypeError from the body read, then gives up silently, just like one from fetch() itself', async () => {
     mockFetch(
       makeResponse({
         headers: {
@@ -201,9 +205,11 @@ describe('fetchTtsClip', () => {
       })
     );
 
-    const result = await fetchTtsClip(key, request);
+    const pending = fetchTtsClip(key, request);
+    await vi.advanceTimersByTimeAsync(10_000);
 
-    expect(result).toEqual({ ok: false });
+    await expect(pending).resolves.toEqual({ ok: false });
+    expect(fetch).toHaveBeenCalledTimes(4);
     expect(notifySpy).not.toHaveBeenCalled();
   });
 
@@ -345,6 +351,110 @@ describe('fetchTtsClip', () => {
   });
 });
 
+describe('fetchTtsClip retries', () => {
+  const throttled = () => makeResponse({ ok: false, status: 429 });
+  const success = () =>
+    makeResponse({
+      headers: {
+        'x-amz-meta-mora-timings': '[0,100]',
+        'x-amz-meta-audio-duration': '300',
+      },
+      buffer: new Uint8Array([5, 6]).buffer,
+    });
+
+  it.each([
+    { failure: 'a 429', first: throttled },
+    { failure: 'a TypeError from fetch()', first: () => new TypeError('x') },
+  ])(
+    'returns the clip when the attempt after $failure succeeds',
+    async ({ first }) => {
+      const call = mockFetchSequence([first(), success()]);
+
+      const pending = fetchTtsClip(key, request);
+      await vi.advanceTimersByTimeAsync(10_000);
+
+      await expect(pending).resolves.toEqual({
+        ok: true,
+        audioBase64: Buffer.from([5, 6]).toString('base64'),
+        moraTiming: { charTimingsMs: [0, 100], totalDurationMs: 300 },
+      });
+      expect(call.signals).toHaveLength(2);
+      expect(call.signals[1]?.aborted).toBe(false);
+    }
+  );
+
+  it('waits 250ms, 500ms, then 1s between attempts, plus up to half again as jitter', async () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    mockFetchSequence([throttled()]);
+
+    void fetchTtsClip(key, request);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(fetch).toHaveBeenCalledTimes(1);
+
+    for (const [waitMs, calls] of [
+      [312.5, 2],
+      [625, 3],
+      [1250, 4],
+    ]) {
+      await vi.advanceTimersByTimeAsync(waitMs - 1);
+      expect(fetch).toHaveBeenCalledTimes(calls - 1);
+      await vi.advanceTimersByTimeAsync(1);
+      expect(fetch).toHaveBeenCalledTimes(calls);
+    }
+  });
+
+  it('gives up after four attempts', async () => {
+    mockFetchSequence([throttled()]);
+
+    const pending = fetchTtsClip(key, request);
+    await vi.advanceTimersByTimeAsync(10_000);
+
+    await expect(pending).resolves.toEqual({ ok: false });
+    expect(fetch).toHaveBeenCalledTimes(4);
+  });
+
+  it('stops at once, without another attempt, when cancelled between attempts', async () => {
+    mockFetchSequence([throttled(), success()]);
+
+    const pending = fetchTtsClip(key, request);
+    await vi.advanceTimersByTimeAsync(100);
+    cancelTtsFetch(key);
+
+    await expect(pending).resolves.toEqual({ ok: false });
+    await vi.advanceTimersByTimeAsync(10_000);
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('aborts a retry attempt that is cancelled while in flight', async () => {
+    const call = mockFetchSequence([throttled(), 'hang']);
+
+    const pending = fetchTtsClip(key, request);
+    await vi.advanceTimersByTimeAsync(1_000);
+    expect(call.signals).toHaveLength(2);
+    cancelTtsFetch(key);
+
+    await expect(pending).resolves.toEqual({ ok: false });
+    expect(call.signals[1]?.aborted).toBe(true);
+  });
+
+  it('gives up instead of waiting past the 10s budget', async () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+    const slowThrottle = new Promise<Response>((resolve) => {
+      setTimeout(() => resolve(throttled()), 9_800);
+    });
+    vi.mocked(fetch)
+      .mockReturnValueOnce(slowThrottle)
+      .mockResolvedValue(success());
+
+    let result: TtsFetch.TtsFetchResult | undefined;
+    void fetchTtsClip(key, request).then((r) => (result = r));
+    await vi.advanceTimersByTimeAsync(9_800);
+
+    expect(result).toEqual({ ok: false });
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+});
+
 function makeResponse(
   init: {
     ok?: boolean;
@@ -374,6 +484,20 @@ function mockFetch(response?: Response) {
     call.signal = (init as RequestInit | undefined)?.signal ?? undefined;
     call.signals.push(call.signal);
     return response ? Promise.resolve(response) : neverSettles();
+  });
+  return call;
+}
+
+// Answers each fetch with the next step, then repeats the last step.
+function mockFetchSequence(steps: Array<Response | Error | 'hang'>) {
+  const call: { signals: Array<AbortSignal | undefined> } = { signals: [] };
+  vi.mocked(fetch).mockImplementation((_url, init) => {
+    call.signals.push((init as RequestInit | undefined)?.signal ?? undefined);
+    const step = steps[Math.min(call.signals.length, steps.length) - 1];
+    if (step === 'hang') {
+      return neverSettles();
+    }
+    return step instanceof Error ? Promise.reject(step) : Promise.resolve(step);
   });
   return call;
 }
