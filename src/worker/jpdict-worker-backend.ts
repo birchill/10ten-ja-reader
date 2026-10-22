@@ -15,7 +15,7 @@ export class JpdictWorkerBackend implements JpdictBackend {
     this.#worker = new Worker('./10ten-ja-jpdict.js');
     this.#worker.onmessageerror = (event: MessageEvent) => {
       console.error(`Worker error: ${JSON.stringify(event)}`);
-      void Bugsnag.notify(`Worker error: ${JSON.stringify(event)}`);
+      void Bugsnag.notify(new Error(`Worker error: ${JSON.stringify(event)}`));
     };
 
     this.#worker.onmessage = async (event: MessageEvent) => {
