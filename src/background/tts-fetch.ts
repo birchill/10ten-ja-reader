@@ -20,7 +20,8 @@ export type TtsFetchResult =
 
 export type TtsFetchKey = { tabId: number; frameId: number; requestId: string };
 
-type AttemptResult = TtsFetchResult | { ok: false; retry: true };
+type AttemptResult =
+  TtsFetchResult | { ok: false; retry: 'throttled' | 'network' };
 
 const pendingFetches = new Map<string, AbortController>();
 // Remember cancels that arrive before their matching fetch message.
@@ -55,11 +56,14 @@ export async function fetchTtsClip(
         return result;
       }
 
+      if (attempt === MAX_FETCH_ATTEMPTS) {
+        if (result.retry === 'throttled') {
+          notifyThrottledOnce();
+        }
+        return { ok: false };
+      }
       const delayMs = retryDelayMs(attempt);
-      if (
-        attempt === MAX_FETCH_ATTEMPTS ||
-        Date.now() + delayMs >= deadlineAt
-      ) {
+      if (Date.now() + delayMs >= deadlineAt) {
         return { ok: false };
       }
       await wait(delayMs, controller.signal);
@@ -119,7 +123,7 @@ async function fetchAttempt(
       );
     } catch (e) {
       if (isNetworkFailure(e)) {
-        return { ok: false, retry: true };
+        return { ok: false, retry: 'network' };
       }
       throw e;
     }
@@ -128,7 +132,7 @@ async function fetchAttempt(
       controller.abort();
       // A 429 means the audio API is briefly busy, so try again.
       if (response.status === 429) {
-        return { ok: false, retry: true };
+        return { ok: false, retry: 'throttled' };
       }
       // A 5xx is a fault that rarely clears within the budget.
       if (response.status >= 500) {
@@ -157,7 +161,7 @@ async function fetchAttempt(
       );
     } catch (e) {
       if (isNetworkFailure(e)) {
-        return { ok: false, retry: true };
+        return { ok: false, retry: 'network' };
       }
       throw e;
     }
@@ -171,6 +175,24 @@ async function fetchAttempt(
   } finally {
     clipSignal.removeEventListener('abort', abortAttempt);
   }
+}
+
+let reportedThrottling = false;
+
+// Four 429s in a row means the audio API lacks capacity. Report this only
+// once until the background script restarts, so a burst of throttled clips
+// sends one report. Network failures never report: they usually mean the user
+// is offline.
+function notifyThrottledOnce(): void {
+  if (reportedThrottling) {
+    return;
+  }
+  reportedThrottling = true;
+
+  void Bugsnag.notify('TTS clip fetch still throttled after retries', {
+    severity: 'warning',
+    metadata: { attempts: MAX_FETCH_ATTEMPTS },
+  });
 }
 
 // Jitter keeps a client's concurrent fetches from retrying in lockstep.

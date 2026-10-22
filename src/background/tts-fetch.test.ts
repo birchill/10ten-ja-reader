@@ -403,7 +403,7 @@ describe('fetchTtsClip retries', () => {
     }
   });
 
-  it('gives up after four attempts', async () => {
+  it('warns after four throttled attempts, but not again when a later clip also runs out', async () => {
     mockFetchSequence([throttled()]);
 
     const pending = fetchTtsClip(key, request);
@@ -411,6 +411,21 @@ describe('fetchTtsClip retries', () => {
 
     await expect(pending).resolves.toEqual({ ok: false });
     expect(fetch).toHaveBeenCalledTimes(4);
+    expect(notifySpy).toHaveBeenCalledTimes(1);
+    expect(notifySpy).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        severity: 'warning',
+        metadata: { attempts: 4 },
+      })
+    );
+
+    const again = fetchTtsClip({ ...key, requestId: 'clip-2' }, request);
+    await vi.advanceTimersByTimeAsync(10_000);
+
+    await expect(again).resolves.toEqual({ ok: false });
+    expect(fetch).toHaveBeenCalledTimes(8);
+    expect(notifySpy).toHaveBeenCalledTimes(1);
   });
 
   it('stops at once, without another attempt, when cancelled between attempts', async () => {
@@ -452,6 +467,7 @@ describe('fetchTtsClip retries', () => {
 
     expect(result).toEqual({ ok: false });
     expect(fetch).toHaveBeenCalledTimes(1);
+    expect(notifySpy).not.toHaveBeenCalled();
   });
 });
 
