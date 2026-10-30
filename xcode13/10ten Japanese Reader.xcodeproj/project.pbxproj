@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A18D3B042E6F000100000001 /* ipad-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B012E6F000100000001 /* ipad-6-permission.png */; };
+		A18D3B052E6F000100000001 /* iphone-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B022E6F000100000001 /* iphone-6-permission.png */; };
+		A18D3B062E6F000100000001 /* iphone-pro-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B032E6F000100000001 /* iphone-pro-6-permission.png */; };
+		A18D3B072E6F000100000001 /* ipad-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B012E6F000100000001 /* ipad-6-permission.png */; };
+		A18D3B082E6F000100000001 /* iphone-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B022E6F000100000001 /* iphone-6-permission.png */; };
+		A18D3B092E6F000100000001 /* iphone-pro-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B032E6F000100000001 /* iphone-pro-6-permission.png */; };
 		D306F4422692C553002FA4FD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D306F4412692C553002FA4FD /* AppDelegate.swift */; };
 		D306F4442692C553002FA4FD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D306F4432692C553002FA4FD /* SceneDelegate.swift */; };
 		D306F4472692C553002FA4FD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D306F4452692C553002FA4FD /* LaunchScreen.storyboard */; };
@@ -93,12 +99,6 @@
 		D3BBFED926FCA81B0059B886 /* iphone-pro-5.png in Resources */ = {isa = PBXBuildFile; fileRef = D3BBFEB026FCA81B0059B886 /* iphone-pro-5.png */; };
 		D3BBFEDA26FCA81B0059B886 /* iphone-pro-4b.png in Resources */ = {isa = PBXBuildFile; fileRef = D3BBFEB126FCA81B0059B886 /* iphone-pro-4b.png */; };
 		D3BBFEDB26FCA81B0059B886 /* iphone-pro-4b.png in Resources */ = {isa = PBXBuildFile; fileRef = D3BBFEB126FCA81B0059B886 /* iphone-pro-4b.png */; };
-		A18D3B042E6F000100000001 /* ipad-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B012E6F000100000001 /* ipad-6-permission.png */; };
-		A18D3B052E6F000100000001 /* iphone-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B022E6F000100000001 /* iphone-6-permission.png */; };
-		A18D3B062E6F000100000001 /* iphone-pro-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B032E6F000100000001 /* iphone-pro-6-permission.png */; };
-		A18D3B072E6F000100000001 /* ipad-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B012E6F000100000001 /* ipad-6-permission.png */; };
-		A18D3B082E6F000100000001 /* iphone-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B022E6F000100000001 /* iphone-6-permission.png */; };
-		A18D3B092E6F000100000001 /* iphone-pro-6-permission.png in Resources */ = {isa = PBXBuildFile; fileRef = A18D3B032E6F000100000001 /* iphone-pro-6-permission.png */; };
 		F1A7845A2BAC226200442DCC /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = F1A784592BAC226200442DCC /* fonts */; };
 		F1A7845B2BAC226200442DCC /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = F1A784592BAC226200442DCC /* fonts */; };
 /* End PBXBuildFile section */
@@ -146,6 +146,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A18D3B012E6F000100000001 /* ipad-6-permission.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad-6-permission.png"; sourceTree = "<group>"; };
+		A18D3B022E6F000100000001 /* iphone-6-permission.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-6-permission.png"; sourceTree = "<group>"; };
+		A18D3B032E6F000100000001 /* iphone-pro-6-permission.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-pro-6-permission.png"; sourceTree = "<group>"; };
 		D306F4322692C54F002FA4FD /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = ../Base.lproj/Main.html; sourceTree = "<group>"; };
 		D306F4332692C54F002FA4FD /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		D306F4342692C54F002FA4FD /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
@@ -200,9 +203,6 @@
 		D3BBFEAF26FCA81B0059B886 /* ipad-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad-2.png"; sourceTree = "<group>"; };
 		D3BBFEB026FCA81B0059B886 /* iphone-pro-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-pro-5.png"; sourceTree = "<group>"; };
 		D3BBFEB126FCA81B0059B886 /* iphone-pro-4b.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-pro-4b.png"; sourceTree = "<group>"; };
-		A18D3B012E6F000100000001 /* ipad-6-permission.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ipad-6-permission.png"; sourceTree = "<group>"; };
-		A18D3B022E6F000100000001 /* iphone-6-permission.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-6-permission.png"; sourceTree = "<group>"; };
-		A18D3B032E6F000100000001 /* iphone-pro-6-permission.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-pro-6-permission.png"; sourceTree = "<group>"; };
 		F1A784592BAC226200442DCC /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = fonts; path = ../../fonts; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -458,7 +458,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1300;
-				LastUpgradeCheck = 2610;
+				LastUpgradeCheck = 2720;
 				TargetAttributes = {
 					D306F43D2692C553002FA4FD = {
 						CreatedOnToolsVersion = 13.0;
@@ -832,7 +832,7 @@
 				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "10ten Japanese Reader Extension";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -862,7 +862,7 @@
 				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "10ten Japanese Reader Extension";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -902,7 +902,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -943,7 +943,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -981,12 +981,13 @@
 				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "10ten Japanese Reader Extension";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.29.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.birchill.tenten-ja-reader.Extension";
 				PRODUCT_NAME = "10ten Japanese Reader Extension";
@@ -1015,12 +1016,13 @@
 				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "10ten Japanese Reader Extension";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.29.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.co.birchill.tenten-ja-reader.Extension";
 				PRODUCT_NAME = "10ten Japanese Reader Extension";
@@ -1054,11 +1056,12 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "10ten Japanese Reader";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.29.0;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -1095,11 +1098,12 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "10ten Japanese Reader";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.29.0;
 				OTHER_LDFLAGS = (
 					"-framework",
