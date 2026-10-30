@@ -455,15 +455,6 @@ export class ContentHandler {
           this.#puck?.setHandedness(value);
           break;
 
-        case 'playReadings':
-          if (this.isTopMostWindow()) {
-            if (!value) {
-              this.#ttsPlaybackController?.stop();
-            }
-            this.updatePopup();
-          }
-          break;
-
         case 'popupInteractive':
           if (this.isTopMostWindow()) {
             // We can't use updatePopup here since it will try to re-use the
@@ -2436,7 +2427,7 @@ export class ContentHandler {
     }
 
     const controller = this.#ttsPlaybackController;
-    if (this.#config.playReadings && controller?.hasEntries) {
+    if (controller?.hasEntries) {
       return { toggle: () => controller.toggle(0) };
     }
 
@@ -2444,9 +2435,10 @@ export class ContentHandler {
   }
 
   #syncTtsPlayback(): TtsPlaybackHandle | undefined {
-    const entries = this.#config.playReadings
-      ? buildTtsEntries(this.#currentDict, this.#currentSearchResult)
-      : [];
+    const entries = buildTtsEntries(
+      this.#currentDict,
+      this.#currentSearchResult
+    );
 
     if (entries.length) {
       this.#ttsPlaybackController ??= new TtsPlaybackController({
@@ -2463,7 +2455,7 @@ export class ContentHandler {
       : undefined;
     this.#ttsPlaybackController?.setEntries(entries, lookupKey);
 
-    return this.#config.playReadings ? this.#ttsPlaybackController : undefined;
+    return this.#ttsPlaybackController;
   }
 
   getCursorClearanceAndPos(screenTextBoxSizes: SelectionSizes | undefined) {
