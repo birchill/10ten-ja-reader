@@ -46,6 +46,10 @@ jobs:
           pnpm build:chrome
           pnpm build:thunderbird
 
+      # Install a non-snap Firefox so geckodriver can launch it reliably
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@v1
+
       - name: Run tests
         env:
           CI: true
