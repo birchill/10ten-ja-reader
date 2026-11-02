@@ -17,10 +17,10 @@ jobs:
   version:
     name: Version packages
     if: ${{ github.repository == 'birchill/10ten-ja-reader' }}
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: useblacksmith/checkout@v1
         with:
           fetch-depth: 0
           token: ${{ secrets.PUSH_TOKEN }}
