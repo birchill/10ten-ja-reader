@@ -30,12 +30,18 @@ describe('Playback shortcut routing', () => {
   beforeAll(async () => {
     vi.stubGlobal('__VERSION__', 'test');
     // Some Chrome builds define a non-configurable `chrome` global which
-    // cannot be stubbed.
+    // cannot be stubbed so we patch its `runtime` member instead.
     if (
       Object.getOwnPropertyDescriptor(globalThis, 'chrome')?.configurable !==
       false
     ) {
       vi.stubGlobal('chrome', { runtime: { id: 'test' } });
+    } else {
+      Object.defineProperty((globalThis as any).chrome, 'runtime', {
+        value: { id: 'test' },
+        configurable: true,
+        writable: true,
+      });
     }
     vi.stubGlobal('browser', {
       runtime: {
