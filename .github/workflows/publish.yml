@@ -12,7 +12,7 @@ on:
 jobs:
   resolve-release:
     name: Resolve release
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     permissions:
       contents: read
     outputs:
@@ -32,7 +32,7 @@ jobs:
 
   publish-firefox:
     needs: resolve-release
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     name: Publish to AMO
 
     steps:
@@ -89,7 +89,7 @@ jobs:
 
   publish-edge:
     needs: resolve-release
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     name: Publish to Edge store
 
     steps:
@@ -139,7 +139,7 @@ jobs:
 
   publish-chrome:
     needs: resolve-release
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     name: Publish to Chrome Web Store
 
     steps:
