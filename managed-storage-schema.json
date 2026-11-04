@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "DisableErrorReporting": {
+      "title": "Disable error reporting",
+      "description": "Prevent automatic and manually requested diagnostic reports.",
+      "type": "boolean"
+    },
+    "DisableLocalErrorStorage": {
+      "title": "Disable local error storage",
+      "description": "Prevent saving diagnostic reports and delete existing saved reports.",
+      "type": "boolean"
+    }
+  }
+}

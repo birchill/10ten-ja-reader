@@ -402,6 +402,10 @@ function getExtConfig(options) {
     '_locales/**/*',
   ];
 
+  if (options.isChrome || options.isEdge) {
+    copyPatterns.push('managed-storage-schema.json');
+  }
+
   plugins.push(new rspack.CopyRspackPlugin({ patterns: copyPatterns }));
 
   //

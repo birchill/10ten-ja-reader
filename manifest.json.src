@@ -31,6 +31,9 @@
   "description": "__MSG_extension_description__",
   "default_locale": "en",
   "minimum_chrome_version": "100",
+  /*#if is_chrome||is_edge*/
+  "storage": { "managed_schema": "managed-storage-schema.json" },
+  /*#endif*/
   /*#if is_edge*/
   "update_url": "https://edge.microsoft.com/extensionwebstorebase/v1/crx",
   /*#endif*/
