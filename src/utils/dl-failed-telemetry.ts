@@ -10,7 +10,7 @@ import { getHash } from './hash';
 export function maybeSendTelemetry(
   error: unknown,
   version: string,
-  uid: string
+  uid: string | undefined
 ): boolean {
   const downloadTelemetry = asDownloadTelemetry(error, version, uid);
   if (!downloadTelemetry) {
@@ -69,7 +69,7 @@ type DownloadTelemetry = {
 function asDownloadTelemetry(
   error: unknown,
   version: string,
-  uid: string
+  uid: string | undefined
 ): DownloadTelemetry | null {
   if (
     !(error instanceof DownloadError) &&
@@ -123,7 +123,7 @@ function asDownloadTelemetry(
     return null;
   }
 
-  const userIdHash = getHash(uid);
+  const userIdHash = uid ? getHash(uid) : undefined;
 
   return {
     t: 'dl_failed',

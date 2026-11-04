@@ -57,6 +57,7 @@ import { Config } from '../common/config';
 import type { DbListenerMessage } from '../common/db-listener-messages';
 import { notifyDbStateUpdated } from '../common/db-listener-messages';
 import { startBugsnag } from '../utils/bugsnag';
+import { getInstallationId } from '../utils/installation-id';
 import { isAbortError } from '../utils/is-abort-error';
 import { omit } from '../utils/omit';
 import type { Split } from '../utils/type-helpers';
@@ -87,7 +88,7 @@ import { cancelTtsFetch, fetchTtsClip } from './tts-fetch';
 // Setup bugsnag
 //
 
-startBugsnag();
+startBugsnag('background');
 
 //
 // Setup tab manager
@@ -453,6 +454,9 @@ browser.runtime.onMessage.addListener(
     }
 
     switch (request.type) {
+      case 'getReportingInstallationId':
+        return getInstallationId();
+
       case 'options':
         return browser.runtime.openOptionsPage();
 
