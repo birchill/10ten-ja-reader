@@ -60,6 +60,7 @@ import { startBugsnag } from '../utils/bugsnag';
 import { getInstallationId } from '../utils/installation-id';
 import { isAbortError } from '../utils/is-abort-error';
 import { omit } from '../utils/omit';
+import { lookupBreadcrumb } from '../utils/reporting-protection';
 import type { Split } from '../utils/type-helpers';
 
 import type { SearchOtherRequest, SearchRequest } from './background-request';
@@ -449,9 +450,17 @@ browser.runtime.onMessage.addListener(
       //
       // Curiously in all cases the user agent was not identified so I'm not
       // sure if this can happen in all browsers or not.
-      console.warn(`Unrecognized request: ${JSON.stringify(request)}`);
+      console.warn('Unrecognized request received');
       return undefined;
     }
+
+    const leaveActivityBreadcrumb: typeof Bugsnag.leaveBreadcrumb = (
+      ...args
+    ) => {
+      if (!sender.tab?.incognito) {
+        Bugsnag.leaveBreadcrumb(...args);
+      }
+    };
 
     switch (request.type) {
       case 'getReportingInstallationId':
@@ -461,12 +470,12 @@ browser.runtime.onMessage.addListener(
         return browser.runtime.openOptionsPage();
 
       case 'searchWords':
-        Bugsnag.leaveBreadcrumb('Searching for words', {
-          ...request,
-          input: 'x'.repeat(request.input.length),
-        });
+        leaveActivityBreadcrumb(
+          'Searching for words',
+          lookupBreadcrumb(request)
+        );
         if (pendingSearchWordsRequest) {
-          Bugsnag.leaveBreadcrumb('Canceling previous search');
+          leaveActivityBreadcrumb('Canceling previous search');
           pendingSearchWordsRequest.controller.abort();
           pendingSearchWordsRequest = undefined;
         }
@@ -503,12 +512,12 @@ browser.runtime.onMessage.addListener(
         })();
 
       case 'searchOther':
-        Bugsnag.leaveBreadcrumb('Searching for non-words', {
-          ...request,
-          input: 'x'.repeat(request.input.length),
-        });
+        leaveActivityBreadcrumb(
+          'Searching for non-words',
+          lookupBreadcrumb(request)
+        );
         if (pendingSearchOtherRequest) {
-          Bugsnag.leaveBreadcrumb('Canceling previous search');
+          leaveActivityBreadcrumb('Canceling previous search');
           pendingSearchOtherRequest.controller.abort();
           pendingSearchOtherRequest = undefined;
         }
@@ -538,14 +547,19 @@ browser.runtime.onMessage.addListener(
         })();
 
       case 'calculateEraDateTimeSpan':
-        Bugsnag.leaveBreadcrumb('Calculating era date time span', request);
+        leaveActivityBreadcrumb('Calculating era date time span', {
+          era: request.era,
+          year: request.year,
+          month: request.month,
+          day: request.day,
+        });
         return Promise.resolve(calculateEraDateTimeSpan(request));
 
       case 'translate':
-        Bugsnag.leaveBreadcrumb('Translating string', {
-          ...request,
-          input: 'x'.repeat(request.input.length),
-        });
+        leaveActivityBreadcrumb(
+          'Translating string',
+          lookupBreadcrumb(request)
+        );
         return dbReady
           .then(() => translate(request.input))
           .catch((e) => {
@@ -557,21 +571,23 @@ browser.runtime.onMessage.addListener(
           });
 
       case 'toggleDefinition':
-        Bugsnag.leaveBreadcrumb('Toggling definitions on/off');
+        leaveActivityBreadcrumb('Toggling definitions on/off');
         void config.ready.then(() => {
           config.toggleReadingOnly();
         });
         break;
 
       case 'disableMouseInteraction':
-        Bugsnag.leaveBreadcrumb('Disabling mouse interaction');
+        leaveActivityBreadcrumb('Disabling mouse interaction');
         void config.ready.then(() => {
           config.popupInteractive = false;
         });
         break;
 
       case 'canHoverChanged':
-        Bugsnag.leaveBreadcrumb('Changing hover ability setting', request);
+        leaveActivityBreadcrumb('Changing hover ability setting', {
+          value: request.value,
+        });
         void config.ready.then(() => {
           config.canHover = request.value;
         });

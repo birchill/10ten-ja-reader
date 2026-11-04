@@ -1,5 +1,6 @@
 import type { Event as BugsnagEvent } from '@birchill/bugsnag-zero';
 import Bugsnag, {
+  FetchDelivery,
   appDuration,
   browserContext,
   browserHandledRejectionBreadcrumbs,
@@ -9,7 +10,6 @@ import Bugsnag, {
   deviceOrientation,
   errorBreadcrumbs,
   fetchBreadcrumbs,
-  interactionBreadcrumbs,
   limitEvents,
   navigationBreadcrumbs,
   stringifyValues,
@@ -23,6 +23,10 @@ import { BUGSNAG_NOTIFIER_API_KEY } from './bugsnag-api-key';
 import { maybeSendTelemetry } from './dl-failed-telemetry';
 import { getInstallationId } from './installation-id';
 import { getReleaseStage } from './release-stage';
+import {
+  protectPreparedReport,
+  reportingInteractionBreadcrumbs,
+} from './reporting-protection';
 
 export function startBugsnag(context: 'background' | 'options') {
   const manifest = browser.runtime.getManifest();
@@ -36,7 +40,7 @@ export function startBugsnag(context: 'background' | 'options') {
     deviceOrientation,
     errorBreadcrumbs,
     fetchBreadcrumbs,
-    interactionBreadcrumbs,
+    reportingInteractionBreadcrumbs,
     limitEvents(20),
     navigationBreadcrumbs,
     stringifyValues,
@@ -45,6 +49,14 @@ export function startBugsnag(context: 'background' | 'options') {
   if (getReleaseStage() !== 'development') {
     plugins.push(consoleBreadcrumbs);
   }
+
+  const delivery = new FetchDelivery(Bugsnag);
+  Bugsnag.setDelivery({
+    sendEvent(payload) {
+      protectPreparedReport(payload);
+      return delivery.sendEvent(payload);
+    },
+  });
 
   Bugsnag.start({
     apiKey: BUGSNAG_NOTIFIER_API_KEY,
