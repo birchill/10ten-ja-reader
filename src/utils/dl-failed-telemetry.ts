@@ -4,6 +4,7 @@ import { FxDownloadError } from '../background/fx-fetcher';
 
 import { fetchWithTimeout } from './fetch';
 import { getHash } from './hash';
+import { protectDiagnosticText } from './reporting-protection';
 
 // Some errors are so common (e.g. download errors) that they don't qualify as
 // errors we want to report but rather as telemetry events to monitor.
@@ -131,6 +132,6 @@ function asDownloadTelemetry(
     url: error.url,
     v: version,
     uid: userIdHash,
-    msg: error.message,
+    msg: protectDiagnosticText(error.message),
   };
 }
