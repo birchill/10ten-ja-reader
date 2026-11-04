@@ -1,6 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
+import type { NotifyResult } from '@birchill/bugsnag-zero';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { Runtime } from 'webextension-polyfill';
 
@@ -42,7 +43,9 @@ const { browserMock, messageListeners } = vi.hoisted(() => {
 vi.mock('@birchill/bugsnag-zero', () => ({
   default: {
     leaveBreadcrumb: vi.fn<(...args: Array<unknown>) => void>(),
-    notify: vi.fn<(...args: Array<unknown>) => void>(),
+    notify: vi
+      .fn<(...args: Array<unknown>) => Promise<NotifyResult>>()
+      .mockResolvedValue({ status: 'skipped', reason: 'test' }),
   },
 }));
 vi.mock('webextension-polyfill', () => ({ default: browserMock }));
