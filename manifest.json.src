@@ -15,6 +15,12 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "{59812185-ea92-4cca-8ab7-cfcacee81281}",
+      /*#if !mail_extension&&!is_safari*/
+      "data_collection_permissions": {
+        "required": ["none"],
+        "optional": ["technicalAndInteraction"]
+      },
+      /*#endif*/
       /*#if mail_extension */
       "strict_min_version": "91.0"
       /*#else*/

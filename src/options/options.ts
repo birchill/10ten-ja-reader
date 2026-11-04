@@ -2,6 +2,7 @@
 import { h, render } from 'preact';
 
 import { Config } from '../common/config';
+import { forwardPreparedReport } from '../common/prepared-report';
 import { startBugsnag } from '../utils/bugsnag';
 import {
   isChromium,
@@ -14,7 +15,7 @@ import {
 import { OptionsPage } from './OptionsPage';
 import './options.css';
 
-startBugsnag('options');
+startBugsnag('options', forwardPreparedReport);
 
 const config = new Config();
 

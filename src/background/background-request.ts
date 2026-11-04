@@ -1,6 +1,7 @@
 import { discriminator } from '@birchill/discriminator';
 import * as s from 'superstruct';
 
+import { PreparedReportSchema } from '../common/prepared-report';
 import { PopupStateSchema } from '../content/popup-state';
 
 const SearchRequestSchema = s.type({
@@ -39,6 +40,7 @@ export const BackgroundRequestSchema = discriminator('type', {
   }),
   isDbUpdating: s.type({}),
   getReportingInstallationId: s.type({}),
+  capturePreparedReport: s.type({ report: PreparedReportSchema }),
   options: s.type({}),
   puckStateChanged: s.type({
     value: s.object({

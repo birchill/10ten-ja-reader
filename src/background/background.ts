@@ -56,6 +56,7 @@ import '../../manifest.json.src';
 import { Config } from '../common/config';
 import type { DbListenerMessage } from '../common/db-listener-messages';
 import { notifyDbStateUpdated } from '../common/db-listener-messages';
+import { captureReply } from '../common/prepared-report';
 import { startBugsnag } from '../utils/bugsnag';
 import { getInstallationId } from '../utils/installation-id';
 import { isAbortError } from '../utils/is-abort-error';
@@ -81,6 +82,7 @@ import {
   updateDb,
 } from './jpdict';
 import { shouldRequestPersistentStorage } from './quota-management';
+import { ReportingService } from './reporting';
 import type { SearchOtherResult, SearchWordsResult } from './search-result';
 import TabManager from './tab-manager';
 import { cancelTtsFetch, fetchTtsClip } from './tts-fetch';
@@ -89,7 +91,8 @@ import { cancelTtsFetch, fetchTtsClip } from './tts-fetch';
 // Setup bugsnag
 //
 
-startBugsnag('background');
+const reporting = new ReportingService();
+startBugsnag('background', (report) => reporting.capture(report));
 
 //
 // Setup tab manager
@@ -463,6 +466,18 @@ browser.runtime.onMessage.addListener(
     };
 
     switch (request.type) {
+      case 'capturePreparedReport':
+        if (
+          sender.id !== browser.runtime.id ||
+          !sender.url?.startsWith(browser.runtime.getURL(''))
+        ) {
+          return Promise.resolve({
+            status: 'skipped',
+            reason: 'invalid-source',
+          });
+        }
+        return reporting.capture(request.report).then(captureReply);
+
       case 'getReportingInstallationId':
         return getInstallationId();
 
