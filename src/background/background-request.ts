@@ -38,6 +38,7 @@ export const BackgroundRequestSchema = discriminator('type', {
     requestId: s.string(),
   }),
   isDbUpdating: s.type({}),
+  getReportingInstallationId: s.type({}),
   options: s.type({}),
   puckStateChanged: s.type({
     value: s.object({

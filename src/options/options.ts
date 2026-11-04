@@ -14,7 +14,7 @@ import {
 import { OptionsPage } from './OptionsPage';
 import './options.css';
 
-startBugsnag();
+startBugsnag('options');
 
 const config = new Config();
 
