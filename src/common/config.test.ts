@@ -168,7 +168,7 @@ describe('Config', () => {
     const breadcrumb = vi.spyOn(Bugsnag, 'leaveBreadcrumb');
     mockStorage.onChanged._onChange(
       {
-        reportQueue: { oldValue: 'DELETED_REPORT_SECRET' },
+        diagnosticReports: { oldValue: 'DELETED_REPORT_SECRET' },
         automaticErrorReporting: { newValue: true },
         fontSize: { newValue: 'large' },
       },
