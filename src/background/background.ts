@@ -457,6 +457,20 @@ browser.runtime.onMessage.addListener(
       return undefined;
     }
 
+    if (
+      [
+        'capturePreparedReport',
+        'readReportingState',
+        'readReport',
+        'deleteReport',
+        'deleteAllReports',
+      ].includes(request.type) &&
+      (sender.id !== browser.runtime.id ||
+        !sender.url?.startsWith(browser.runtime.getURL('')))
+    ) {
+      return Promise.resolve({ status: 'skipped', reason: 'invalid-source' });
+    }
+
     const leaveActivityBreadcrumb: typeof Bugsnag.leaveBreadcrumb = (
       ...args
     ) => {
@@ -467,16 +481,19 @@ browser.runtime.onMessage.addListener(
 
     switch (request.type) {
       case 'capturePreparedReport':
-        if (
-          sender.id !== browser.runtime.id ||
-          !sender.url?.startsWith(browser.runtime.getURL(''))
-        ) {
-          return Promise.resolve({
-            status: 'skipped',
-            reason: 'invalid-source',
-          });
-        }
         return reporting.capture(request.report).then(captureReply);
+
+      case 'readReportingState':
+        return reporting.readState();
+
+      case 'readReport':
+        return reporting.queue.readReport(request.id);
+
+      case 'deleteReport':
+        return reporting.queue.deleteReport(request.id);
+
+      case 'deleteAllReports':
+        return reporting.queue.deleteAll();
 
       case 'getReportingInstallationId':
         return getInstallationId();

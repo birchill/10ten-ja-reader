@@ -41,6 +41,10 @@ export const BackgroundRequestSchema = discriminator('type', {
   isDbUpdating: s.type({}),
   getReportingInstallationId: s.type({}),
   capturePreparedReport: s.type({ report: PreparedReportSchema }),
+  readReportingState: s.type({}),
+  readReport: s.type({ id: s.string() }),
+  deleteReport: s.type({ id: s.string() }),
+  deleteAllReports: s.type({}),
   options: s.type({}),
   puckStateChanged: s.type({
     value: s.object({
