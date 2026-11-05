@@ -6,7 +6,7 @@ import { PreparedReportSchema } from '../common/prepared-report';
 import type { PreparedReport } from '../common/prepared-report';
 import type { ReportingPolicy } from '../common/reporting-policy';
 
-export const REPORT_QUEUE_KEY = 'diagnosticReports';
+const REPORT_QUEUE_KEY = 'diagnosticReports';
 export const MAX_REPORTS = 10;
 export const MAX_RECORD_BYTES = 128 * 1024;
 export const MAX_QUEUE_BYTES = 512 * 1024;
