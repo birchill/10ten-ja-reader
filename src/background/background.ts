@@ -464,6 +464,8 @@ browser.runtime.onMessage.addListener(
         'readReport',
         'deleteReport',
         'deleteAllReports',
+        'sendReportsOnce',
+        'retryReportBatch',
       ].includes(request.type) &&
       (sender.id !== browser.runtime.id ||
         !sender.url?.startsWith(browser.runtime.getURL('')))
@@ -494,6 +496,15 @@ browser.runtime.onMessage.addListener(
 
       case 'deleteAllReports':
         return reporting.queue.deleteAll();
+
+      case 'sendReportsOnce':
+        return reporting.sendOnce(
+          request.selectedIds,
+          request.expectedRevision
+        );
+
+      case 'retryReportBatch':
+        return reporting.retryBatch(request.id);
 
       case 'getReportingInstallationId':
         return getInstallationId();

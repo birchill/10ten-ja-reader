@@ -279,8 +279,8 @@ export class ReportQueue {
     });
   }
 
-  // TODO: Bind manual batch authorization to this revision and release it
-  // only when the batch (including explicit retries) ends.
+  // The reporting service keeps these IDs frozen across explicit retries and
+  // releases them when a new selection replaces the batch.
   freeze(ids: Array<string>, revision: number) {
     return this.#serial(() => {
       if (this.#status !== 'ready' || revision !== this.#envelope.revision) {
@@ -304,6 +304,7 @@ export class ReportQueue {
     transmit: (report: PreparedReport) => Promise<NotifyResult>
   ): Promise<NotifyResult> {
     const token = Symbol();
+    let reason = 'report-unavailable';
     const pending = await this.#serial(async () => {
       const record = this.#envelope.records.find((r) => r.id === id);
       if (
@@ -319,6 +320,7 @@ export class ReportQueue {
         this.policy.state.disableErrorReporting ||
         this.policy.state.disableLocalErrorStorage
       ) {
+        reason = 'policy-disabled';
         return undefined;
       }
 
@@ -332,23 +334,31 @@ export class ReportQueue {
       try {
         await this.#write(envelope);
       } catch {
+        reason = 'storage-unavailable';
         return undefined;
       }
 
+      this.#inFlight.set(id, token);
       if (
         this.policy.state.disableErrorReporting ||
         this.policy.state.disableLocalErrorStorage ||
         !this.#envelope.records.some((r) => r.id === id)
       ) {
-        return undefined;
+        // Complete the persisted attempt marker even when policy changes
+        // during the write and prevents dispatch.
+        return {
+          result: Promise.resolve<NotifyResult>({
+            status: 'skipped',
+            reason: 'policy-disabled',
+          }),
+        };
       }
 
-      this.#inFlight.set(id, token);
       // Start the request inside the coordinator, but await it outside.
       return { result: transmit(detach(record)) };
     });
     if (!pending) {
-      return { status: 'skipped', reason: 'report-unavailable' };
+      return { status: 'skipped', reason };
     }
 
     let result: NotifyResult;

@@ -45,6 +45,11 @@ export const BackgroundRequestSchema = discriminator('type', {
   readReport: s.type({ id: s.string() }),
   deleteReport: s.type({ id: s.string() }),
   deleteAllReports: s.type({}),
+  sendReportsOnce: s.type({
+    selectedIds: s.size(s.array(s.string()), 0, 10),
+    expectedRevision: s.integer(),
+  }),
+  retryReportBatch: s.type({ id: s.string() }),
   options: s.type({}),
   puckStateChanged: s.type({
     value: s.object({
