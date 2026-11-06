@@ -323,6 +323,15 @@ describe('Config', () => {
     });
   });
 
+  it('drops the obsolete playReadings setting', async () => {
+    await mockStorage.sync.set({ playReadings: true, fontSize: 'large' });
+
+    const config = new Config();
+    await config.ready;
+
+    expect(await mockStorage.sync.get(null)).toEqual({ fontSize: 'large' });
+  });
+
   it('handles changes to dictLang setting', () => {
     languageGetter.mockReturnValue(['ro', 'fr-CA', 'en']);
     const config = new Config();

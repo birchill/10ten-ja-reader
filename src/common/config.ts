@@ -186,6 +186,15 @@ export class Config {
       }
     }
 
+    // Reading playback is always available now, so drop the old opt-in pref
+    if (this.#settings.hasOwnProperty('playReadings')) {
+      try {
+        await browser.storage.sync.remove('playReadings');
+      } catch {
+        // Ignore
+      }
+    }
+
     if (
       this.#settings.localSettings?.hasOwnProperty('hasUpgradedFromPreMouse') ||
       this.#settings.localSettings?.hasOwnProperty(
@@ -321,7 +330,6 @@ export class Config {
         'kanjiReferences',
         'keys',
         'noTextHighlight',
-        'playReadings',
         'popupStyle',
         'posDisplay',
         'preferredUnits',
