@@ -7,10 +7,13 @@ import type { Permissions } from 'webextension-polyfill';
 
 import type { PreparedReport } from '../common/prepared-report';
 
+import type { BackgroundRequest } from './background-request';
 import type { ReportingService } from './reporting';
 
 const mocks = vi.hoisted(() => ({
   getAll: vi.fn<() => Promise<Permissions.AnyPermissions>>(),
+  request: vi.fn<() => Promise<boolean>>(),
+  remove: vi.fn<() => Promise<boolean>>(),
   managed: vi.fn<() => Promise<Record<string, unknown>>>(),
   local: vi.fn<() => Promise<Record<string, unknown>>>(),
   set: vi.fn<(value: Record<string, unknown>) => Promise<void>>(),
@@ -22,6 +25,8 @@ vi.mock('webextension-polyfill', () => ({
   default: {
     permissions: {
       getAll: mocks.getAll,
+      request: mocks.request,
+      remove: mocks.remove,
       onAdded: { addListener() {}, removeListener() {} },
       onRemoved: { addListener: mocks.onRemoved, removeListener() {} },
     },
@@ -528,3 +533,218 @@ it('applies sending and local-storage policies independently and together withou
     reportNoticeDismissed: true,
   });
 });
+
+it('sends a fixed mixed batch once and retries only its surviving failures', async () => {
+  // Arrange: save one report for each destination, with automatic reporting off.
+  const queue = await startWithQueue();
+  const { sendReportsOnce, retryReportBatch } =
+    await import('../options/reporting-commands');
+  mocks.sendMessage.mockImplementation((message) => {
+    const request = message as BackgroundRequest;
+    switch (request.type) {
+      case 'sendReportsOnce':
+        return service.sendOnce(request.selectedIds, request.expectedRevision);
+
+      case 'retryReportBatch':
+        return service.retryBatch(request.id);
+
+      default:
+        throw new Error('Unexpected reporting command');
+    }
+  });
+  const bugsnagReport: PreparedReport = {
+    destination: 'bugsnag',
+    context: downloadReport.context,
+    payload: {
+      apiKey: 'synthetic',
+      payloadVersion: '4',
+      notifier: { name: 'test', version: '1', url: 'https://example.com' },
+      events: [{ exceptions: [{ errorClass: 'Error', stacktrace: [] }] }],
+    },
+  };
+  await queue.store(downloadReport);
+  await queue.store(bugsnagReport);
+  const state = await queue.readState();
+  const ids = state.records.map((r) => r.id);
+
+  // An outdated display must require a refresh before authorizing any sends.
+  expect(await sendReportsOnce(ids, state.revision - 1)).toEqual({
+    status: 'stale-state',
+  });
+
+  // Hold the first request open so we can change the queue during the batch.
+  let complete!: (response: Response) => void;
+  fetchMock.mockReturnValueOnce(
+    new Promise((resolve) => {
+      complete = resolve;
+    })
+  );
+  fetchMock.mockResolvedValueOnce(new Response(null, { status: 503 }));
+
+  // Act: start the displayed batch. Repeating the command returns its progress.
+  const sending = sendReportsOnce(ids, state.revision);
+  await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+  expect(await sendReportsOnce(ids, state.revision)).toMatchObject({
+    status: 'ok',
+    batch: { status: 'sending' },
+  });
+
+  // Later occurrences and new reports stay outside the frozen selection.
+  // Revoking automatic consent must leave this manual authorization intact.
+  await queue.store(downloadReport);
+  await queue.store(reportWithMessage('later arrival'));
+  mocks.onRemoved.mock.calls[0][0]({
+    data_collection: ['technicalAndInteraction'],
+  });
+  complete(new Response(null, { status: 202 }));
+  const result = await sending;
+
+  // Assert: the two original payloads went to their own destinations unchanged.
+  // Only one succeeded; the failed report and both later arrivals remain saved.
+  expect(result).toMatchObject({
+    status: 'ok',
+    batch: {
+      status: 'complete',
+      totalSelected: 2,
+      sent: 1,
+      failed: 1,
+      skipped: 0,
+    },
+  });
+  expect(fetchMock.mock.calls.map(([url]) => url)).toEqual(
+    state.records.map((r) =>
+      r.destination === 'bugsnag'
+        ? 'https://notify.bugsnag.com/'
+        : 'https://data.10ten.life/report'
+    )
+  );
+  for (const [index, [, init]] of fetchMock.mock.calls.entries()) {
+    expect(JSON.parse(init!.body as string)).toEqual(
+      state.records[index].destination === 'bugsnag'
+        ? bugsnagReport.payload
+        : downloadReport.payload
+    );
+  }
+
+  expect((await queue.readState()).count).toBe(3);
+  expect(mocks.request).not.toHaveBeenCalled();
+  expect(mocks.remove).not.toHaveBeenCalled();
+  expect(storage.automaticErrorReporting).toBeUndefined();
+  if (result.status !== 'ok') {
+    throw new Error('Expected batch result');
+  }
+
+  // An explicit retry sends only the original failure.
+  expect(await retryReportBatch(result.batch.id)).toMatchObject({
+    status: 'ok',
+    batch: { totalSelected: 1, sent: 1, failed: 0, skipped: 0 },
+  });
+  expect(fetchMock).toHaveBeenCalledTimes(3);
+  expect((await queue.readState()).count).toBe(2);
+});
+
+it.each(['DisableErrorReporting', 'DisableLocalErrorStorage'])(
+  'stops subsequent batch requests when %s activates',
+  async (policy) => {
+    // Arrange: save two reports and hold the first request open.
+    const queue = await startWithQueue();
+    await queue.store(downloadReport);
+    await queue.store(reportWithMessage('second'));
+    const state = await queue.readState();
+    let complete!: (response: Response) => void;
+    fetchMock.mockReturnValueOnce(
+      new Promise((resolve) => {
+        complete = resolve;
+      })
+    );
+
+    // Act: activate the policy after dispatching the first request, then let
+    // that in-flight request finish.
+    const sending = service.sendOnce(
+      state.records.map((r) => r.id),
+      state.revision
+    );
+    await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    mocks.managed.mockResolvedValue({ [policy]: true });
+    await service.policy.refresh();
+    complete(new Response(null, { status: 202 }));
+
+    // Assert: the second request is skipped. Only the storage policy clears
+    // its saved copy; the sending policy leaves it available for inspection.
+    expect(await sending).toMatchObject({
+      status: 'ok',
+      batch: { totalSelected: 2, sent: 1, failed: 0, skipped: 1 },
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect((await queue.readState()).count).toBe(
+      policy === 'DisableErrorReporting' ? 1 : 0
+    );
+  }
+);
+
+it.each(['declined', 'request-failed', 'write-failed', 'granted'] as const)(
+  'sends the combined action once when enabling is %s',
+  async (outcome) => {
+    // Arrange: save one report and configure the consent adapter's outcome.
+    // The local-preference case simulates a browser without native support.
+    const queue = await startWithQueue();
+    const { sendReportsAndEnable } =
+      await import('../options/reporting-commands');
+    await queue.store(downloadReport);
+    const state = await queue.readState();
+    mocks.getAll.mockResolvedValue(
+      outcome === 'write-failed' ? {} : { data_collection: [] }
+    );
+    await service.consent.refresh();
+    mocks.request.mockImplementation(async () => {
+      if (outcome === 'request-failed') {
+        throw new Error('Request failed');
+      }
+
+      if (outcome === 'granted') {
+        mocks.getAll.mockResolvedValue({
+          data_collection: ['technicalAndInteraction'],
+        });
+      }
+
+      return outcome === 'granted';
+    });
+    if (outcome === 'write-failed') {
+      mocks.set.mockRejectedValueOnce(new Error('Write failed'));
+    }
+
+    // Route the options command to the real background batch coordinator.
+    mocks.sendMessage.mockImplementation((message) => {
+      const request = message as {
+        selectedIds: Array<string>;
+        expectedRevision: number;
+      };
+      return service.sendOnce(request.selectedIds, request.expectedRevision);
+    });
+
+    // Act: invoke the combined action directly, as a user event handler would.
+    const result = sendReportsAndEnable(
+      state.records.map((r) => r.id),
+      state.revision,
+      service.consent
+    );
+
+    // Assert: the native request starts before yielding the user gesture.
+    // Sending succeeds even if enabling fails, with its outcome shown separately.
+    expect(mocks.request).toHaveBeenCalledTimes(
+      outcome === 'write-failed' ? 0 : 1
+    );
+    expect(await result).toMatchObject({
+      status: 'ok',
+      batch: { sent: 1, failed: 0, skipped: 0 },
+      automaticReporting:
+        outcome === 'granted'
+          ? 'enabled'
+          : outcome === 'declined'
+            ? 'off'
+            : 'error',
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect((await queue.readState()).count).toBe(0);
+  }
+);
