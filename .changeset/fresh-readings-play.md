@@ -1,5 +1,5 @@
 ---
-'10ten-ja-reader': patch
+'10ten-ja-reader': minor
 ---
 
 Reading audio playback is enabled by default. The temporary toggle in Settings

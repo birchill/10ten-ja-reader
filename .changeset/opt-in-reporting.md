@@ -1,5 +1,5 @@
 ---
-'10ten-ja-reader': patch
+'10ten-ja-reader': minor
 ---
 
 Automatic error reporting now requires consent, using Firefox's native
