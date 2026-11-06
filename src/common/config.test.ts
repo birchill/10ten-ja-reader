@@ -238,7 +238,6 @@ describe('Config', () => {
       togglePlayback: ['p'],
     });
     expect(config.noTextHighlight).toEqual(false);
-    expect(config.playReadings).toEqual(false);
     expect(config.popupStyle).toEqual('default');
     expect(config.posDisplay).toEqual('expl');
     expect(config.readingOnly).toEqual(false);
@@ -322,6 +321,15 @@ describe('Config', () => {
         skip: false,
       },
     });
+  });
+
+  it('drops the obsolete playReadings setting', async () => {
+    await mockStorage.sync.set({ playReadings: true, fontSize: 'large' });
+
+    const config = new Config();
+    await config.ready;
+
+    expect(await mockStorage.sync.get(null)).toEqual({ fontSize: 'large' });
   });
 
   it('handles changes to dictLang setting', () => {

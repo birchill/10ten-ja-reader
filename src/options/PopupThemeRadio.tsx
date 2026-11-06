@@ -20,7 +20,6 @@ type Props = {
   fontFace: FontFace;
   fontSize: FontSize;
   onChangeTheme: (theme: string) => void;
-  playReadings: boolean;
   posDisplay: PartOfSpeechDisplay;
   showBunproDecks: boolean;
   showDefinitions: boolean;
@@ -98,7 +97,6 @@ type PopupPreviewProps = {
   accentDisplay: AccentDisplay;
   fontFace: FontFace;
   fontSize: FontSize;
-  playReadings: boolean;
   posDisplay: PartOfSpeechDisplay;
   showBunproDecks: boolean;
   showDefinitions: boolean;
@@ -173,11 +171,7 @@ function PopupPreview(props: PopupPreviewProps) {
           entry={entryData}
           selectState="unselected"
           showPlayButton
-          tts={
-            props.playReadings
-              ? { controller: idleTtsPlayback, entryIndex: 0 }
-              : undefined
-          }
+          tts={{ controller: idleTtsPlayback, entryIndex: 0 }}
         />
       </PopupOptionsProvider>
     </div>

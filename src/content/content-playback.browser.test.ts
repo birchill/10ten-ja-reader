@@ -81,7 +81,7 @@ describe('Playback shortcut routing', () => {
     vi.unstubAllGlobals();
   });
 
-  it('forwards playback once for a held key with reading audio disabled', () => {
+  it('forwards playback once for a held key', () => {
     const event = pressKey();
     const repeated = pressKey({ repeat: true });
 
@@ -160,7 +160,7 @@ describe('Playback shortcut routing', () => {
     });
   });
 
-  it('toggles the first kanji in a static popup with reading audio disabled', async () => {
+  it('toggles the first kanji in a static popup', async () => {
     await lookupKanji();
     const root = document.getElementById('tenten-ja-window')!.shadowRoot!;
 
@@ -182,7 +182,7 @@ describe('Playback shortcut routing', () => {
   });
 
   it.each(['words', 'names'] as const)(
-    'routes playback to readings after switching to %s',
+    'offers reading playback by default after switching to %s',
     async (tab) => {
       const result = makeKanjiResult();
       result.words = {
@@ -213,13 +213,21 @@ describe('Playback shortcut routing', () => {
           },
         ],
       };
+      handler.setConfig({ ...makeConfig(), popupInteractive: true });
       await lookupKanji(result);
       const toggleReadings = vi
         .spyOn(TtsPlaybackController.prototype, 'toggle')
         .mockImplementation(() => {});
       act(() => {
-        handler.setConfig({ ...makeConfig(), playReadings: true });
         handler.showDictionary(tab);
+      });
+
+      const root = document.getElementById('tenten-ja-window')!.shadowRoot!;
+      expect(
+        root.querySelector('button[aria-label="content_play_readings_label"]')
+      ).not.toBeNull();
+
+      act(() => {
         pressKey();
       });
 
@@ -374,7 +382,6 @@ function makeConfig(): ContentConfigParams {
       togglePlayback: ['p'],
     },
     noTextHighlight: true,
-    playReadings: false,
     popupInteractive: false,
     popupStyle: 'default',
     posDisplay: 'none',
