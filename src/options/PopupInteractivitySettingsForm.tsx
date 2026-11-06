@@ -1,4 +1,4 @@
-import type { JSX } from 'preact';
+import type { TargetedEvent } from 'preact';
 
 import type { TabDisplay } from '../common/content-config-params';
 import { useLocale } from '../common/i18n';
@@ -41,7 +41,7 @@ export function PopupInteractivitySettingsForm(props: Props) {
               checked={props.enableTapLookup}
               id="enableTapLookup"
               name="enableTapLookup"
-              onClick={(event: JSX.TargetedEvent<HTMLInputElement>) => {
+              onClick={(event: TargetedEvent<HTMLInputElement>) => {
                 props.onChangeEnableTapLookup(event.currentTarget.checked);
               }}
               type="checkbox"

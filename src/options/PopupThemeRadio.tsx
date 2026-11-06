@@ -1,4 +1,4 @@
-import type { ComponentProps } from 'preact';
+import type { ComponentProps, Signalish } from 'preact';
 import { forwardRef } from 'preact/compat';
 import { useId } from 'preact/hooks';
 
@@ -59,7 +59,7 @@ export function PopupThemeRadio(props: Props) {
 }
 
 type InputProps = Omit<
-  ComponentProps<'input'>,
+  Extract<ComponentProps<'input'>, { type: Signalish<'radio'> }>,
   'id' | 'type' | 'class' | 'className'
 >;
 

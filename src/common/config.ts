@@ -298,7 +298,51 @@ export class Config {
       return;
     }
 
-    Bugsnag.leaveBreadcrumb('Settings change', updatedChanges);
+    // Select real settings only. Local reporting records (including oldValue
+    // on deletion) must never become breadcrumbs in a later report.
+    const settingsChanges = Object.fromEntries(
+      [
+        'accentDisplay',
+        'autoExpand',
+        'bunproDisplay',
+        'contextMenuEnable',
+        'copyHeadwords',
+        'copyPos',
+        'copySenses',
+        'dictLang',
+        'enableTapLookup',
+        'fontFace',
+        'fontSize',
+        'fxCurrency',
+        'handedness',
+        'highlightStyle',
+        'holdToShowKeys',
+        'holdToShowImageKeys',
+        'kanjiReferences',
+        'keys',
+        'noTextHighlight',
+        'playReadings',
+        'popupStyle',
+        'posDisplay',
+        'preferredUnits',
+        'readingOnly',
+        'showKanjiComponents',
+        'showPriority',
+        'showRomaji',
+        'tabDisplay',
+        'toolbarIcon',
+        'waniKaniVocabDisplay',
+        'canHover',
+        'popupInteractive',
+        'showPuck',
+        'puckState',
+      ]
+        .filter((key) => key in updatedChanges)
+        .map((key) => [key, updatedChanges[key]])
+    );
+    if (Object.keys(settingsChanges).length) {
+      Bugsnag.leaveBreadcrumb('Settings change', settingsChanges);
+    }
 
     for (const listener of this.#changeListeners) {
       listener(updatedChanges);

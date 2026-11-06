@@ -1,5 +1,5 @@
 import Bugsnag from '@birchill/bugsnag-zero';
-import type { JSX } from 'preact';
+import type { TargetedEvent } from 'preact';
 import { useCallback } from 'preact/hooks';
 
 import type { DbLanguageId } from '../common/db-languages';
@@ -16,7 +16,7 @@ export function DictionaryLanguageSettingsForm(props: Props) {
   const { t } = useLocale();
 
   const onChange = useCallback(
-    (event: JSX.TargetedEvent<HTMLSelectElement>) => {
+    (event: TargetedEvent<HTMLSelectElement>) => {
       const value = event.currentTarget.value;
       if (!isDbLanguageId(value)) {
         const msg = `Got unexpected language code: ${value}`;

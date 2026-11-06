@@ -59,7 +59,7 @@ export type ShowPopupOptions = {
   isExpanded: boolean;
   isVerticalText: boolean;
   kanjiReferences: Array<ReferenceAbbreviation>;
-  kanjiStrokeAnimationRef?: RefObject<KanjiStrokeAnimationHandle>;
+  kanjiStrokeAnimationRef?: RefObject<KanjiStrokeAnimationHandle | null>;
   meta?: SelectionMeta;
   onCancelCopy?: () => void;
   onStartCopy?: StartCopyCallback;

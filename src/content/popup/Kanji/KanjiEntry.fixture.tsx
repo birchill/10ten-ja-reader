@@ -49,7 +49,7 @@ export default {
     />
   ),
   'playback shortcut': function PlaybackShortcut() {
-    const playbackRef = useRef(createRef<KanjiStrokeAnimationHandle>());
+    const playbackRef = useRef(createRef<KanjiStrokeAnimationHandle | null>());
     const [playing] = useFixtureInput('playing', false);
 
     useEffect(() => {

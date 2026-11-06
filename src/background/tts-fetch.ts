@@ -8,6 +8,9 @@ import { rejectWhenAborted } from '../utils/reject-when-aborted';
 const TTS_BASE_URL = 'https://data.10ten.life/audio';
 const CLIP_FETCH_BUDGET_MS = 10_000;
 const MAX_CLIP_BYTES = 2 * 1024 * 1024;
+const MAX_FETCH_ATTEMPTS = 4;
+// The audio API usually has capacity again within about 250ms.
+const RETRY_BASE_DELAY_MS = 250;
 const MAX_CANCELLED_KEYS = 50;
 const MAX_TIMING_ANOMALY_REPORTS = 32;
 
@@ -16,6 +19,9 @@ export type TtsFetchResult =
   | { ok: false };
 
 export type TtsFetchKey = { tabId: number; frameId: number; requestId: string };
+
+type AttemptResult =
+  TtsFetchResult | { ok: false; retry: 'throttled' | 'network' };
 
 const pendingFetches = new Map<string, AbortController>();
 // Remember cancels that arrive before their matching fetch message.
@@ -34,63 +40,34 @@ export async function fetchTtsClip(
 
   const controller = new AbortController();
   pendingFetches.set(mapKey, controller);
+  // Every attempt, and every wait between them, shares this one budget.
+  const deadlineAt = Date.now() + CLIP_FETCH_BUDGET_MS;
   const deadline = setTimeout(() => controller.abort(), CLIP_FETCH_BUDGET_MS);
 
   try {
     const url = `${TTS_BASE_URL}/${buildTtsFilename(request)}`;
-
-    let response: Response;
-    try {
-      response = await rejectWhenAborted(
-        fetch(url, { signal: controller.signal }),
+    for (let attempt = 1; ; attempt++) {
+      const result = await fetchAttempt(
+        url,
+        request.reading,
         controller.signal
       );
-    } catch (e) {
-      if (isNetworkFailure(e)) {
+      if (!('retry' in result)) {
+        return result;
+      }
+
+      if (attempt === MAX_FETCH_ATTEMPTS) {
+        if (result.retry === 'throttled') {
+          notifyThrottledOnce();
+        }
         return { ok: false };
       }
-      throw e;
-    }
-
-    if (!response.ok) {
-      controller.abort();
-      if (response.status >= 500) {
-        void Bugsnag.notify('TTS clip fetch failed', {
-          severity: 'warning',
-          metadata: { status: response.status },
-        });
-      }
-      return { ok: false };
-    }
-
-    const moraTiming = parseMoraTimingHeaders(response, request.reading);
-
-    const contentLength = response.headers.get('content-length');
-    if (declaresOversizedClip(contentLength)) {
-      controller.abort();
-      notifyOversizedClip({ contentLength });
-      return { ok: false };
-    }
-
-    let buffer: ArrayBuffer;
-    try {
-      buffer = await rejectWhenAborted(
-        response.arrayBuffer(),
-        controller.signal
-      );
-    } catch (e) {
-      if (isNetworkFailure(e)) {
+      const delayMs = retryDelayMs(attempt);
+      if (Date.now() + delayMs >= deadlineAt) {
         return { ok: false };
       }
-      throw e;
+      await wait(delayMs, controller.signal);
     }
-
-    if (buffer.byteLength > MAX_CLIP_BYTES) {
-      notifyOversizedClip({ byteLength: buffer.byteLength, contentLength });
-      return { ok: false };
-    }
-
-    return { ok: true, audioBase64: encodeBase64(buffer), moraTiming };
   } catch (e) {
     if (isAbortError(e)) {
       return { ok: false };
@@ -123,6 +100,115 @@ export function cancelTtsFetch(key: TtsFetchKey): void {
   }
 }
 
+async function fetchAttempt(
+  url: string,
+  reading: string,
+  clipSignal: AbortSignal
+): Promise<AttemptResult> {
+  // A bad response aborts only this attempt's request. The clip's own signal
+  // belongs to the caller, who may still try again.
+  const controller = new AbortController();
+  const abortAttempt = () => controller.abort();
+  clipSignal.addEventListener('abort', abortAttempt, { once: true });
+  if (clipSignal.aborted) {
+    abortAttempt();
+  }
+
+  try {
+    let response: Response;
+    try {
+      response = await rejectWhenAborted(
+        fetch(url, { signal: controller.signal }),
+        controller.signal
+      );
+    } catch (e) {
+      if (isNetworkFailure(e)) {
+        return { ok: false, retry: 'network' };
+      }
+      throw e;
+    }
+
+    if (!response.ok) {
+      controller.abort();
+      // A 429 means the audio API is briefly busy, so try again.
+      if (response.status === 429) {
+        return { ok: false, retry: 'throttled' };
+      }
+      // A 5xx is a fault that rarely clears within the budget.
+      if (response.status >= 500) {
+        void Bugsnag.notify(new Error('TTS clip fetch failed'), {
+          severity: 'warning',
+          metadata: { status: response.status },
+        });
+      }
+      return { ok: false };
+    }
+
+    const moraTiming = parseMoraTimingHeaders(response, reading);
+
+    const contentLength = response.headers.get('content-length');
+    if (declaresOversizedClip(contentLength)) {
+      controller.abort();
+      notifyOversizedClip({ contentLength });
+      return { ok: false };
+    }
+
+    let buffer: ArrayBuffer;
+    try {
+      buffer = await rejectWhenAborted(
+        response.arrayBuffer(),
+        controller.signal
+      );
+    } catch (e) {
+      if (isNetworkFailure(e)) {
+        return { ok: false, retry: 'network' };
+      }
+      throw e;
+    }
+
+    if (buffer.byteLength > MAX_CLIP_BYTES) {
+      notifyOversizedClip({ byteLength: buffer.byteLength, contentLength });
+      return { ok: false };
+    }
+
+    return { ok: true, audioBase64: encodeBase64(buffer), moraTiming };
+  } finally {
+    clipSignal.removeEventListener('abort', abortAttempt);
+  }
+}
+
+let reportedThrottling = false;
+
+// Four 429s in a row means the audio API lacks capacity. Report this only
+// once until the background script restarts, so a burst of throttled clips
+// sends one report. Network failures never report: they usually mean the user
+// is offline.
+function notifyThrottledOnce(): void {
+  if (reportedThrottling) {
+    return;
+  }
+  reportedThrottling = true;
+
+  void Bugsnag.notify(
+    new Error('TTS clip fetch still throttled after retries'),
+    { severity: 'warning', metadata: { attempts: MAX_FETCH_ATTEMPTS } }
+  );
+}
+
+// Jitter keeps a client's concurrent fetches from retrying in lockstep.
+function retryDelayMs(attempt: number): number {
+  const baseMs = RETRY_BASE_DELAY_MS * 2 ** (attempt - 1);
+  return baseMs + Math.random() * (baseMs / 2);
+}
+
+function wait(ms: number, signal: AbortSignal): Promise<void> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const elapsed = new Promise<void>((resolve) => {
+    timer = setTimeout(resolve, ms);
+  });
+  return rejectWhenAborted(elapsed, signal, () => clearTimeout(timer));
+}
+
 function keyFor(key: TtsFetchKey): string {
   return `${key.tabId}:${key.frameId}:${key.requestId}`;
 }
@@ -142,7 +228,7 @@ function parseMoraTimingHeaders(
   const rawDuration = response.headers.get('x-amz-meta-audio-duration');
 
   if (!rawTimings || !rawDuration) {
-    notifyTimingAnomalyOnce('TTS mora-timing headers missing', {
+    notifyTimingAnomalyOnce(new Error('TTS mora-timing headers missing'), {
       rawTimings,
       rawDuration,
     });
@@ -163,7 +249,7 @@ function parseMoraTimingHeaders(
         return { charTimingsMs, totalDurationMs };
       }
     }
-    notifyTimingAnomalyOnce('TTS mora-timing headers invalid', {
+    notifyTimingAnomalyOnce(new Error('TTS mora-timing headers invalid'), {
       rawTimings,
       rawDuration,
       expectedCount,
@@ -181,10 +267,10 @@ function parseMoraTimingHeaders(
 const reportedTimingAnomalies = new Set<string>();
 
 function notifyTimingAnomalyOnce(
-  error: string | Error,
+  error: Error,
   metadata: Record<string, unknown>
 ): void {
-  const anomaly = `${typeof error === 'string' ? error : error.message}|${JSON.stringify(metadata)}`;
+  const anomaly = `${error.message}|${JSON.stringify(metadata)}`;
   if (
     reportedTimingAnomalies.has(anomaly) ||
     reportedTimingAnomalies.size >= MAX_TIMING_ANOMALY_REPORTS
@@ -245,10 +331,10 @@ function declaresOversizedClip(contentLength: string | null): boolean {
 }
 
 function notifyOversizedClip(metadata: Record<string, unknown>): void {
-  void Bugsnag.notify(`TTS clip exceeds the ${MAX_CLIP_BYTES}-byte cap`, {
-    severity: 'warning',
-    metadata,
-  });
+  void Bugsnag.notify(
+    new Error(`TTS clip exceeds the ${MAX_CLIP_BYTES}-byte cap`),
+    { severity: 'warning', metadata }
+  );
 }
 
 function encodeBase64(buffer: ArrayBuffer): string {

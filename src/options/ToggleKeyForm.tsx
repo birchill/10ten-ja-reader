@@ -1,4 +1,4 @@
-import type { JSX } from 'preact';
+import type { TargetedEvent, TargetedKeyboardEvent } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 
 import { useLocale } from '../common/i18n';
@@ -94,7 +94,7 @@ export function ToggleKeyForm(props: Props) {
     }
   };
 
-  const onToggleKeyDown = (e: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
+  const onToggleKeyDown = (e: TargetedKeyboardEvent<HTMLInputElement>) => {
     let key = e.key;
 
     // Translate single letter keys to uppercase.
@@ -249,12 +249,10 @@ export function ToggleKeyForm(props: Props) {
           <KeyInput
             disabled={!!props.disabled}
             onKeyDown={onToggleKeyDown}
-            onCompositionStart={(
-              event: JSX.TargetedEvent<HTMLInputElement>
-            ) => {
+            onCompositionStart={(event: TargetedEvent<HTMLInputElement>) => {
               event.currentTarget.value = '';
             }}
-            onCompositionEnd={(event: JSX.TargetedEvent<HTMLInputElement>) => {
+            onCompositionEnd={(event: TargetedEvent<HTMLInputElement>) => {
               event.currentTarget.value =
                 event.currentTarget.value.toUpperCase();
               onToggleKeyChange();

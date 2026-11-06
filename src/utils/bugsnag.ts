@@ -9,92 +9,30 @@ import Bugsnag, {
   deviceOrientation,
   errorBreadcrumbs,
   fetchBreadcrumbs,
-  interactionBreadcrumbs,
   limitEvents,
   navigationBreadcrumbs,
   stringifyValues,
 } from '@birchill/bugsnag-zero';
+import type { NotifyResult } from '@birchill/bugsnag-zero';
 import { DownloadError } from '@birchill/jpdict-idb';
 import browser from 'webextension-polyfill';
 
 import { ExtensionStorageError } from '../common/extension-storage-error';
+import type { PreparedReport } from '../common/prepared-report';
 
 import { BUGSNAG_NOTIFIER_API_KEY } from './bugsnag-api-key';
-import { maybeSendTelemetry } from './dl-failed-telemetry';
+import { asDownloadTelemetry } from './dl-failed-telemetry';
+import { getInstallationId } from './installation-id';
 import { getReleaseStage } from './release-stage';
+import {
+  protectPreparedReport,
+  reportingInteractionBreadcrumbs,
+} from './reporting-protection';
 
-const getExtensionInstallId = async (): Promise<string> => {
-  let internalUuid: string | undefined;
-  try {
-    // In Firefox, each install gets a unique internal UUID which differs from
-    // the extension ID (provided it is set through the
-    // browser_specific_settings in manifest.json).
-    //
-    // Specifically:
-    //
-    // browser.runtime.id = Extension ID
-    // browser.runtime.getURL('yer').host = Internal UUID
-    // browser.getMessage('@@extension_id') = Internal UUID
-    //
-    // In other browsers I think all of the above return the Extension ID.
-    // (I haven't checked Safari, however.)
-    //
-    // If that internal UUID is available, we use it because it is sometimes
-    // helpful when Firefox users contact us describing a bug, to be able to
-    // find error reports generated from their installation.
-    //
-    internalUuid = new URL(browser.runtime.getURL('yer')).host;
-  } catch {
-    // Ignore
-  }
-
-  if (internalUuid && internalUuid !== browser.runtime.id) {
-    return internalUuid;
-  }
-
-  // Generate/fetch a unique install ID since the browser doesn't provide one.
-  try {
-    let storedInstallId = (await browser.storage.local.get('installid'))
-      ?.installid;
-    if (typeof storedInstallId !== 'string') {
-      const installId = getRandomId();
-      await browser.storage.local.set({ installid: installId });
-      storedInstallId = installId;
-    }
-
-    return storedInstallId as string;
-  } catch {
-    // Ignore because we are probably already in the middle of reporting an error
-  }
-
-  return 'unknown';
-};
-
-function getRandomId() {
-  const number = getRandomNumber(10);
-  return `${'0'.repeat(10)}${number.toString(36)}`.slice(-10);
-}
-
-// |length| here is the maximum number of base-36 digits we want to generate.
-function getRandomNumber(length: number): number {
-  if (Math.pow(36, length) > Number.MAX_SAFE_INTEGER) {
-    console.error(
-      `A base-36 number with ${length} digits overflows the range of an integer`
-    );
-  }
-  const values = new Uint8Array(length);
-  crypto.getRandomValues(values);
-  const max = Math.pow(2, 8);
-
-  let result = 0;
-  for (let i = 0; i < values.length; i++) {
-    result *= 36;
-    result += Math.round((values[i] / max) * 35);
-  }
-  return result;
-}
-
-export function startBugsnag() {
+export function startBugsnag(
+  context: 'background' | 'options',
+  capture: (report: PreparedReport) => Promise<NotifyResult>
+) {
   const manifest = browser.runtime.getManifest();
 
   const plugins = [
@@ -106,7 +44,7 @@ export function startBugsnag() {
     deviceOrientation,
     errorBreadcrumbs,
     fetchBreadcrumbs,
-    interactionBreadcrumbs,
+    reportingInteractionBreadcrumbs,
     limitEvents(20),
     navigationBreadcrumbs,
     stringifyValues,
@@ -116,24 +54,64 @@ export function startBugsnag() {
     plugins.push(consoleBreadcrumbs);
   }
 
+  Bugsnag.setDelivery({
+    sendEvent(payload) {
+      protectPreparedReport(payload);
+      const event = payload.events[0];
+      // onError prepares download telemetry while the original Error is still
+      // available. Extract it from the SDK snapshot and strip the private
+      // routing fields before passing either destination's payload to capture.
+      const download = event.metaData?.__10tenDownloadReport;
+      // context retains the destination if SDK size limits discard metadata.
+      // It is only a routing marker here, not part of the transmitted report.
+      const isDownload = event.context === '10ten:download-failure';
+      if (isDownload) {
+        delete event.context;
+      }
+      if (event.metaData) {
+        delete event.metaData.__10tenDownloadReport;
+      }
+      // The SDK may discard oversized metadata. Never fall through to Bugsnag
+      // if doing so removed a download report's prepared payload.
+      if (isDownload && !download) {
+        return Promise.resolve({
+          status: 'skipped',
+          reason: 'download-payload-unavailable',
+        } as const);
+      }
+
+      const reportContext = {
+        source: context,
+        capturedAt: event.device?.time || new Date().toISOString(),
+        appVersion: event.app?.version || manifest.version,
+      };
+      return capture(
+        download
+          ? {
+              destination: 'download-failure',
+              payload: download,
+              context: reportContext,
+            }
+          : { destination: 'bugsnag', payload, context: reportContext }
+      );
+    },
+  });
+
   Bugsnag.start({
     apiKey: BUGSNAG_NOTIFIER_API_KEY,
     appVersion: manifest.version_name || manifest.version,
     collectUserIp: false,
     onError: async (event: BugsnagEvent) => {
       // Fill out the user ID
-      event.user = { id: await getExtensionInstallId() };
-
-      // See if this is something we should report as telemetry instead of an
-      // unexpected error
-      const sentTelemetry = maybeSendTelemetry(
-        event.originalError,
-        manifest.version_name || manifest.version,
-        event.user.id!
-      );
-      if (sentTelemetry) {
-        return false;
-      }
+      const installationId =
+        context === 'background'
+          ? await getInstallationId()
+          : await browser.runtime
+              .sendMessage({ type: 'getReportingInstallationId' })
+              .catch(() => undefined);
+      const id =
+        typeof installationId === 'string' ? installationId : undefined;
+      event.user = { id };
 
       // Group download errors by URL and error code
       if (event.originalError instanceof DownloadError) {
@@ -189,6 +167,18 @@ export function startBugsnag() {
         } catch {
           console.warn('Failed to get storage estimate');
         }
+      }
+
+      // Prepare routing data before the SDK discards originalError. Delivery
+      // strips these private fields before capture, storage, or transmission.
+      event.metaData ??= {};
+      event.metaData.__10tenDownloadReport = asDownloadTelemetry(
+        event.originalError,
+        manifest.version_name || manifest.version,
+        id
+      );
+      if (event.metaData.__10tenDownloadReport) {
+        event.context = '10ten:download-failure';
       }
 
       return true;

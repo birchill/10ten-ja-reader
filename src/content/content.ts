@@ -260,7 +260,7 @@ export class ContentHandler {
 
   // Playback
   #ttsPlaybackController: TtsPlaybackController | undefined;
-  #kanjiStrokeAnimation = createRef<KanjiStrokeAnimationHandle>();
+  #kanjiStrokeAnimation = createRef<KanjiStrokeAnimationHandle | null>();
   #playbackTarget: { toggle: () => void } | undefined;
 
   // Manual positioning support

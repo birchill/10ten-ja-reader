@@ -10,11 +10,17 @@
   "name": "10ten Japanese Reader",
   /*#endif*/
   "author": "Brian Birtles",
-  "version": "1.28.0",
+  "version": "1.29.0",
   /*#if supports_browser_specific_settings*/
   "browser_specific_settings": {
     "gecko": {
       "id": "{59812185-ea92-4cca-8ab7-cfcacee81281}",
+      /*#if !mail_extension&&!is_safari*/
+      "data_collection_permissions": {
+        "required": ["none"],
+        "optional": ["technicalAndInteraction"]
+      },
+      /*#endif*/
       /*#if mail_extension */
       "strict_min_version": "91.0"
       /*#else*/
@@ -31,6 +37,9 @@
   "description": "__MSG_extension_description__",
   "default_locale": "en",
   "minimum_chrome_version": "100",
+  /*#if is_chrome||is_edge*/
+  "storage": { "managed_schema": "managed-storage-schema.json" },
+  /*#endif*/
   /*#if is_edge*/
   "update_url": "https://edge.microsoft.com/extensionwebstorebase/v1/crx",
   /*#endif*/

@@ -142,6 +142,7 @@ const { mockStorage } = vi.hoisted(() => {
 vi.mock('webextension-polyfill', () => ({ default: { storage: mockStorage } }));
 
 import type { ChangeCallback } from './config';
+import Bugsnag from '@birchill/bugsnag-zero';
 import { Config } from './config';
 import type { DbLanguageId } from './db-languages';
 
@@ -159,6 +160,26 @@ describe('Config', () => {
 
   afterEach(() => {
     mockStorage.reset();
+  });
+
+  it('does not turn deleted reports or reporting state into settings breadcrumbs', async () => {
+    const config = new Config();
+    await config.ready;
+    const breadcrumb = vi.spyOn(Bugsnag, 'leaveBreadcrumb');
+    mockStorage.onChanged._onChange(
+      {
+        diagnosticReports: { oldValue: 'DELETED_REPORT_SECRET' },
+        automaticErrorReporting: { newValue: true },
+        fontSize: { newValue: 'large' },
+      },
+      'local'
+    );
+    await vi.waitFor(() =>
+      expect(breadcrumb).toHaveBeenCalledWith('Settings change', {
+        fontSize: { newValue: 'large' },
+      })
+    );
+    breadcrumb.mockRestore();
   });
 
   it('returns the default settings', () => {

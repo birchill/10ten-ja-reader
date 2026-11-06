@@ -13,7 +13,7 @@ jobs:
   prepare:
     name: Prepare release
     if: ${{ github.repository == 'birchill/10ten-ja-reader' }}
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     concurrency:
       group: app-store-connect-build-number
       cancel-in-progress: false
@@ -286,7 +286,7 @@ jobs:
 
   release:
     name: Create release
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     needs: [prepare, build_macos]
     if: ${{ github.repository == 'birchill/10ten-ja-reader' && needs.prepare.outputs.should_release == 'true' }}
     permissions:

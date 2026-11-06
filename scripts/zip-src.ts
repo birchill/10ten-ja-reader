@@ -73,6 +73,7 @@ async function main() {
     'CONTRIBUTING.md',
     'README.md',
     'manifest.json.src',
+    'managed-storage-schema.json',
     'package.json',
     'pnpm-lock.yaml',
     'pnpm-workspace.yaml',

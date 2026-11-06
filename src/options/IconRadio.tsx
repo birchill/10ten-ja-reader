@@ -1,11 +1,11 @@
-import type { ComponentProps, JSX } from 'preact';
+import type { ComponentProps, Signalish } from 'preact';
 import { forwardRef } from 'preact/compat';
 import { useId } from 'preact/hooks';
 
 import { classes } from '../utils/classes';
 
 type InputProps = Omit<
-  ComponentProps<'input'>,
+  Extract<ComponentProps<'input'>, { type: Signalish<'radio'> }>,
   'id' | 'type' | 'class' | 'className'
 > & { label?: string };
 
@@ -55,9 +55,7 @@ export const IconRadio = forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-function Radio(props: {
-  checked?: boolean | JSX.SignalLike<boolean | undefined>;
-}) {
+function Radio(props: { checked?: InputProps['checked'] }) {
   return (
     <span
       class={classes(

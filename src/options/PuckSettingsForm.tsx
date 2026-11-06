@@ -1,4 +1,4 @@
-import type { JSX } from 'preact';
+import type { TargetedEvent } from 'preact';
 import { useCallback } from 'preact/hooks';
 
 import { useLocale } from '../common/i18n';
@@ -29,7 +29,7 @@ export function PuckSettingsForm(props: Props) {
   const { t } = useLocale();
 
   const onChangeShowPuck = useCallback(
-    (event: JSX.TargetedEvent<HTMLInputElement>) => {
+    (event: TargetedEvent<HTMLInputElement>) => {
       const setting = event.currentTarget.value as ShowPuckSetting;
       props.onChangeShowPuck(setting);
     },
@@ -37,7 +37,7 @@ export function PuckSettingsForm(props: Props) {
   );
 
   const onChangeHandedness = useCallback(
-    (event: JSX.TargetedEvent<HTMLInputElement>) => {
+    (event: TargetedEvent<HTMLInputElement>) => {
       const setting = event.currentTarget.value as HandednessSetting;
       props.onChangeHandedness(setting);
     },

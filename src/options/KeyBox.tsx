@@ -1,8 +1,9 @@
-import type { ComponentProps, RenderableProps } from 'preact';
+import type { ComponentProps, RenderableProps, Signalish } from 'preact';
 import { forwardRef } from 'preact/compat';
 import { useId } from 'preact/hooks';
 
 import { classes } from '../utils/classes';
+import type { DistributiveOmit } from '../utils/type-helpers';
 
 type KeyboxProps = { label: string; isMac?: boolean };
 
@@ -42,7 +43,7 @@ function translateKey(key: string, isMac: boolean) {
 }
 
 type CheckboxProps = Omit<
-  ComponentProps<'input'>,
+  Extract<ComponentProps<'input'>, { type: Signalish<'checkbox'> }>,
   'type' | 'class' | 'className'
 >;
 
@@ -76,7 +77,10 @@ export const KeyCheckbox = forwardRef<
   );
 });
 
-type InputProps = Omit<ComponentProps<'input'>, 'class' | 'className'>;
+type InputProps = DistributiveOmit<
+  ComponentProps<'input'>,
+  'class' | 'className'
+>;
 
 export const KeyInput = forwardRef<HTMLInputElement, InputProps>(
   (props: InputProps, ref) => {

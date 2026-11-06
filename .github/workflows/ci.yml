@@ -19,12 +19,12 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     name: Test
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: useblacksmith/checkout@v1
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6
@@ -45,6 +45,10 @@ jobs:
           pnpm build:firefox
           pnpm build:chrome
           pnpm build:thunderbird
+
+      # Install a non-snap Firefox so geckodriver can launch it reliably
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@v1
 
       - name: Run tests
         env:
@@ -72,12 +76,12 @@ jobs:
         run: pnpm cosmos-export
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     name: Lint
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: useblacksmith/checkout@v1
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6

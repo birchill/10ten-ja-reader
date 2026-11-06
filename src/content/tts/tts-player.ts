@@ -6,8 +6,11 @@ import type {
 } from '../../common/tts/tts-request';
 import { buildTtsFilename } from '../../common/tts/tts-request';
 import { rejectWhenAborted } from '../../utils/reject-when-aborted';
+import { withResolvers } from '../../utils/with-resolvers';
 
 const CLIP_DEADLINE_MS = 10_000;
+// The TTS generator throttles a burst of requests from one client.
+const MAX_CONCURRENT_FETCHES = 2;
 const ERROR_STATE_RESET_MS = 2000;
 
 export type StartInfo = {
@@ -131,18 +134,51 @@ export class TtsPlayer {
     const session = new AbortController();
     this.#session = session;
 
+    const clips = this.#fetchInOrder(readings, indices);
+    void this.#run(clips, session.signal);
+  }
+
+  #fetchInOrder(
+    readings: ReadonlyArray<TtsClipRequest>,
+    indices: ReadonlyArray<number>
+  ): Array<PendingClip> {
     const clips = indices.map((readingIndex) => {
       // Give each clip its own controller before you fetch it, so that the
       // deadline in `#playWhenReady` can also cancel the fetch.
       const controller = new AbortController();
-      const clip = this.#fetchClip(readings[readingIndex], controller.signal);
+      const { promise, resolve, reject } = withResolvers<TtsClip>();
       // A later reading can fail before its turn to play. Without a handler,
       // this gives an unhandled rejection.
-      ignoreRejection(clip);
-      return { readingIndex, clip, controller };
+      ignoreRejection(promise);
+      return { readingIndex, clip: promise, controller, resolve, reject };
     });
 
-    void this.#run(clips, session.signal);
+    let next = 0;
+    const startNext = () => {
+      while (next < clips.length) {
+        const { readingIndex, controller, resolve, reject } = clips[next++];
+        // Fetch nothing for a clip whose session already ended.
+        if (controller.signal.aborted) {
+          reject(new DOMException('Aborted', 'AbortError'));
+          continue;
+        }
+
+        // An abort frees the slot at once, even when the fetch seam ignores it.
+        void rejectWhenAborted(
+          this.#fetchClip(readings[readingIndex], controller.signal),
+          controller.signal
+        )
+          .then(resolve, reject)
+          .finally(startNext);
+        return;
+      }
+    };
+
+    for (let slot = 0; slot < MAX_CONCURRENT_FETCHES; slot++) {
+      startNext();
+    }
+
+    return clips;
   }
 
   #fetchClip(request: TtsClipRequest, signal: AbortSignal): Promise<TtsClip> {

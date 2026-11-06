@@ -15,7 +15,7 @@ export type KanjiListProps = {
   entries: ReadonlyArray<KanjiResult>;
   kanjiReferences: Array<ReferenceAbbreviation>;
   onStartCopy?: StartCopyCallback;
-  playbackRef?: RefObject<KanjiStrokeAnimationHandle>;
+  playbackRef?: RefObject<KanjiStrokeAnimationHandle | null>;
   playbackShortcuts?: ReadonlyArray<string>;
   showComponents?: boolean;
 };
