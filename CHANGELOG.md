@@ -6,6 +6,20 @@ The format is based roughly on [Keep a Changelog](https://keepachangelog.com/en/
 This project does _not_ adhere to semantic versioning—it's a consumer
 app.
 
+## 1.30.0
+
+- Reading audio playback is enabled by default. The temporary toggle in Settings
+  has been removed.
+- Automatic error reporting now requires consent, using Firefox's native
+  data-collection permission where supported and a default-off setting elsewhere.
+  Up to 10 diagnostic reports are saved locally when reporting is off or delivery
+  fails. Repeated reports share one saved copy with an occurrence count.
+  Saved reports can be sent once without enabling automatic reporting, with
+  explicit retries limited to the reports selected in that batch.
+  Administrators can disable diagnostic sending and local report storage
+  independently through managed policy. Reports use a dedicated installation ID
+  and mask lookup text in known error messages and pronunciation-audio URLs.
+
 ## [1.29.0] - 2026-10-21
 
 - Added an experimental, off-by-default setting (Settings → Audio) that shows a
