@@ -361,7 +361,17 @@ function mount(
 function animationFor(element: HTMLElement, name: string): string | undefined {
   return element.style.animation
     .split(', ')
-    .find((animation) => animation.startsWith(name));
+    .find((animation) => animationName(animation, name) !== undefined);
+}
+
+// jsdom serializes the shorthand in canonical order (the name comes last), so
+// find the name by prefix rather than by position.
+function animationName(animation: string, prefix: string): string | undefined {
+  return animation.split(' ').find((token) => token.startsWith(prefix));
+}
+
+function timesIn(animation: string): Array<string> {
+  return animation.split(' ').filter((token) => /^-?[\d.]+m?s$/.test(token));
 }
 
 function animating(elements: Array<HTMLElement>): Array<boolean> {
@@ -390,22 +400,24 @@ function paused(elements: Array<HTMLElement>): Array<boolean> {
   return elements.map((element) => element.style.animation.includes('paused'));
 }
 
-// The delay is the fourth value of the shorthand, and the only number in it
-// this component computes rather than reads off the clip.
+// The delay is the second time value of the shorthand (after the duration), and
+// the only number in it this component computes rather than reads off the clip.
 function delaysFor(
   elements: Array<HTMLElement>,
   name: string
 ): Array<number | undefined> {
   return elements.map((element) => {
-    const delay = animationFor(element, name)?.split(' ')[3];
+    const animation = animationFor(element, name);
+    const delay = animation === undefined ? undefined : timesIn(animation)[1];
     return delay === undefined ? undefined : Number.parseInt(delay, 10);
   });
 }
 
 function phaseFor(element: HTMLElement, name: string): string | undefined {
-  return animationFor(element, name)
-    ?.split(' ')[0]
-    .slice(name.length + 1);
+  const animation = animationFor(element, name);
+  return animation === undefined
+    ? undefined
+    : animationName(animation, name)?.slice(name.length + 1);
 }
 
 function ascending(
