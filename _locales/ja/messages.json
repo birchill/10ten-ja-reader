@@ -106,7 +106,7 @@
     "description": "Message shown when we fail to calculate the corresponding Gregorian date of a pre-Gregorian era"
   },
   "content_kanji_base_radical": {
-    "message": "部 $char$  $readings$",
+    "message": "元は $char$  $readings$",
     "description": "The string used to describe the base radical",
     "placeholders": {
       "char": { "content": "$1", "example": "⾡" },
@@ -188,7 +188,7 @@
   "content_names_tag_leg": { "message": "伝説" },
   "content_names_tag_masc": { "message": "男" },
   "content_names_tag_myth": { "message": "神話" },
-  "content_names_tag_obj": { "message": "オブジェ" },
+  "content_names_tag_obj": { "message": "物" },
   "content_names_tag_org": { "message": "組織" },
   "content_names_tag_oth": { "message": "その他" },
   "content_names_tag_person": { "message": "姓名" },
@@ -391,7 +391,7 @@
     "description": "Label applied to senses with the 'astron' field"
   },
   "field_label_audvid": {
-    "message": "ＡＶ",
+    "message": "視聴覚",
     "description": "Label applied to senses with the 'audvid' field"
   },
   "field_label_aviat": {
@@ -543,7 +543,7 @@
     "description": "Label applied to senses with the 'gramm' field"
   },
   "field_label_grmyth": {
-    "message": "ギ神",
+    "message": "ギリシャ神話",
     "description": "Label applied to senses with the 'grmyth' field"
   },
   "field_label_hanaf": {
@@ -827,7 +827,7 @@
     "description": "Label used to describe senses whose source language is 'am' (Amharic)"
   },
   "lang_label_ar": {
-    "message": "アラブ語",
+    "message": "アラビア語",
     "description": "Label used to describe senses whose source language is 'ar' (Arabic)"
   },
   "lang_label_arn": {
@@ -1147,11 +1147,11 @@
     "description": "Label used to describe senses with the 'char' (character) annotation"
   },
   "misc_label_chn": {
-    "message": "幼稚",
+    "message": "幼児語",
     "description": "Label used to describe senses with the 'chn' (children) annotation"
   },
   "misc_label_col": {
-    "message": "俗語",
+    "message": "口語",
     "description": "Label used to describe senses with the 'col' (colloquial) annotation"
   },
   "misc_label_company": {
@@ -1163,7 +1163,7 @@
     "description": "Label used to describe senses with the 'creat' (creature) annotation"
   },
   "misc_label_dated": {
-    "message": "古",
+    "message": "古風",
     "description": "Label used to describe senses with the 'dated' (dated) annotation"
   },
   "misc_label_dei": {
@@ -1187,11 +1187,11 @@
     "description": "Label used to describe senses with the 'ev' (event) annotation"
   },
   "misc_label_fam": {
-    "message": "身近",
+    "message": "くだけた",
     "description": "Label used to describe senses with the 'fam' (familiar) annotation"
   },
   "misc_label_fem": {
-    "message": "女性",
+    "message": "女性語",
     "description": "Label used to describe senses with the 'fem' (female term) annotation"
   },
   "misc_label_fict": {
@@ -1199,11 +1199,11 @@
     "description": "Label used to describe senses with the 'fict' (fiction) annotation"
   },
   "misc_label_form": {
-    "message": "堅苦しい",
+    "message": "改まった",
     "description": "Label used to describe senses with the 'form' (formal or literary term) annotation"
   },
   "misc_label_given": {
-    "message": "名前",
+    "message": "下の名前",
     "description": "Label used to describe senses with the 'given' (given name) annotation"
   },
   "misc_label_group": {
@@ -1239,7 +1239,7 @@
     "description": "Label used to describe senses with the 'm-sl' (manga slang) annotation"
   },
   "misc_label_male": {
-    "message": "男性",
+    "message": "男性語",
     "description": "Label used to describe senses with the 'male' (male) annotation"
   },
   "misc_label_myth": {
@@ -1251,7 +1251,7 @@
     "description": "Label used to describe senses with the 'net-sl' (Internet slang) annotation"
   },
   "misc_label_obj": {
-    "message": "オブジェ",
+    "message": "物名",
     "description": "Label used to describe senses with the 'obj' (object) annotation"
   },
   "misc_label_obs": {
@@ -1259,7 +1259,7 @@
     "description": "Label used to describe senses with the 'obs' (obsolete) annotation"
   },
   "misc_label_obsc": {
-    "message": "不明",
+    "message": "難解語",
     "description": "Label used to describe senses with the 'obsc' (obscure) annotation"
   },
   "misc_label_on_mim": {
@@ -1303,7 +1303,7 @@
     "description": "Label used to describe senses with the 'quote' (quote) annotation"
   },
   "misc_label_rare": {
-    "message": "珍語",
+    "message": "まれ",
     "description": "Label used to describe senses with the 'rare' (rare) annotation"
   },
   "misc_label_relig": {
@@ -1359,7 +1359,7 @@
     "description": "Label used to describe senses with the 'yoji' (yojijukugo) annotation"
   },
   "options_accent_data_source": {
-    "message": "高低アクセントデータはUros Ozvatic氏の無料データベースにより使用しております。",
+    "message": "高低アクセントデータはUros Ozvatic氏の無料データベースから提供されています。",
     "description": "Attribution for pitch accent data as described here: https://github.com/mifunetoshiro/kanjium"
   },
   "options_accent_display_binary": {
@@ -1737,7 +1737,7 @@
     "description": "Label for button to restore the toggle shortcut"
   },
   "options_show_bunpro_decks": {
-    "message": "文プロデッキ情報を表示",
+    "message": "Bunproのデッキ情報を表示",
     "description": "Label for enabling display of Bunpro vocab and grammar deck information alongside headwords"
   },
   "options_show_context_menu_item": {
@@ -2202,7 +2202,7 @@
     "description": "Short part-of-speech label shown next to Godan verb with 'tsu' ending entries"
   },
   "pos_label_v5u": {
-    "message": "動ア五",
+    "message": "動ワ五",
     "description": "Short part-of-speech label shown next to Godan verb with 'u' ending entries"
   },
   "pos_label_v5u_s": {
