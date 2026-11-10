@@ -543,7 +543,7 @@
     "description": "Label applied to senses with the 'gramm' field"
   },
   "field_label_grmyth": {
-    "message": "ギリシャ神話",
+    "message": "ギ神",
     "description": "Label applied to senses with the 'grmyth' field"
   },
   "field_label_hanaf": {
