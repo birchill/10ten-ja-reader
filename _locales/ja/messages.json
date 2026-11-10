@@ -1259,7 +1259,7 @@
     "description": "Label used to describe senses with the 'obs' (obsolete) annotation"
   },
   "misc_label_obsc": {
-    "message": "難解語",
+    "message": "あまり知られていない語",
     "description": "Label used to describe senses with the 'obsc' (obscure) annotation"
   },
   "misc_label_on_mim": {
