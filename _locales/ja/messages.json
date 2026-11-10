@@ -1203,7 +1203,7 @@
     "description": "Label used to describe senses with the 'form' (formal or literary term) annotation"
   },
   "misc_label_given": {
-    "message": "下の名前",
+    "message": "名前",
     "description": "Label used to describe senses with the 'given' (given name) annotation"
   },
   "misc_label_group": {
