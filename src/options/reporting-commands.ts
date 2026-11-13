@@ -1,7 +1,29 @@
 import browser from 'webextension-polyfill';
 
+import type { SavedReport } from '../background/report-queue';
+import type { ReportingService } from '../background/reporting';
 import type { ReportBatchReply } from '../common/report-batch';
 import type { ReportingConsent } from '../common/reporting-consent';
+
+export type ReportingStateReply = Awaited<
+  ReturnType<ReportingService['readState']>
+>;
+
+export function readReportingState(): Promise<ReportingStateReply> {
+  return browser.runtime.sendMessage({ type: 'readReportingState' });
+}
+
+export function readReport(id: string): Promise<SavedReport | undefined> {
+  return browser.runtime.sendMessage({ type: 'readReport', id });
+}
+
+export function deleteReport(id: string): Promise<boolean> {
+  return browser.runtime.sendMessage({ type: 'deleteReport', id });
+}
+
+export function deleteAllReports(): Promise<boolean> {
+  return browser.runtime.sendMessage({ type: 'deleteAllReports' });
+}
 
 // Use the IDs and revision displayed to the user. A stale-state reply requires
 // refreshing the display and a new gesture, never silently selecting more data.

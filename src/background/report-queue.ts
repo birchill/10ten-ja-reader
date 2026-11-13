@@ -50,6 +50,7 @@ const RecordSchema = s.intersection([
   }),
 ]);
 export type SavedReport = s.Infer<typeof RecordSchema>;
+export type SavedReportSummary = Omit<SavedReport, 'payload' | 'dedupKey'>;
 type Envelope = {
   schemaVersion: 1;
   revision: number;
