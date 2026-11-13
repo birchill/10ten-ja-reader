@@ -35,8 +35,8 @@ export async function sendReportsAndEnable(
           : ('off' as const),
     () => 'error' as const
   );
-  const [result, automaticReporting] = await Promise.all([batch, enabling]);
-  return { ...result, automaticReporting };
+  const [reply, automaticReporting] = await Promise.all([batch, enabling]);
+  return { reply, automaticReporting };
 }
 
 export function retryReportBatch(id: string): Promise<ReportBatchReply> {
