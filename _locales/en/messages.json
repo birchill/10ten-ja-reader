@@ -1384,6 +1384,10 @@
     "message": "None",
     "description": "Label for not showing pitch accent information"
   },
+  "options_automatic_error_reporting": {
+    "message": "Automatically send error reports",
+    "description": "Label for the checkbox that turns on automatic error reporting."
+  },
   "options_browser_commands_no_toggle_key": {
     "message": "This shortcut key cannot be configured in this browser.",
     "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."
@@ -1513,6 +1517,59 @@
   "options_edrdg_license_keyword": {
     "message": "licence",
     "description": "The keyword in options_edrdg_license to link to the license"
+  },
+  "options_error_reporting_check_failed": {
+    "message": "Couldn’t check your reporting setting.",
+    "description": "Shown when the automatic reporting setting could not be read. Followed by a \"Try again\" button."
+  },
+  "options_error_reporting_checking": {
+    "message": "Checking your reporting setting…",
+    "description": "Shown while the automatic reporting setting is being read."
+  },
+  "options_error_reporting_contents": {
+    "message": "Reports include error details, recent diagnostic events, technical information such as your browser and 10ten version, and a random installation ID that links reports from this installation.",
+    "description": "Disclosure of what error reports contain. Followed by a link to the privacy policy. Must not suggest reports are anonymous."
+  },
+  "options_error_reporting_description": {
+    "message": "When something goes wrong—for example, a dictionary download fails—10ten can send a report so we can find and fix the problem. Reporting is optional and doesn’t change how 10ten works.",
+    "description": "Explanation of what automatic error reporting is for."
+  },
+  "options_error_reporting_disabled_by_organization": {
+    "message": "Disabled by your organization.",
+    "description": "Shown when an administrator has disabled sending error reports."
+  },
+  "options_error_reporting_enabled_saved_one": {
+    "message": "Automatic reporting is on for new reports. The report saved earlier hasn’t been sent.",
+    "description": "Shown after turning on automatic reporting while one report is saved. Followed by a \"Review saved reports\" link."
+  },
+  "options_error_reporting_enabled_saved_other": {
+    "message": "Automatic reporting is on for new reports. The $count$ reports saved earlier haven’t been sent.",
+    "description": "Shown after turning on automatic reporting while several reports are saved. Followed by a \"Review saved reports\" link.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_error_reporting_heading": {
+    "message": "Error reporting",
+    "description": "Heading for the error reporting section of the options page."
+  },
+  "options_error_reporting_permission_declined": {
+    "message": "Automatic reporting is still off because the browser permission wasn’t granted. You can try again any time.",
+    "description": "Shown after the user declined the browser permission needed for automatic reporting."
+  },
+  "options_error_reporting_permission_prompt": {
+    "message": "Waiting for your answer in the browser’s permission prompt…",
+    "description": "Shown while the browser asks the user for permission to send error reports."
+  },
+  "options_error_reporting_policy_unavailable": {
+    "message": "Error reporting is paused because your organization’s settings couldn’t be read.",
+    "description": "Shown when the administrator policy for error reporting could not be read."
+  },
+  "options_error_reporting_review_saved": {
+    "message": "Review saved reports",
+    "description": "Link that opens the saved reports."
+  },
+  "options_error_reporting_try_again": {
+    "message": "Try again",
+    "description": "Button to retry an error reporting operation."
   },
   "options_expand_all_entries": {
     "message": "Expand all entries",
@@ -1728,9 +1785,386 @@
     "message": "None",
     "description": "Label for hiding part-of-speech labels"
   },
+  "options_privacy_policy_link": {
+    "message": "Privacy policy",
+    "description": "Link to the privacy policy."
+  },
+  "options_report_notice_body_one": {
+    "message": "10ten saved an error report on this device. It hasn’t been sent. Sharing it helps us investigate problems and improve reliability.",
+    "description": "Notice text when one report is saved."
+  },
+  "options_report_notice_body_other": {
+    "message": "10ten saved $count$ error reports on this device. These reports haven’t been sent. Sharing them helps us investigate problems and improve reliability.",
+    "description": "Notice text when several reports are saved.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_report_notice_dismiss": {
+    "message": "Don’t show this again",
+    "description": "Permanently hides the notice. Does not change reporting settings or delete reports."
+  },
+  "options_report_notice_dismissed": {
+    "message": "Notice hidden. You can still find saved reports under Error reporting at the bottom of this page.",
+    "description": "Shown after permanently hiding the notice about saved reports."
+  },
+  "options_report_notice_encourage": {
+    "message": "Turning on automatic reporting lets us fix issues sooner and is greatly appreciated.",
+    "description": "Encourages turning on automatic reporting."
+  },
+  "options_report_notice_heading": {
+    "message": "Help improve 10ten Japanese Reader",
+    "description": "Heading of the notice about saved reports at the top of the options page."
+  },
+  "options_report_notice_ok": {
+    "message": "OK",
+    "description": "Acknowledges that the notice was hidden."
+  },
+  "options_report_notice_undo": {
+    "message": "Undo",
+    "description": "Shows the hidden notice again."
+  },
+  "options_report_notice_view": {
+    "message": "View reports",
+    "description": "Opens the saved reports."
+  },
   "options_restore_toggle_shortcut": {
     "message": "Restore toggle shortcut",
     "description": "Label for button to restore the toggle shortcut"
+  },
+  "options_saved_report_attempts": {
+    "message": "Send attempts",
+    "description": "Label for the number of times sending was attempted."
+  },
+  "options_saved_report_category_download": {
+    "message": "Download failure",
+    "description": "Kind of saved report: a failed download."
+  },
+  "options_saved_report_category_error": {
+    "message": "Error",
+    "description": "Kind of saved report: a general error."
+  },
+  "options_saved_report_data_heading": {
+    "message": "Complete report data",
+    "description": "Heading for the exact data that would be sent."
+  },
+  "options_saved_report_data_label": {
+    "message": "Report data",
+    "description": "Accessible label for the exact data that would be sent."
+  },
+  "options_saved_report_data_load_failed": {
+    "message": "Couldn’t load this report.",
+    "description": "Shown in place of a saved report’s data when it couldn’t be read. Followed by a “Try again” button."
+  },
+  "options_saved_report_delete": {
+    "message": "Delete this report",
+    "description": "Button to delete one saved report."
+  },
+  "options_saved_report_delete_label": {
+    "message": "Delete report: $title$",
+    "description": "Accessible label for the button to delete one saved report.",
+    "placeholders": {
+      "title": { "content": "$1", "example": "TypeError: Failed to fetch" }
+    }
+  },
+  "options_saved_report_delivery_heading": {
+    "message": "Delivery status (kept on this device, not sent)",
+    "description": "Heading for local delivery details, which are not part of the report."
+  },
+  "options_saved_report_delivery_status": {
+    "message": "Status",
+    "description": "Label for the local delivery status."
+  },
+  "options_saved_report_destination": {
+    "message": "Destination",
+    "description": "Label for where a report would be sent."
+  },
+  "options_saved_report_destination_bugsnag": {
+    "message": "Bugsnag error monitoring (notify.bugsnag.com)",
+    "description": "The error monitoring service that receives most reports."
+  },
+  "options_saved_report_destination_download": {
+    "message": "10ten download diagnostic service (data.10ten.life)",
+    "description": "10ten’s own service that receives dictionary and exchange rate download failure reports."
+  },
+  "options_saved_report_download_network": {
+    "message": "Download failed because of a network error",
+    "description": "Title for a saved report of a download that failed due to a network error."
+  },
+  "options_saved_report_download_syntax": {
+    "message": "Downloaded data couldn’t be read",
+    "description": "Title for a saved report of downloaded data that could not be read."
+  },
+  "options_saved_report_download_timeout": {
+    "message": "Download timed out",
+    "description": "Title for a saved report of a download that timed out."
+  },
+  "options_saved_report_first_seen": {
+    "message": "First seen",
+    "description": "Label for when an error first happened."
+  },
+  "options_saved_report_last_attempt": {
+    "message": "Last attempt",
+    "description": "Label for when sending was last attempted."
+  },
+  "options_saved_report_last_result": {
+    "message": "Last result",
+    "description": "Label for the technical result of the last attempt."
+  },
+  "options_saved_report_last_seen": {
+    "message": "Last seen",
+    "description": "Label for when an error last happened."
+  },
+  "options_saved_report_occurrences": {
+    "message": "Occurrences",
+    "description": "Label for how many times an error happened."
+  },
+  "options_saved_report_occurrences_one": {
+    "message": "Happened once",
+    "description": "How many times a saved error happened (once)."
+  },
+  "options_saved_report_occurrences_other": {
+    "message": "Happened $count$ times",
+    "description": "How many times a saved error happened (several times).",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_saved_report_recorded_in": {
+    "message": "Recorded in",
+    "description": "Label for the part of the extension that recorded the error."
+  },
+  "options_saved_report_sends_to": {
+    "message": "Sends to $destination$",
+    "description": "Where a saved report would be sent.",
+    "placeholders": {
+      "destination": {
+        "content": "$1",
+        "example": "Bugsnag (notify.bugsnag.com)"
+      }
+    }
+  },
+  "options_saved_report_source_background": {
+    "message": "Background page",
+    "description": "Part of the extension that recorded an error: the background page."
+  },
+  "options_saved_report_source_options": {
+    "message": "Options page",
+    "description": "Part of the extension that recorded an error: the options page."
+  },
+  "options_saved_report_state_failed": {
+    "message": "Couldn’t be sent",
+    "description": "Local delivery status of a saved report."
+  },
+  "options_saved_report_state_interrupted": {
+    "message": "Sending interrupted",
+    "description": "Local delivery status of a saved report whose sending was interrupted, e.g. by closing the browser."
+  },
+  "options_saved_report_state_ready": {
+    "message": "Not sent",
+    "description": "Local delivery status of a saved report."
+  },
+  "options_saved_report_state_sending": {
+    "message": "Sending",
+    "description": "Local delivery status of a saved report."
+  },
+  "options_saved_report_state_unsupported": {
+    "message": "Can’t be sent",
+    "description": "Local delivery status of a saved report that this version cannot send."
+  },
+  "options_saved_report_version": {
+    "message": "10ten version",
+    "description": "Label for the extension version that recorded the error."
+  },
+  "options_saved_reports_cancel": {
+    "message": "Cancel",
+    "description": "Cancels deleting all saved reports."
+  },
+  "options_saved_reports_checking": {
+    "message": "Checking for saved reports…",
+    "description": "Shown while saved reports are loading."
+  },
+  "options_saved_reports_count_one": {
+    "message": "1 saved report, not sent",
+    "description": "Number of saved reports (one)."
+  },
+  "options_saved_reports_count_other": {
+    "message": "$count$ saved reports, not sent",
+    "description": "Number of saved reports (several).",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_saved_reports_delete_all": {
+    "message": "Delete all",
+    "description": "Button to delete all saved reports. Asks for confirmation first."
+  },
+  "options_saved_reports_delete_all_confirm_button": {
+    "message": "Delete",
+    "description": "Confirms deleting all saved reports."
+  },
+  "options_saved_reports_delete_all_confirm_one": {
+    "message": "Delete the saved report from this device?",
+    "description": "Confirmation before deleting the only saved report."
+  },
+  "options_saved_reports_delete_all_confirm_other": {
+    "message": "Delete all $count$ saved reports from this device?",
+    "description": "Confirmation before deleting all saved reports.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_saved_reports_delete_all_confirm_unknown": {
+    "message": "Delete all saved reports from this device?",
+    "description": "Confirmation before deleting saved reports that cannot be displayed."
+  },
+  "options_saved_reports_delete_failed": {
+    "message": "Couldn’t delete the saved reports. Please try again.",
+    "description": "Shown when saved reports could not be deleted."
+  },
+  "options_saved_reports_deleted": {
+    "message": "Saved reports deleted.",
+    "description": "Shown after deleting all saved reports. Must not claim that nothing was sent."
+  },
+  "options_saved_reports_description_blocked": {
+    "message": "Your organization has disabled sending error reports. You can still review or delete reports saved on this device.",
+    "description": "Explains saved reports when an administrator has disabled sending."
+  },
+  "options_saved_reports_description_off": {
+    "message": "While automatic sending is off, 10ten keeps up to 10 recent error reports on this device so you can review them and choose whether to send them.",
+    "description": "Explains local report storage while automatic reporting is off."
+  },
+  "options_saved_reports_description_on": {
+    "message": "These reports were saved while automatic reporting was off or couldn’t be sent at the time. New reports are sent as they happen.",
+    "description": "Explains saved reports that remain after automatic reporting was turned on."
+  },
+  "options_saved_reports_heading": {
+    "message": "Saved on this device",
+    "description": "Heading for reports saved on this device."
+  },
+  "options_saved_reports_hide": {
+    "message": "Hide reports",
+    "description": "Collapses the list of saved reports."
+  },
+  "options_saved_reports_load_failed": {
+    "message": "Couldn’t load saved reports.",
+    "description": "Shown when saved reports could not be read."
+  },
+  "options_saved_reports_none": {
+    "message": "No saved reports",
+    "description": "Shown when no reports are saved."
+  },
+  "options_saved_reports_show": {
+    "message": "Show reports",
+    "description": "Expands the list of saved reports."
+  },
+  "options_saved_reports_storage_disabled": {
+    "message": "Saving reports on this device is disabled by your organization.",
+    "description": "Shown when an administrator has disabled saving reports on the device."
+  },
+  "options_saved_reports_unsupported": {
+    "message": "Saved reports from a newer version of 10ten can’t be shown.",
+    "description": "Shown when saved reports use a format from a newer version."
+  },
+  "options_saved_reports_viewer_intro": {
+    "message": "These reports are stored on this device and haven’t been sent. Expand a report to see exactly what would be sent.",
+    "description": "Introduction to the list of saved reports."
+  },
+  "options_saved_reports_viewer_intro_blocked": {
+    "message": "These reports are stored on this device. Expand a report to see its contents.",
+    "description": "Introduction to the list of saved reports when sending is disabled by an administrator."
+  },
+  "options_saved_reports_viewer_label": {
+    "message": "Saved error reports",
+    "description": "Accessible label for the list of saved reports."
+  },
+  "options_send_reports_and_enable": {
+    "message": "Send and enable automatic reporting",
+    "description": "Button that sends the saved reports and turns on automatic reporting."
+  },
+  "options_send_reports_one": {
+    "message": "Send this report",
+    "description": "Button that sends the one saved report once without turning on automatic reporting."
+  },
+  "options_send_reports_other": {
+    "message": "Send $count$ reports",
+    "description": "Button that sends the saved reports once without turning on automatic reporting.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_send_result_all_one": {
+    "message": "1 report sent. Thank you!",
+    "description": "Result after sending one report successfully."
+  },
+  "options_send_result_all_other": {
+    "message": "$count$ reports sent. Thank you!",
+    "description": "Result after sending all reports successfully.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_send_result_close": {
+    "message": "Close",
+    "description": "Closes a sending result."
+  },
+  "options_send_result_declined": {
+    "message": "Automatic reporting remains off because the browser permission wasn’t granted.",
+    "description": "Follows sending reports when the browser permission for automatic reporting was declined."
+  },
+  "options_send_result_enable_failed": {
+    "message": "Automatic reporting couldn’t be turned on.",
+    "description": "Follows sending reports when automatic reporting could not be turned on."
+  },
+  "options_send_result_enabled": {
+    "message": "Automatic reporting is now on, so future reports will be sent as they happen.",
+    "description": "Follows sending reports and turning on automatic reporting."
+  },
+  "options_send_result_error": {
+    "message": "Couldn’t send the reports. They’re still saved on this device.",
+    "description": "Result when the extension could not start sending."
+  },
+  "options_send_result_failed_one": {
+    "message": "The report couldn’t be sent right now. It’s still saved on this device, so you can try again later.",
+    "description": "Result when the report could not be sent."
+  },
+  "options_send_result_failed_other": {
+    "message": "The reports couldn’t be sent right now. They’re still saved on this device, so you can try again later.",
+    "description": "Result when none of the reports could be sent."
+  },
+  "options_send_result_none": {
+    "message": "No reports were sent.",
+    "description": "Result when no reports were sent, e.g. because they were deleted while sending."
+  },
+  "options_send_result_partial": {
+    "message": "$sent$ of $total$ reports sent.",
+    "description": "Result when only some reports were sent.",
+    "placeholders": {
+      "sent": { "content": "$1", "example": "2" },
+      "total": { "content": "$2", "example": "3" }
+    }
+  },
+  "options_send_result_partial_remaining_one": {
+    "message": "1 couldn’t be sent and is still saved on this device.",
+    "description": "Follows the partial result: one report was not sent."
+  },
+  "options_send_result_partial_remaining_other": {
+    "message": "$count$ couldn’t be sent and are still saved on this device.",
+    "description": "Follows the partial result: several reports were not sent.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_send_result_stale": {
+    "message": "The saved reports changed, so nothing was sent. Please review them and try again.",
+    "description": "Result when the saved reports changed before sending started."
+  },
+  "options_send_result_still_off": {
+    "message": "Automatic reporting is still off.",
+    "description": "Follows a successful one-time send."
+  },
+  "options_send_result_still_off_notice": {
+    "message": "Automatic reporting is still off. You can turn it on any time under Error reporting at the bottom of this page.",
+    "description": "Follows a successful one-time send from the notice at the top of the options page."
+  },
+  "options_send_result_unavailable": {
+    "message": "These reports can’t be retried any more. Send the saved reports again instead.",
+    "description": "Result when a retry is no longer possible, e.g. after the browser restarted."
+  },
+  "options_sending_reports_one": {
+    "message": "Sending 1 report…",
+    "description": "Progress message while sending one report."
+  },
+  "options_sending_reports_other": {
+    "message": "Sending $count$ reports…",
+    "description": "Progress message while sending several reports.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
   },
   "options_show_bunpro_decks": {
     "message": "Show Bunpro deck information",
