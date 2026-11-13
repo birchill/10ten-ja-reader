@@ -1382,6 +1382,10 @@
     "message": "なし",
     "description": "Label for not showing pitch accent information"
   },
+  "options_automatic_error_reporting": {
+    "message": "エラー報告を自動的に送信する",
+    "description": "Label for the checkbox that turns on automatic error reporting."
+  },
   "options_browser_commands_no_toggle_key": {
     "message": "お使いになっているブラウザーではこのショートカットキーを変更していただけません。",
     "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."
@@ -1511,6 +1515,60 @@
   "options_edrdg_license_keyword": {
     "message": "ライセンス",
     "description": "The keyword in options_edrdg_license to link to the license"
+  },
+  "options_error_reporting_check_failed": {
+    "message": "報告の設定を確認できませんでした。",
+    "description": "Shown when the automatic reporting setting could not be read. Followed by a \"Try again\" button."
+  },
+  "options_error_reporting_checking": {
+    "message": "報告の設定を確認しています…",
+    "description": "Shown while the automatic reporting setting is being read."
+  },
+  "options_error_reporting_contents": {
+    "message": "レポートには、エラーの詳細、直近の診断イベント、ブラウザーや 10ten のバージョンなどの技術情報、同じインストール環境からのレポートを関連付けるランダムなインストール識別子が含まれます。",
+    "description": "Disclosure of what error reports contain. Followed by a link to the privacy policy. Must not suggest reports are anonymous."
+  },
+  "options_error_reporting_description": {
+    "message": "辞書のダウンロードに失敗した場合など、問題が発生したときに、10ten はレポートを送信して、問題の発見と修正に役立てることができます。エラー報告は任意で、オフにしても 10ten の動作は変わりません。",
+    "description": "Explanation of what automatic error reporting is for."
+  },
+  "options_error_reporting_disabled_by_organization": {
+    "message": "所属組織により無効にされています。",
+    "description": "Shown when an administrator has disabled sending error reports."
+  },
+  "options_error_reporting_enabled_saved_one": {
+    "message": "新しいレポートの自動送信をオンにしました。以前に保存したレポート（$count$ 件）は送信されていません。",
+    "description": "Shown after turning on automatic reporting while one report is saved. Followed by a \"Review saved reports\" link.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_error_reporting_enabled_saved_other": {
+    "message": "新しいレポートの自動送信をオンにしました。以前に保存したレポート（$count$ 件）は送信されていません。",
+    "description": "Shown after turning on automatic reporting while several reports are saved. Followed by a \"Review saved reports\" link.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_error_reporting_heading": {
+    "message": "エラー報告",
+    "description": "Heading for the error reporting section of the options page."
+  },
+  "options_error_reporting_permission_declined": {
+    "message": "ブラウザーの許可が得られなかったため、自動エラー報告はオフのままです。いつでも再度お試しいただけます。",
+    "description": "Shown after the user declined the browser permission needed for automatic reporting."
+  },
+  "options_error_reporting_permission_prompt": {
+    "message": "ブラウザーの許可を求める画面で、回答を待っています…",
+    "description": "Shown while the browser asks the user for permission to send error reports."
+  },
+  "options_error_reporting_policy_unavailable": {
+    "message": "所属組織の設定を読み込めなかったため、エラー報告を一時停止しています。",
+    "description": "Shown when the administrator policy for error reporting could not be read."
+  },
+  "options_error_reporting_review_saved": {
+    "message": "保存済みレポートを確認",
+    "description": "Link that opens the saved reports."
+  },
+  "options_error_reporting_try_again": {
+    "message": "再試行",
+    "description": "Button to retry an error reporting operation."
   },
   "options_expand_all_entries": {
     "message": "すべての結果を展開する",
@@ -1732,9 +1790,393 @@
     "message": "なし",
     "description": "Label for hiding part-of-speech labels"
   },
+  "options_privacy_policy_link": {
+    "message": "プライバシーポリシー",
+    "description": "Link to the privacy policy."
+  },
+  "options_report_notice_body_one": {
+    "message": "10ten はこの端末に $count$ 件のエラー報告を保存しました。このレポートはまだ送信されていません。送信していただくと、問題の調査や信頼性の向上に役立ちます。",
+    "description": "Notice text when one report is saved.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_report_notice_body_other": {
+    "message": "10ten はこの端末に $count$ 件のエラー報告を保存しました。これらのレポートはまだ送信されていません。送信していただくと、問題の調査や信頼性の向上に役立ちます。",
+    "description": "Notice text when several reports are saved.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_report_notice_dismiss": {
+    "message": "今後表示しない",
+    "description": "Permanently hides the notice. Does not change reporting settings or delete reports."
+  },
+  "options_report_notice_dismissed": {
+    "message": "通知を非表示にしました。保存済みレポートは、このページ下部の「エラー報告」から引き続き確認できます。",
+    "description": "Shown after permanently hiding the notice about saved reports."
+  },
+  "options_report_notice_encourage": {
+    "message": "自動エラー報告をオンにしていただくと、より早く問題を修正できます。ご協力をお願いいたします。",
+    "description": "Encourages turning on automatic reporting."
+  },
+  "options_report_notice_heading": {
+    "message": "10ten Japanese Reader の改善にご協力ください",
+    "description": "Heading of the notice about saved reports at the top of the options page."
+  },
+  "options_report_notice_ok": {
+    "message": "OK",
+    "description": "Acknowledges that the notice was hidden."
+  },
+  "options_report_notice_undo": {
+    "message": "元に戻す",
+    "description": "Shows the hidden notice again."
+  },
+  "options_report_notice_view": {
+    "message": "レポートを確認",
+    "description": "Opens the saved reports."
+  },
   "options_restore_toggle_shortcut": {
     "message": "オン・オフを切り替えるショートカットを復元する",
     "description": "Label for button to restore the toggle shortcut"
+  },
+  "options_saved_report_attempts": {
+    "message": "送信試行回数",
+    "description": "Label for the number of times sending was attempted."
+  },
+  "options_saved_report_category_download": {
+    "message": "ダウンロード障害",
+    "description": "Kind of saved report: a failed download."
+  },
+  "options_saved_report_category_error": {
+    "message": "エラー",
+    "description": "Kind of saved report: a general error."
+  },
+  "options_saved_report_data_heading": {
+    "message": "レポートの全データ",
+    "description": "Heading for the exact data that would be sent."
+  },
+  "options_saved_report_data_label": {
+    "message": "レポートのデータ",
+    "description": "Accessible label for the exact data that would be sent."
+  },
+  "options_saved_report_data_load_failed": {
+    "message": "このレポートを読み込めませんでした。",
+    "description": "Shown in place of a saved report’s data when it couldn’t be read. Followed by a “Try again” button."
+  },
+  "options_saved_report_delete": {
+    "message": "このレポートを削除",
+    "description": "Button to delete one saved report."
+  },
+  "options_saved_report_delete_label": {
+    "message": "レポートを削除：$title$",
+    "description": "Accessible label for the button to delete one saved report.",
+    "placeholders": {
+      "title": { "content": "$1", "example": "TypeError: Failed to fetch" }
+    }
+  },
+  "options_saved_report_delivery_heading": {
+    "message": "送信状況（この端末のみに保存され、送信されません）",
+    "description": "Heading for local delivery details, which are not part of the report."
+  },
+  "options_saved_report_delivery_status": {
+    "message": "状態",
+    "description": "Label for the local delivery status."
+  },
+  "options_saved_report_destination": {
+    "message": "送信先",
+    "description": "Label for where a report would be sent."
+  },
+  "options_saved_report_destination_bugsnag": {
+    "message": "Bugsnag エラー監視サービス（notify.bugsnag.com）",
+    "description": "The error monitoring service that receives most reports."
+  },
+  "options_saved_report_destination_download": {
+    "message": "10ten ダウンロード診断サービス（data.10ten.life）",
+    "description": "10ten’s own service that receives dictionary and exchange rate download failure reports."
+  },
+  "options_saved_report_download_network": {
+    "message": "ネットワークエラーのためダウンロードに失敗しました",
+    "description": "Title for a saved report of a download that failed due to a network error."
+  },
+  "options_saved_report_download_syntax": {
+    "message": "ダウンロードしたデータを読み込めませんでした",
+    "description": "Title for a saved report of downloaded data that could not be read."
+  },
+  "options_saved_report_download_timeout": {
+    "message": "ダウンロードがタイムアウトしました",
+    "description": "Title for a saved report of a download that timed out."
+  },
+  "options_saved_report_first_seen": {
+    "message": "初回発生",
+    "description": "Label for when an error first happened."
+  },
+  "options_saved_report_last_attempt": {
+    "message": "最終試行",
+    "description": "Label for when sending was last attempted."
+  },
+  "options_saved_report_last_result": {
+    "message": "最終結果",
+    "description": "Label for the technical result of the last attempt."
+  },
+  "options_saved_report_last_seen": {
+    "message": "最終発生",
+    "description": "Label for when an error last happened."
+  },
+  "options_saved_report_occurrences": {
+    "message": "発生回数",
+    "description": "Label for how many times an error happened."
+  },
+  "options_saved_report_occurrences_one": {
+    "message": "$count$ 回発生",
+    "description": "How many times a saved error happened (once).",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_saved_report_occurrences_other": {
+    "message": "$count$ 回発生",
+    "description": "How many times a saved error happened (several times).",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_saved_report_recorded_in": {
+    "message": "記録元",
+    "description": "Label for the part of the extension that recorded the error."
+  },
+  "options_saved_report_sends_to": {
+    "message": "送信先：$destination$",
+    "description": "Where a saved report would be sent.",
+    "placeholders": {
+      "destination": {
+        "content": "$1",
+        "example": "Bugsnag (notify.bugsnag.com)"
+      }
+    }
+  },
+  "options_saved_report_source_background": {
+    "message": "バックグラウンドページ",
+    "description": "Part of the extension that recorded an error: the background page."
+  },
+  "options_saved_report_source_options": {
+    "message": "オプションページ",
+    "description": "Part of the extension that recorded an error: the options page."
+  },
+  "options_saved_report_state_failed": {
+    "message": "送信できませんでした",
+    "description": "Local delivery status of a saved report."
+  },
+  "options_saved_report_state_interrupted": {
+    "message": "送信が中断されました",
+    "description": "Local delivery status of a saved report whose sending was interrupted, e.g. by closing the browser."
+  },
+  "options_saved_report_state_ready": {
+    "message": "未送信",
+    "description": "Local delivery status of a saved report."
+  },
+  "options_saved_report_state_sending": {
+    "message": "送信中",
+    "description": "Local delivery status of a saved report."
+  },
+  "options_saved_report_state_unsupported": {
+    "message": "送信できません",
+    "description": "Local delivery status of a saved report that this version cannot send."
+  },
+  "options_saved_report_version": {
+    "message": "10ten のバージョン",
+    "description": "Label for the extension version that recorded the error."
+  },
+  "options_saved_reports_cancel": {
+    "message": "キャンセル",
+    "description": "Cancels deleting all saved reports."
+  },
+  "options_saved_reports_checking": {
+    "message": "保存済みレポートを確認しています…",
+    "description": "Shown while saved reports are loading."
+  },
+  "options_saved_reports_count_one": {
+    "message": "未送信の保存済みレポート：$count$ 件",
+    "description": "Number of saved reports (one).",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_saved_reports_count_other": {
+    "message": "未送信の保存済みレポート：$count$ 件",
+    "description": "Number of saved reports (several).",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_saved_reports_delete_all": {
+    "message": "すべて削除",
+    "description": "Button to delete all saved reports. Asks for confirmation first."
+  },
+  "options_saved_reports_delete_all_confirm_button": {
+    "message": "削除",
+    "description": "Confirms deleting all saved reports."
+  },
+  "options_saved_reports_delete_all_confirm_one": {
+    "message": "保存済みレポート（$count$ 件）をこの端末から削除しますか？",
+    "description": "Confirmation before deleting the only saved report.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_saved_reports_delete_all_confirm_other": {
+    "message": "保存済みレポート（$count$ 件）をこの端末から削除しますか？",
+    "description": "Confirmation before deleting all saved reports.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_saved_reports_delete_all_confirm_unknown": {
+    "message": "保存済みレポートをすべてこの端末から削除しますか？",
+    "description": "Confirmation before deleting saved reports that cannot be displayed."
+  },
+  "options_saved_reports_delete_failed": {
+    "message": "保存済みレポートを削除できませんでした。もう一度お試しください。",
+    "description": "Shown when saved reports could not be deleted."
+  },
+  "options_saved_reports_deleted": {
+    "message": "保存済みレポートを削除しました。",
+    "description": "Shown after deleting all saved reports. Must not claim that nothing was sent."
+  },
+  "options_saved_reports_description_blocked": {
+    "message": "所属組織によりエラー報告の送信が無効にされています。この端末に保存されたレポートは、引き続き確認・削除できます。",
+    "description": "Explains saved reports when an administrator has disabled sending."
+  },
+  "options_saved_reports_description_off": {
+    "message": "自動送信がオフの間、10ten は最近のエラー報告を最大 10 件までこの端末に保存します。内容を確認して、送信するかどうかを選べます。",
+    "description": "Explains local report storage while automatic reporting is off."
+  },
+  "options_saved_reports_description_on": {
+    "message": "これらのレポートは、自動報告がオフだったときに保存されたか、その時点で送信できなかったものです。新しいレポートは発生時に送信されます。",
+    "description": "Explains saved reports that remain after automatic reporting was turned on."
+  },
+  "options_saved_reports_heading": {
+    "message": "この端末に保存されたレポート",
+    "description": "Heading for reports saved on this device."
+  },
+  "options_saved_reports_hide": {
+    "message": "レポートを隠す",
+    "description": "Collapses the list of saved reports."
+  },
+  "options_saved_reports_load_failed": {
+    "message": "保存済みレポートを読み込めませんでした。",
+    "description": "Shown when saved reports could not be read."
+  },
+  "options_saved_reports_none": {
+    "message": "保存済みレポートはありません",
+    "description": "Shown when no reports are saved."
+  },
+  "options_saved_reports_show": {
+    "message": "レポートを表示",
+    "description": "Expands the list of saved reports."
+  },
+  "options_saved_reports_storage_disabled": {
+    "message": "この端末へのレポートの保存は、所属組織により無効にされています。",
+    "description": "Shown when an administrator has disabled saving reports on the device."
+  },
+  "options_saved_reports_unsupported": {
+    "message": "新しいバージョンの 10ten で保存されたレポートは表示できません。",
+    "description": "Shown when saved reports use a format from a newer version."
+  },
+  "options_saved_reports_viewer_intro": {
+    "message": "これらのレポートはこの端末に保存されており、送信されていません。レポートを展開すると、送信される内容をそのまま確認できます。",
+    "description": "Introduction to the list of saved reports."
+  },
+  "options_saved_reports_viewer_intro_blocked": {
+    "message": "これらのレポートはこの端末に保存されています。レポートを展開すると、内容を確認できます。",
+    "description": "Introduction to the list of saved reports when sending is disabled by an administrator."
+  },
+  "options_saved_reports_viewer_label": {
+    "message": "保存済みのエラー報告",
+    "description": "Accessible label for the list of saved reports."
+  },
+  "options_send_reports_and_enable": {
+    "message": "送信して自動エラー報告をオンにする",
+    "description": "Button that sends the saved reports and turns on automatic reporting."
+  },
+  "options_send_reports_one": {
+    "message": "このレポートを送信",
+    "description": "Button that sends the one saved report once without turning on automatic reporting."
+  },
+  "options_send_reports_other": {
+    "message": "$count$ 件のレポートを送信",
+    "description": "Button that sends the saved reports once without turning on automatic reporting.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_send_result_all_one": {
+    "message": "$count$ 件のレポートを送信しました。ご協力ありがとうございます！",
+    "description": "Result after sending one report successfully.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_send_result_all_other": {
+    "message": "$count$ 件のレポートを送信しました。ご協力ありがとうございます！",
+    "description": "Result after sending all reports successfully.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_send_result_close": {
+    "message": "閉じる",
+    "description": "Closes a sending result."
+  },
+  "options_send_result_declined": {
+    "message": "ブラウザーの許可が得られなかったため、自動エラー報告はオフのままです。",
+    "description": "Follows sending reports when the browser permission for automatic reporting was declined."
+  },
+  "options_send_result_enable_failed": {
+    "message": "自動エラー報告をオンにできませんでした。",
+    "description": "Follows sending reports when automatic reporting could not be turned on."
+  },
+  "options_send_result_enabled": {
+    "message": "自動エラー報告をオンにしました。今後のレポートは発生時に送信されます。",
+    "description": "Follows sending reports and turning on automatic reporting."
+  },
+  "options_send_result_error": {
+    "message": "レポートを送信できませんでした。レポートはこの端末に保存されたままです。",
+    "description": "Result when the extension could not start sending."
+  },
+  "options_send_result_failed_one": {
+    "message": "現在レポートを送信できません。レポートはこの端末に保存されたままなので、後でもう一度お試しください。",
+    "description": "Result when the report could not be sent."
+  },
+  "options_send_result_failed_other": {
+    "message": "現在レポートを送信できません。レポートはこの端末に保存されたままなので、後でもう一度お試しください。",
+    "description": "Result when none of the reports could be sent."
+  },
+  "options_send_result_none": {
+    "message": "レポートは送信されませんでした。",
+    "description": "Result when no reports were sent, e.g. because they were deleted while sending."
+  },
+  "options_send_result_partial": {
+    "message": "$total$ 件中 $sent$ 件のレポートを送信しました。",
+    "description": "Result when only some reports were sent.",
+    "placeholders": {
+      "sent": { "content": "$1", "example": "2" },
+      "total": { "content": "$2", "example": "3" }
+    }
+  },
+  "options_send_result_partial_remaining_one": {
+    "message": "$count$ 件は送信できず、この端末に保存されたままです。",
+    "description": "Follows the partial result: one report was not sent.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_send_result_partial_remaining_other": {
+    "message": "$count$ 件は送信できず、この端末に保存されたままです。",
+    "description": "Follows the partial result: several reports were not sent.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_send_result_stale": {
+    "message": "保存済みレポートが変更されたため、送信しませんでした。内容を確認して、もう一度お試しください。",
+    "description": "Result when the saved reports changed before sending started."
+  },
+  "options_send_result_still_off": {
+    "message": "自動エラー報告はオフのままです。",
+    "description": "Follows a successful one-time send."
+  },
+  "options_send_result_still_off_notice": {
+    "message": "自動エラー報告はオフのままです。このページ下部の「エラー報告」から、いつでもオンにできます。",
+    "description": "Follows a successful one-time send from the notice at the top of the options page."
+  },
+  "options_send_result_unavailable": {
+    "message": "これらのレポートは再試行できなくなりました。保存済みレポートを改めて送信してください。",
+    "description": "Result when a retry is no longer possible, e.g. after the browser restarted."
+  },
+  "options_sending_reports_one": {
+    "message": "$count$ 件のレポートを送信しています…",
+    "description": "Progress message while sending one report.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_sending_reports_other": {
+    "message": "$count$ 件のレポートを送信しています…",
+    "description": "Progress message while sending several reports.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
   },
   "options_show_bunpro_decks": {
     "message": "Bunproのデッキ情報を表示",

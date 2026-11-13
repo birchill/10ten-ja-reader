@@ -1380,6 +1380,10 @@
     "message": "无",
     "description": "Label for not showing pitch accent information"
   },
+  "options_automatic_error_reporting": {
+    "message": "自动发送错误报告",
+    "description": "Label for the checkbox that turns on automatic error reporting."
+  },
   "options_browser_commands_no_toggle_key": {
     "message": "由于您使用的浏览器的限制，您无法在此处更改此快捷键。",
     "description": "Descriptive text used for other browsers which do not permit configuring extension keys from the extension itself."
@@ -1509,6 +1513,60 @@
   "options_edrdg_license_keyword": {
     "message": "许可协议",
     "description": "The keyword in options_edrdg_license to link to the license"
+  },
+  "options_error_reporting_check_failed": {
+    "message": "无法检查报告设置。",
+    "description": "Shown when the automatic reporting setting could not be read. Followed by a \"Try again\" button."
+  },
+  "options_error_reporting_checking": {
+    "message": "正在检查报告设置…",
+    "description": "Shown while the automatic reporting setting is being read."
+  },
+  "options_error_reporting_contents": {
+    "message": "报告包含错误详情、近期的诊断事件、浏览器和 10ten 版本等技术信息，以及用于关联此安装所发送报告的随机安装标识符。",
+    "description": "Disclosure of what error reports contain. Followed by a link to the privacy policy. Must not suggest reports are anonymous."
+  },
+  "options_error_reporting_description": {
+    "message": "当出现问题时（例如词典下载失败），10ten 可以发送报告，帮助我们找到并修复问题。错误报告是可选的，不会改变 10ten 的工作方式。",
+    "description": "Explanation of what automatic error reporting is for."
+  },
+  "options_error_reporting_disabled_by_organization": {
+    "message": "已被你的组织停用。",
+    "description": "Shown when an administrator has disabled sending error reports."
+  },
+  "options_error_reporting_enabled_saved_one": {
+    "message": "已为新报告开启自动报告。之前保存的 $count$ 份报告尚未发送。",
+    "description": "Shown after turning on automatic reporting while one report is saved. Followed by a \"Review saved reports\" link.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_error_reporting_enabled_saved_other": {
+    "message": "已为新报告开启自动报告。之前保存的 $count$ 份报告尚未发送。",
+    "description": "Shown after turning on automatic reporting while several reports are saved. Followed by a \"Review saved reports\" link.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_error_reporting_heading": {
+    "message": "错误报告",
+    "description": "Heading for the error reporting section of the options page."
+  },
+  "options_error_reporting_permission_declined": {
+    "message": "由于未获得浏览器权限，自动报告仍处于关闭状态。你可以随时重试。",
+    "description": "Shown after the user declined the browser permission needed for automatic reporting."
+  },
+  "options_error_reporting_permission_prompt": {
+    "message": "正在等待你在浏览器权限提示中作出选择…",
+    "description": "Shown while the browser asks the user for permission to send error reports."
+  },
+  "options_error_reporting_policy_unavailable": {
+    "message": "由于无法读取你的组织设置，错误报告已暂停。",
+    "description": "Shown when the administrator policy for error reporting could not be read."
+  },
+  "options_error_reporting_review_saved": {
+    "message": "查看已保存的报告",
+    "description": "Link that opens the saved reports."
+  },
+  "options_error_reporting_try_again": {
+    "message": "重试",
+    "description": "Button to retry an error reporting operation."
   },
   "options_expand_all_entries": {
     "message": "展开所有结果",
@@ -1724,9 +1782,392 @@
     "message": "无",
     "description": "Label for hiding part-of-speech labels"
   },
+  "options_privacy_policy_link": {
+    "message": "隐私政策",
+    "description": "Link to the privacy policy."
+  },
+  "options_report_notice_body_one": {
+    "message": "10ten 在此设备上保存了 $count$ 份错误报告，尚未发送。分享它可以帮助我们调查问题并提高可靠性。",
+    "description": "Notice text when one report is saved.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_report_notice_body_other": {
+    "message": "10ten 在此设备上保存了 $count$ 份错误报告，尚未发送。分享这些报告可以帮助我们调查问题并提高可靠性。",
+    "description": "Notice text when several reports are saved.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_report_notice_dismiss": {
+    "message": "不再显示",
+    "description": "Permanently hides the notice. Does not change reporting settings or delete reports."
+  },
+  "options_report_notice_dismissed": {
+    "message": "已隐藏通知。你仍可在本页底部的“错误报告”部分查看已保存的报告。",
+    "description": "Shown after permanently hiding the notice about saved reports."
+  },
+  "options_report_notice_encourage": {
+    "message": "开启自动报告可以让我们更快修复问题，非常感谢你的支持。",
+    "description": "Encourages turning on automatic reporting."
+  },
+  "options_report_notice_heading": {
+    "message": "帮助改进 10ten Japanese Reader",
+    "description": "Heading of the notice about saved reports at the top of the options page."
+  },
+  "options_report_notice_ok": {
+    "message": "确定",
+    "description": "Acknowledges that the notice was hidden."
+  },
+  "options_report_notice_undo": {
+    "message": "撤销",
+    "description": "Shows the hidden notice again."
+  },
+  "options_report_notice_view": {
+    "message": "查看报告",
+    "description": "Opens the saved reports."
+  },
   "options_restore_toggle_shortcut": {
     "message": "恢复切换快捷键",
     "description": "Label for button to restore the toggle shortcut"
+  },
+  "options_saved_report_attempts": {
+    "message": "发送尝试次数",
+    "description": "Label for the number of times sending was attempted."
+  },
+  "options_saved_report_category_download": {
+    "message": "下载失败",
+    "description": "Kind of saved report: a failed download."
+  },
+  "options_saved_report_category_error": {
+    "message": "错误",
+    "description": "Kind of saved report: a general error."
+  },
+  "options_saved_report_data_heading": {
+    "message": "完整报告数据",
+    "description": "Heading for the exact data that would be sent."
+  },
+  "options_saved_report_data_label": {
+    "message": "报告数据",
+    "description": "Accessible label for the exact data that would be sent."
+  },
+  "options_saved_report_data_load_failed": {
+    "message": "无法加载此报告。",
+    "description": "Shown in place of a saved report’s data when it couldn’t be read. Followed by a “Try again” button."
+  },
+  "options_saved_report_delete": {
+    "message": "删除此报告",
+    "description": "Button to delete one saved report."
+  },
+  "options_saved_report_delete_label": {
+    "message": "删除报告：$title$",
+    "description": "Accessible label for the button to delete one saved report.",
+    "placeholders": {
+      "title": { "content": "$1", "example": "TypeError: Failed to fetch" }
+    }
+  },
+  "options_saved_report_delivery_heading": {
+    "message": "发送状态（仅保存在此设备上，不会发送）",
+    "description": "Heading for local delivery details, which are not part of the report."
+  },
+  "options_saved_report_delivery_status": {
+    "message": "状态",
+    "description": "Label for the local delivery status."
+  },
+  "options_saved_report_destination": {
+    "message": "发送目标",
+    "description": "Label for where a report would be sent."
+  },
+  "options_saved_report_destination_bugsnag": {
+    "message": "Bugsnag 错误监控服务（notify.bugsnag.com）",
+    "description": "The error monitoring service that receives most reports."
+  },
+  "options_saved_report_destination_download": {
+    "message": "10ten 下载诊断服务（data.10ten.life）",
+    "description": "10ten’s own service that receives dictionary and exchange rate download failure reports."
+  },
+  "options_saved_report_download_network": {
+    "message": "由于网络错误，下载失败",
+    "description": "Title for a saved report of a download that failed due to a network error."
+  },
+  "options_saved_report_download_syntax": {
+    "message": "无法读取下载的数据",
+    "description": "Title for a saved report of downloaded data that could not be read."
+  },
+  "options_saved_report_download_timeout": {
+    "message": "下载超时",
+    "description": "Title for a saved report of a download that timed out."
+  },
+  "options_saved_report_first_seen": {
+    "message": "首次发生",
+    "description": "Label for when an error first happened."
+  },
+  "options_saved_report_last_attempt": {
+    "message": "最近一次尝试",
+    "description": "Label for when sending was last attempted."
+  },
+  "options_saved_report_last_result": {
+    "message": "最近一次结果",
+    "description": "Label for the technical result of the last attempt."
+  },
+  "options_saved_report_last_seen": {
+    "message": "最后发生",
+    "description": "Label for when an error last happened."
+  },
+  "options_saved_report_occurrences": {
+    "message": "发生次数",
+    "description": "Label for how many times an error happened."
+  },
+  "options_saved_report_occurrences_one": {
+    "message": "发生 $count$ 次",
+    "description": "How many times a saved error happened (once).",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_saved_report_occurrences_other": {
+    "message": "发生 $count$ 次",
+    "description": "How many times a saved error happened (several times).",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_saved_report_recorded_in": {
+    "message": "记录位置",
+    "description": "Label for the part of the extension that recorded the error."
+  },
+  "options_saved_report_sends_to": {
+    "message": "发送至：$destination$",
+    "description": "Where a saved report would be sent.",
+    "placeholders": {
+      "destination": {
+        "content": "$1",
+        "example": "Bugsnag (notify.bugsnag.com)"
+      }
+    }
+  },
+  "options_saved_report_source_background": {
+    "message": "后台页面",
+    "description": "Part of the extension that recorded an error: the background page."
+  },
+  "options_saved_report_source_options": {
+    "message": "选项页面",
+    "description": "Part of the extension that recorded an error: the options page."
+  },
+  "options_saved_report_state_failed": {
+    "message": "无法发送",
+    "description": "Local delivery status of a saved report."
+  },
+  "options_saved_report_state_interrupted": {
+    "message": "发送已中断",
+    "description": "Local delivery status of a saved report whose sending was interrupted, e.g. by closing the browser."
+  },
+  "options_saved_report_state_ready": {
+    "message": "未发送",
+    "description": "Local delivery status of a saved report."
+  },
+  "options_saved_report_state_sending": {
+    "message": "正在发送",
+    "description": "Local delivery status of a saved report."
+  },
+  "options_saved_report_state_unsupported": {
+    "message": "无法发送",
+    "description": "Local delivery status of a saved report that this version cannot send."
+  },
+  "options_saved_report_version": {
+    "message": "10ten 版本",
+    "description": "Label for the extension version that recorded the error."
+  },
+  "options_saved_reports_cancel": {
+    "message": "取消",
+    "description": "Cancels deleting all saved reports."
+  },
+  "options_saved_reports_checking": {
+    "message": "正在检查已保存的报告…",
+    "description": "Shown while saved reports are loading."
+  },
+  "options_saved_reports_count_one": {
+    "message": "$count$ 份已保存的报告，尚未发送",
+    "description": "Number of saved reports (one).",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_saved_reports_count_other": {
+    "message": "$count$ 份已保存的报告，尚未发送",
+    "description": "Number of saved reports (several).",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_saved_reports_delete_all": {
+    "message": "全部删除",
+    "description": "Button to delete all saved reports. Asks for confirmation first."
+  },
+  "options_saved_reports_delete_all_confirm_button": {
+    "message": "删除",
+    "description": "Confirms deleting all saved reports."
+  },
+  "options_saved_reports_delete_all_confirm_one": {
+    "message": "要从此设备删除这份已保存的报告吗？",
+    "description": "Confirmation before deleting the only saved report."
+  },
+  "options_saved_reports_delete_all_confirm_other": {
+    "message": "要从此设备删除全部 $count$ 份已保存的报告吗？",
+    "description": "Confirmation before deleting all saved reports.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_saved_reports_delete_all_confirm_unknown": {
+    "message": "要从此设备删除所有已保存的报告吗？",
+    "description": "Confirmation before deleting saved reports that cannot be displayed."
+  },
+  "options_saved_reports_delete_failed": {
+    "message": "无法删除已保存的报告。请重试。",
+    "description": "Shown when saved reports could not be deleted."
+  },
+  "options_saved_reports_deleted": {
+    "message": "已删除保存的报告。",
+    "description": "Shown after deleting all saved reports. Must not claim that nothing was sent."
+  },
+  "options_saved_reports_description_blocked": {
+    "message": "你的组织已停用发送错误报告。你仍可查看或删除保存在此设备上的报告。",
+    "description": "Explains saved reports when an administrator has disabled sending."
+  },
+  "options_saved_reports_description_off": {
+    "message": "关闭自动发送时，10ten 会在此设备上保存最多 10 份最近的错误报告，你可以查看后决定是否发送。",
+    "description": "Explains local report storage while automatic reporting is off."
+  },
+  "options_saved_reports_description_on": {
+    "message": "这些报告是在自动报告关闭期间保存的，或当时未能发送。新的报告会在发生时发送。",
+    "description": "Explains saved reports that remain after automatic reporting was turned on."
+  },
+  "options_saved_reports_heading": {
+    "message": "保存在此设备上的报告",
+    "description": "Heading for reports saved on this device."
+  },
+  "options_saved_reports_hide": {
+    "message": "隐藏报告",
+    "description": "Collapses the list of saved reports."
+  },
+  "options_saved_reports_load_failed": {
+    "message": "无法加载已保存的报告。",
+    "description": "Shown when saved reports could not be read."
+  },
+  "options_saved_reports_none": {
+    "message": "没有已保存的报告",
+    "description": "Shown when no reports are saved."
+  },
+  "options_saved_reports_show": {
+    "message": "显示报告",
+    "description": "Expands the list of saved reports."
+  },
+  "options_saved_reports_storage_disabled": {
+    "message": "你的组织已停用在此设备上保存报告。",
+    "description": "Shown when an administrator has disabled saving reports on the device."
+  },
+  "options_saved_reports_unsupported": {
+    "message": "无法显示由较新版本的 10ten 保存的报告。",
+    "description": "Shown when saved reports use a format from a newer version."
+  },
+  "options_saved_reports_viewer_intro": {
+    "message": "这些报告保存在此设备上，尚未发送。展开报告即可查看将要发送的确切内容。",
+    "description": "Introduction to the list of saved reports."
+  },
+  "options_saved_reports_viewer_intro_blocked": {
+    "message": "这些报告保存在此设备上。展开报告即可查看其内容。",
+    "description": "Introduction to the list of saved reports when sending is disabled by an administrator."
+  },
+  "options_saved_reports_viewer_label": {
+    "message": "已保存的错误报告",
+    "description": "Accessible label for the list of saved reports."
+  },
+  "options_send_reports_and_enable": {
+    "message": "发送并开启自动报告",
+    "description": "Button that sends the saved reports and turns on automatic reporting."
+  },
+  "options_send_reports_one": {
+    "message": "发送此报告",
+    "description": "Button that sends the one saved report once without turning on automatic reporting."
+  },
+  "options_send_reports_other": {
+    "message": "发送 $count$ 份报告",
+    "description": "Button that sends the saved reports once without turning on automatic reporting.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_send_result_all_one": {
+    "message": "已发送 $count$ 份报告。谢谢！",
+    "description": "Result after sending one report successfully.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_send_result_all_other": {
+    "message": "已发送 $count$ 份报告。谢谢！",
+    "description": "Result after sending all reports successfully.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_send_result_close": {
+    "message": "关闭",
+    "description": "Closes a sending result."
+  },
+  "options_send_result_declined": {
+    "message": "由于未获得浏览器权限，自动报告仍处于关闭状态。",
+    "description": "Follows sending reports when the browser permission for automatic reporting was declined."
+  },
+  "options_send_result_enable_failed": {
+    "message": "无法开启自动报告。",
+    "description": "Follows sending reports when automatic reporting could not be turned on."
+  },
+  "options_send_result_enabled": {
+    "message": "自动报告现已开启，今后的报告将在发生时发送。",
+    "description": "Follows sending reports and turning on automatic reporting."
+  },
+  "options_send_result_error": {
+    "message": "无法发送这些报告。它们仍保存在此设备上。",
+    "description": "Result when the extension could not start sending."
+  },
+  "options_send_result_failed_one": {
+    "message": "目前无法发送该报告。它仍保存在此设备上，你可以稍后重试。",
+    "description": "Result when the report could not be sent."
+  },
+  "options_send_result_failed_other": {
+    "message": "目前无法发送这些报告。它们仍保存在此设备上，你可以稍后重试。",
+    "description": "Result when none of the reports could be sent."
+  },
+  "options_send_result_none": {
+    "message": "未发送任何报告。",
+    "description": "Result when no reports were sent, e.g. because they were deleted while sending."
+  },
+  "options_send_result_partial": {
+    "message": "已发送 $sent$ 份报告（共 $total$ 份）。",
+    "description": "Result when only some reports were sent.",
+    "placeholders": {
+      "sent": { "content": "$1", "example": "2" },
+      "total": { "content": "$2", "example": "3" }
+    }
+  },
+  "options_send_result_partial_remaining_one": {
+    "message": "$count$ 份未能发送，仍保存在此设备上。",
+    "description": "Follows the partial result: one report was not sent.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_send_result_partial_remaining_other": {
+    "message": "$count$ 份未能发送，仍保存在此设备上。",
+    "description": "Follows the partial result: several reports were not sent.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_send_result_stale": {
+    "message": "已保存的报告发生了变化，因此未发送任何内容。请查看后重试。",
+    "description": "Result when the saved reports changed before sending started."
+  },
+  "options_send_result_still_off": {
+    "message": "自动报告仍处于关闭状态。",
+    "description": "Follows a successful one-time send."
+  },
+  "options_send_result_still_off_notice": {
+    "message": "自动报告仍处于关闭状态。你可以随时在本页底部的“错误报告”部分开启。",
+    "description": "Follows a successful one-time send from the notice at the top of the options page."
+  },
+  "options_send_result_unavailable": {
+    "message": "这些报告无法再重试。请重新发送已保存的报告。",
+    "description": "Result when a retry is no longer possible, e.g. after the browser restarted."
+  },
+  "options_sending_reports_one": {
+    "message": "正在发送 $count$ 份报告…",
+    "description": "Progress message while sending one report.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
+  },
+  "options_sending_reports_other": {
+    "message": "正在发送 $count$ 份报告…",
+    "description": "Progress message while sending several reports.",
+    "placeholders": { "count": { "content": "$1", "example": "3" } }
   },
   "options_show_bunpro_decks": {
     "message": "显示 Bunpro 套牌信息",
