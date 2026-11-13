@@ -735,8 +735,7 @@ it.each(['declined', 'request-failed', 'write-failed', 'granted'] as const)(
       outcome === 'write-failed' ? 0 : 1
     );
     expect(await result).toMatchObject({
-      status: 'ok',
-      batch: { sent: 1, failed: 0, skipped: 0 },
+      reply: { status: 'ok', batch: { sent: 1, failed: 0, skipped: 0 } },
       automaticReporting:
         outcome === 'granted'
           ? 'enabled'
