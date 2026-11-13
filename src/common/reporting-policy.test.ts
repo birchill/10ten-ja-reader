@@ -6,7 +6,9 @@ const mocks = vi.hoisted(() => ({
   get: vi.fn<() => Promise<Record<string, unknown>>>(),
   addListener: vi.fn<() => void>(),
   removeListener: vi.fn<() => void>(),
+  isFenix: vi.fn<() => boolean>(() => false),
 }));
+vi.mock('../utils/ua-utils', () => ({ isFenix: mocks.isFenix }));
 vi.mock('webextension-polyfill', () => ({
   default: {
     storage: {
@@ -67,4 +69,20 @@ it('distinguishes Firefox without configured policy from a failed policy read', 
     disableErrorReporting: true,
     disableLocalErrorStorage: true,
   });
+});
+
+it('treats Firefox for Android as having no managed policy', async () => {
+  mocks.isFenix.mockReturnValue(true);
+  mocks.get
+    .mockClear()
+    .mockRejectedValue(new Error('An unexpected error occurred'));
+  policy = new ReportingPolicy();
+  await policy.ready;
+  expect(policy.state).toEqual({
+    status: 'unsupported',
+    disableErrorReporting: false,
+    disableLocalErrorStorage: false,
+  });
+  expect(mocks.get).not.toHaveBeenCalled();
+  mocks.isFenix.mockReturnValue(false);
 });

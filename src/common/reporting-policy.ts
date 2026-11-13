@@ -1,6 +1,8 @@
 import type { Storage } from 'webextension-polyfill';
 import browser from 'webextension-polyfill';
 
+import { isFenix } from '../utils/ua-utils';
+
 export type ReportingPolicyState = Readonly<{
   status: 'loading' | 'ready' | 'unsupported' | 'error';
   disableErrorReporting: boolean;
@@ -48,7 +50,10 @@ export class ReportingPolicy {
   async refresh(): Promise<void> {
     const revision = ++this.#revision;
     this.#update({ status: 'loading', ...BLOCKED });
-    if (!browser.storage.managed) {
+    // Firefox for Android exposes storage.managed but doesn't support it: get()
+    // rejects with "An unexpected error occurred", not the desktop error for
+    // an unconfigured policy. Like Safari, it has no managed policy to read.
+    if (!browser.storage.managed || isFenix()) {
       this.#update({ status: 'unsupported', ...UNRESTRICTED });
       return;
     }
