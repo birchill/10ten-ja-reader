@@ -44,11 +44,56 @@ export function protectPreparedReport(payload: DeliveryPayload): void {
   visit(payload);
 }
 
+// Mark elements that display saved report content or act on it. Clicks inside
+// them leave no breadcrumb, so a report's content cannot be copied into later
+// reports through the SDK's click text or selector.
+export const REPORT_CONTENT_ATTRIBUTE = 'data-report-content';
+
 export const reportingInteractionBreadcrumbs: Plugin = {
   name: 'reportingInteractionBreadcrumbs',
   load(client) {
-    // TODO: Exclude report-viewer contents from click breadcrumbs when
-    // the viewer is implemented, including clicks on ancestors containing it.
-    return interactionBreadcrumbs.load(client);
+    if (!('addEventListener' in self)) {
+      return;
+    }
+
+    // Bugsnag Zero's interactionBreadcrumbs plugin, loaded below, records
+    // clicks synchronously from its own capturing listener. Register ours
+    // first so we classify each click before it runs.
+    let clickTarget: 'inside' | 'ancestor' | undefined;
+    self.addEventListener(
+      'click',
+      (event) => {
+        const target = event.target as Partial<Element> | null;
+        clickTarget = undefined;
+        if (typeof target?.closest !== 'function') {
+          return;
+        }
+
+        const selector = `[${REPORT_CONTENT_ATTRIBUTE}]`;
+        if (target.closest(selector)) {
+          clickTarget = 'inside';
+        } else if (target.querySelector?.(selector)) {
+          clickTarget = 'ancestor';
+        }
+      },
+      true
+    );
+
+    const filtered = Object.create(client) as typeof client;
+    filtered.leaveBreadcrumb = (message, metadata, type) => {
+      if (type === 'user' && message === 'UI click' && clickTarget) {
+        if (clickTarget === 'inside') {
+          return;
+        }
+
+        // Keep ordinary clicks on page containers, but not their text, which
+        // includes any report shown inside them.
+        metadata = { ...metadata, targetText: '[hidden]' };
+      }
+
+      client.leaveBreadcrumb(message, metadata, type);
+    };
+
+    return interactionBreadcrumbs.load(filtered);
   },
 };
