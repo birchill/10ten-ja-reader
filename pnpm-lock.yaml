@@ -27,8 +27,8 @@ importers:
         specifier: 0.4.1
         version: 0.4.1
       preact:
-        specifier: 11.0.2
-        version: 11.0.2
+        specifier: 11.2.0
+        version: 11.2.0
       superstruct:
         specifier: 2.0.2
         version: 2.0.2
@@ -4082,8 +4082,8 @@ packages:
     resolution: {integrity: sha512-C+y9x90UElAddDZmV4qOx9W53B61PO7cIqWz2dQsWlwswuq4mr8NEwytdGKboYbQlGZ3awrkTeNvcZiZNHnQ8A==}
     engines: {node: '>=20'}
 
-  preact@11.0.2:
-    resolution: {integrity: sha512-ofG+Lqznbt13JKDjdWPLTo5ONBqcNgidqnLRzJBG6PZjzGXOLRd5y9r448+HUofTyDbgKWVrPhHP0IgcxEZslQ==}
+  preact@11.2.0:
+    resolution: {integrity: sha512-/HfHI/7N84e6GrWBJ3J280z3mLaRJiDcSvj/A+y/4AbLnND/1UlGHe1sR6oYuTGwId0nP7dqDU9OnLxMPZ7xBg==}
     peerDependencies:
       preact-render-to-string: '>=6.7.0'
     peerDependenciesMeta:
@@ -8979,7 +8979,7 @@ snapshots:
 
   powershell-utils@0.2.1: {}
 
-  preact@11.0.2: {}
+  preact@11.2.0: {}
 
   prelude-ls@1.2.1: {}
 
