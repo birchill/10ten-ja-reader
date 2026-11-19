@@ -1,0 +1,22 @@
+name: Sync wiki
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'wiki/**'
+jobs:
+  sync-wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Synchronize wiki
+        run: bash sync-wiki.sh
+        working-directory: ./scripts
+        env:
+          WIKI_FOLDER: wiki
+          COMMIT_USERNAME: 'Wiki Sync'
+          COMMIT_EMAIL: 'actions@users.noreply.github.com'
+          COMMIT_MESSAGE: 'Synchronize wiki'
+          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
