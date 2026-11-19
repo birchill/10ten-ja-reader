@@ -11,6 +11,10 @@ import type { ReportingConsentState } from '../common/reporting-consent';
 import { ReportingConsent } from '../common/reporting-consent';
 import type { ReportingPolicyState } from '../common/reporting-policy';
 import { ReportingPolicy } from '../common/reporting-policy';
+import {
+  INSTALLATION_ID_KEY,
+  readInstallationId,
+} from '../utils/installation-id';
 
 import {
   deleteAllReports,
@@ -85,6 +89,7 @@ export type ReportingViewState = Readonly<{
   failedDetails: Readonly<Record<string, true>>;
   // Undefined until read from storage.
   noticeDismissed: boolean | undefined;
+  installationId?: string;
   dismissAcknowledged: boolean;
   automaticPending?: 'prompt' | 'saving';
   automaticMessage?: 'declined' | 'enabled-with-saved';
@@ -258,7 +263,7 @@ export function useReporting(): {
     }
   }, [update]);
 
-  // Adapters, saved reports, and notice dismissal, with external changes.
+  // Watch local settings and diagnostics for external changes.
   useEffect(() => {
     unmounted.current = false;
     const onConsent = (consentState: ReportingConsentState) =>
@@ -268,6 +273,15 @@ export function useReporting(): {
     consent.addChangeListener(onConsent);
     policy.addChangeListener(onPolicy);
     update({ consent: consent.state, policy: policy.state });
+
+    let installationIdRead = 0;
+    const refreshInstallationId = async () => {
+      const read = ++installationIdRead;
+      const id = await readInstallationId().catch(() => undefined);
+      if (read === installationIdRead) {
+        update({ installationId: id });
+      }
+    };
 
     const onStorageChanged = (
       changes: Record<string, Storage.StorageChange>,
@@ -282,6 +296,10 @@ export function useReporting(): {
         void refresh();
       }
 
+      if (INSTALLATION_ID_KEY in changes) {
+        void refreshInstallationId();
+      }
+
       if (NOTICE_DISMISSED_KEY in changes) {
         update({
           noticeDismissed: changes[NOTICE_DISMISSED_KEY].newValue === true,
@@ -291,6 +309,7 @@ export function useReporting(): {
     browser.storage.onChanged.addListener(onStorageChanged);
 
     void refresh();
+    void refreshInstallationId();
     browser.storage.local.get(NOTICE_DISMISSED_KEY).then(
       (values) =>
         update({ noticeDismissed: values[NOTICE_DISMISSED_KEY] === true }),
@@ -300,6 +319,7 @@ export function useReporting(): {
 
     return () => {
       unmounted.current = true;
+      installationIdRead++;
       browser.storage.onChanged.removeListener(onStorageChanged);
       consent.dispose();
       policy.dispose();

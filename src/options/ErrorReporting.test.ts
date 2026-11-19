@@ -117,6 +117,7 @@ vi.mock('webextension-polyfill', () => {
 });
 
 const fetchMock = vi.fn<typeof fetch>();
+const reportingId = '50053ed3bd765083a613bd19194c8f6c';
 let service: ReportingService;
 
 beforeEach(async () => {
@@ -250,6 +251,11 @@ function button(label: string): HTMLButtonElement {
 const checkbox = () =>
   document.getElementById('automaticErrorReporting') as HTMLInputElement;
 
+const installationIdInput = () =>
+  document.querySelector<HTMLInputElement>(
+    '[aria-labelledby="reporting-installation-id-label"]'
+  );
+
 const sentMessages = () =>
   fetchMock.mock.calls.map(
     ([, init]) =>
@@ -360,9 +366,11 @@ it('turns on automatic reporting from the notice and keeps showing the result', 
 });
 
 it('never flushes the backlog when enabling with the checkbox', async () => {
+  mocks.stored.installid = reportingId;
   await save('first', 'second');
   mount();
   await vi.waitFor(() => expect(checkbox().disabled).toBe(false));
+  expect(installationIdInput()?.value).toBe(reportingId);
 
   checkbox().click();
   expect(mocks.request).toHaveBeenCalledOnce();
@@ -370,6 +378,7 @@ it('never flushes the backlog when enabling with the checkbox', async () => {
   expect(text()).toContain('options_error_reporting_enabled_saved_other(2)');
   expect(text()).not.toContain('options_report_notice_heading');
   expect(text()).toContain('options_saved_reports_count_other(2)');
+  expect(installationIdInput()?.value).toBe(reportingId);
   expect(fetchMock).not.toHaveBeenCalled();
 
   // Turning it off removes the native permission without deleting reports.
@@ -377,6 +386,7 @@ it('never flushes the backlog when enabling with the checkbox', async () => {
   await vi.waitFor(() => expect(checkbox().checked).toBe(false));
   expect(mocks.remove).toHaveBeenCalledOnce();
   expect(text()).toContain('options_saved_reports_count_other(2)');
+  expect(installationIdInput()?.value).toBe(reportingId);
 });
 
 it('reports a declined permission from the checkbox and external revocation', async () => {
@@ -413,6 +423,7 @@ it('uses the local preference where there is no native permission', async () => 
 });
 
 it('dismisses the notice permanently without changing consent or reports', async () => {
+  mocks.stored.installid = reportingId;
   await save('first');
   mount();
   await vi.waitFor(() =>
@@ -448,10 +459,12 @@ it('dismisses the notice permanently without changing consent or reports', async
   );
   expect(text()).not.toContain('options_report_notice_heading');
   expect(checkbox().checked).toBe(false);
+  expect(installationIdInput()?.value).toBe(reportingId);
   expect(fetchMock).not.toHaveBeenCalled();
 });
 
 it('shows the exact saved payload in the notice and deletes reports individually and all at once', async () => {
+  mocks.stored.installid = reportingId;
   await save('first', 'second', 'third');
   mount();
   await vi.waitFor(() =>
@@ -534,6 +547,8 @@ it('shows the exact saved payload in the notice and deletes reports individually
   expect(text()).not.toContain('options_report_notice_heading');
   expect(text()).not.toContain('options_send_reports');
   expect(text()).not.toContain('options_saved_reports_delete_all');
+  expect(installationIdInput()?.value).toBe(reportingId);
+  expect(mocks.stored.installid).toBe(reportingId);
   expect(fetchMock).not.toHaveBeenCalled();
 });
 
@@ -562,6 +577,7 @@ it('blocks both send actions when the organization disables sending', async () =
 });
 
 it('hides saved reports when the organization disables local storage', async () => {
+  mocks.stored.installid = reportingId;
   await save('first');
   mount();
   await vi.waitFor(() =>
@@ -575,6 +591,7 @@ it('hides saved reports when the organization disables local storage', async () 
   );
   expect(text()).not.toContain('options_report_notice_heading');
   expect(text()).not.toContain('options_saved_reports_count');
+  expect(installationIdInput()?.value).toBe(reportingId);
   // Automatic sending is independently permitted.
   expect(checkbox().disabled).toBe(false);
   expect(

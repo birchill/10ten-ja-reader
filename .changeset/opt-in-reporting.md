@@ -16,4 +16,5 @@ and mask lookup text in known error messages and pronunciation-audio URLs.
 
 The options page has a new Error reporting section for turning automatic
 reporting on or off and for reviewing, sending, or deleting saved reports,
-along with a dismissible notice when unsent reports are waiting.
+along with a dismissible notice when unsent reports are waiting. You can copy
+your installation ID from this section when contacting support about a problem.

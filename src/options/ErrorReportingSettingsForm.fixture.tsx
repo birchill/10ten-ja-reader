@@ -16,6 +16,8 @@ import type {
 } from './use-reporting';
 
 // Synthetic examples only.
+const installationId = '50053ed3bd765083a613bd19194c8f6c';
+
 const reports: Array<SavedReport> = [
   {
     id: '00000000-0000-4000-8000-000000000001',
@@ -76,7 +78,7 @@ const reports: Array<SavedReport> = [
             },
           ],
           app: { version: '1.30.0', releaseStage: 'production' },
-          user: { id: '00000000-synthetic-0000-000000000001' },
+          user: { id: installationId },
         } as any,
       ],
     },
@@ -139,6 +141,7 @@ const base: ReportingViewState = {
   details,
   failedDetails: {},
   noticeDismissed: false,
+  installationId,
   dismissAcknowledged: false,
   viewerOpen: { notice: false, settings: false },
 };
@@ -224,6 +227,15 @@ export default {
   'Reporting off, saved reports': <Preview initial={base} />,
   'Reporting off, no saved reports': (
     <Preview initial={{ ...base, reports: { ...base.reports, records: [] } }} />
+  ),
+  'No installation ID': (
+    <Preview
+      initial={{
+        ...base,
+        installationId: undefined,
+        reports: { ...base.reports, records: [] },
+      }}
+    />
   ),
   'Inspecting reports': (
     <Preview

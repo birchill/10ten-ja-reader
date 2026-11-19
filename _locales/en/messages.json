@@ -1647,6 +1647,31 @@
   },
   "options_highlight_style_none": { "message": "None" },
   "options_highlight_style_yellow": { "message": "Yellow" },
+  "options_installation_id_contact": {
+    "message": "contact us",
+    "description": "Email link text inserted in options_installation_id_description."
+  },
+  "options_installation_id_copied": {
+    "message": "Copied",
+    "description": "Status shown after copying the reporting installation ID."
+  },
+  "options_installation_id_copy": {
+    "message": "Copy ID",
+    "description": "Button to copy the reporting installation ID."
+  },
+  "options_installation_id_copy_failed": {
+    "message": "Copy failed",
+    "description": "Status shown when copying the reporting installation ID fails."
+  },
+  "options_installation_id_description": {
+    "message": "If you $contact$ about problems with this installation, please include this ID so we can find any related error reports.",
+    "description": "Explains how sharing the installation ID helps support find reports related to a problem. The contact placeholder is an email link.",
+    "placeholders": { "contact": { "content": "$1", "example": "contact us" } }
+  },
+  "options_installation_id_heading": {
+    "message": "Installation ID",
+    "description": "Heading for the reporting installation ID in the error reporting section."
+  },
   "options_kanji_components": {
     "message": "Kanji components",
     "description": "Option to define if radicals are displayed or not"

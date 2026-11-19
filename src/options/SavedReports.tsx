@@ -55,7 +55,7 @@ export function SavedReports({ state, actions }: Props) {
   // section.
   if (policy.status === 'ready' && policy.disableLocalErrorStorage) {
     return (
-      <div class="mt-1 flex flex-col gap-2.5 ps-[22px]">
+      <div class="mt-1 flex flex-col gap-2.5 ps-5.5">
         {heading}
         <p class="m-0">{t('options_saved_reports_storage_disabled')}</p>
       </div>
@@ -87,7 +87,7 @@ export function SavedReports({ state, actions }: Props) {
   const canDeleteAll = hasReports || reports.status === 'unsupported';
 
   return (
-    <div class="mt-1 flex flex-col gap-2.5 ps-[22px]">
+    <div class="mt-1 flex flex-col gap-2.5 ps-5.5">
       {heading}
       <p class="m-0">
         {sendingBlocked && !loading
