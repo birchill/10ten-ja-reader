@@ -2688,7 +2688,7 @@
   },
   "ref_label_jlpt": {
     "message": "JLPT",
-    "description": "The label used when presenting the level the kanji appears in in the old JLPT system"
+    "description": "The label used when presenting the JLPT level (N5 to N1) of the kanji"
   },
   "ref_label_kh": {
     "message": "韩语（谚文）",

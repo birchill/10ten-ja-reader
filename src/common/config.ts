@@ -45,9 +45,8 @@ import { convertLegacyReference, getReferencesForLang } from './refs';
 // vice-versa) but that complicates matters when we introduce a new reference
 // type or change the default value of an existing reference type. Currently all
 // references as enabled by default, but we may wish to add a new reference type
-// that is disabled by default, or conditionally enabled by default (e.g. if we
-// find data for JLPT Nx levels, we might want to only enable it if the user has
-// already got the existing JLPT data enabled).
+// that is disabled by default, or conditionally enabled by default (e.g. only
+// enabled if the user has already got some related reference enabled).
 //
 // By recording the references that have actually been changed by the user as
 // being either enabled or disabled we capture the user's intention more
