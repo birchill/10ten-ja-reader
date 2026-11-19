@@ -1644,6 +1644,31 @@
   },
   "options_highlight_style_none": { "message": "无" },
   "options_highlight_style_yellow": { "message": "黄色" },
+  "options_installation_id_contact": {
+    "message": "联系我们",
+    "description": "Email link text inserted in options_installation_id_description."
+  },
+  "options_installation_id_copied": {
+    "message": "已复制",
+    "description": "Status shown after copying the reporting installation ID."
+  },
+  "options_installation_id_copy": {
+    "message": "复制 ID",
+    "description": "Button to copy the reporting installation ID."
+  },
+  "options_installation_id_copy_failed": {
+    "message": "复制失败",
+    "description": "Status shown when copying the reporting installation ID fails."
+  },
+  "options_installation_id_description": {
+    "message": "如果您在使用此安装的 10ten 时遇到问题并$contact$，请提供此 ID，以便我们找到相关的错误报告。",
+    "description": "Explains how sharing the installation ID helps support find reports related to a problem. The contact placeholder is an email link.",
+    "placeholders": { "contact": { "content": "$1", "example": "联系我们" } }
+  },
+  "options_installation_id_heading": {
+    "message": "安装 ID",
+    "description": "Heading for the reporting installation ID in the error reporting section."
+  },
   "options_kanji_components": {
     "message": "汉字部件",
     "description": "Option to define if radicals are displayed or not"

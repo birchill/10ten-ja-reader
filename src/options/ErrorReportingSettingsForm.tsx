@@ -1,6 +1,7 @@
 import { useLocale } from '../common/i18n';
 
 import { CheckboxRow } from './CheckboxRow';
+import { InstallationId } from './InstallationId';
 import { NewBadge } from './NewBadge';
 import { ReportingButton } from './ReportingButton';
 import { SavedReports } from './SavedReports';
@@ -13,7 +14,7 @@ type Props = { state: ReportingViewState; actions: ReportingActions };
 
 export function ErrorReportingSettingsForm({ state, actions }: Props) {
   const { t, langTag } = useLocale();
-  const { consent, policy } = state;
+  const { consent, policy, installationId } = state;
 
   const loading = consent.mode === 'loading' || policy.status === 'loading';
   const blockedByOrganization =
@@ -51,7 +52,7 @@ export function ErrorReportingSettingsForm({ state, actions }: Props) {
             <NewBadge expiry={new Date('2027-03-01')} />
           </label>
         </CheckboxRow>
-        <div class="flex flex-col gap-2 ps-[22px]">
+        <div class="flex flex-col gap-2 ps-5.5">
           <div id="automaticErrorReportingStatus" class="contents">
             {loading ? (
               <p class="m-0 text-zinc-600 italic dark:text-zinc-400">
@@ -118,6 +119,9 @@ export function ErrorReportingSettingsForm({ state, actions }: Props) {
             )}
         </div>
         <SavedReports state={state} actions={actions} />
+        {installationId && (
+          <InstallationId key={installationId} id={installationId} />
+        )}
       </div>
     </>
   );

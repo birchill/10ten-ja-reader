@@ -67,6 +67,15 @@
   --breakpoint-sm: 500px;
 
   --warning-red: url('/images/warning-red.svg');
+
+  --animate-installation-id-copy-status: installation-id-copy-status 250ms
+    ease-out 3s forwards;
+
+  @keyframes installation-id-copy-status {
+    to {
+      opacity: 0;
+    }
+  }
 }
 
 @utility cover-tl {

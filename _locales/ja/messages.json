@@ -1648,6 +1648,33 @@
   },
   "options_highlight_style_none": { "message": "なし" },
   "options_highlight_style_yellow": { "message": "黄色" },
+  "options_installation_id_contact": {
+    "message": "お問い合わせ",
+    "description": "Email link text inserted in options_installation_id_description."
+  },
+  "options_installation_id_copied": {
+    "message": "コピーしました",
+    "description": "Status shown after copying the reporting installation ID."
+  },
+  "options_installation_id_copy": {
+    "message": "ID をコピー",
+    "description": "Button to copy the reporting installation ID."
+  },
+  "options_installation_id_copy_failed": {
+    "message": "コピーできませんでした",
+    "description": "Status shown when copying the reporting installation ID fails."
+  },
+  "options_installation_id_description": {
+    "message": "このインストール環境で発生した問題について$contact$の際は、関連するエラーレポートを確認できるよう、この ID をお知らせください。",
+    "description": "Explains how sharing the installation ID helps support find reports related to a problem. The contact placeholder is an email link.",
+    "placeholders": {
+      "contact": { "content": "$1", "example": "お問い合わせ" }
+    }
+  },
+  "options_installation_id_heading": {
+    "message": "インストール識別子",
+    "description": "Heading for the reporting installation ID in the error reporting section."
+  },
   "options_kanji_components": {
     "message": "漢字構成",
     "description": "Option to define if radicals are displayed or not"

@@ -1,6 +1,10 @@
 type LinkSpec = { keyword: string; href: string };
 
-type Props = { text: string; links: Array<LinkSpec> };
+type Props = {
+  text: string;
+  links: Array<LinkSpec>;
+  target?: '_blank' | '_self';
+};
 
 export function Linkify(props: Props) {
   const matchedReplacements: Array<{
@@ -44,7 +48,7 @@ export function Linkify(props: Props) {
             class="options-link"
             key={part.keyword}
             href={part.href}
-            target="_blank"
+            target={props.target ?? '_blank'}
             rel="noreferrer"
           >
             {part.keyword}
