@@ -18,7 +18,7 @@ const SUPPORTED_REFERENCES = [
   'kr',
   // Vietnamese reading
   'vi',
-  // JLPT level (from misc field)
+  // JLPT N-level (from misc field)
   'jlpt',
   // Unicode codepoint (generated)
   'unicode',

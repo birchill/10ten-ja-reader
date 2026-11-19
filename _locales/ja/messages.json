@@ -2697,7 +2697,7 @@
   },
   "ref_label_jlpt": {
     "message": "日本語能力試験",
-    "description": "The label used when presenting the level the kanji appears in in the old JLPT system"
+    "description": "The label used when presenting the JLPT level (N5 to N1) of the kanji"
   },
   "ref_label_kh": {
     "message": "韓国語（ハングル）",
