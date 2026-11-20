@@ -735,7 +735,7 @@ describe('getEntryToCopy', () => {
         }
       )
     ).toEqual(
-      '抜 [バツ、ハツ、ハイ、ぬ.く、ぬ.ける、ぬ.かす、ぬ.かる] (ぬき) slip out, extract; radical: ⼿ (て); components: ⺘ (てへん, hand), 友 (とも, friend) [⼜ (また, or again)]; Classic Nelson 1854; Conning 1951; Henshall 1708; Japanese for Busy People -; JLPT N1; Kanji Kentei 4; Radical 64 ⼿; SKIP 1-3-4; Unicode U+629C'
+      '抜 [バツ、ハツ、ハイ、ぬ.く、ぬ.ける、ぬ.かす、ぬ.かる] (ぬき) slip out, extract; radical: ⼿ (て); components: ⺘ (てへん, hand), 友 (とも, friend) [⼜ (また, or again)]; Classic Nelson 1854; Conning 1951; Henshall 1708; Japanese for Busy People -; JLPT ~N1; Kanji Kentei 4; Radical 64 ⼿; SKIP 1-3-4; Unicode U+629C'
     );
   });
 });
@@ -1091,7 +1091,7 @@ describe('getFieldsToCopy', () => {
         }
       )
     ).toEqual(
-      '抜\tバツ、ハツ、ハイ、ぬ.く、ぬ.ける、ぬ.かす、ぬ.かる\tぬき\tslip out, extract\t⺘友(⼜)\tClassic Nelson 1854\tConning 1951\tHenshall 1708\tJapanese for Busy People -\tJLPT N1\tKanji Kentei 4\t64 ⼿\t64 ⼿\tSKIP 1-3-4\tU+629C'
+      '抜\tバツ、ハツ、ハイ、ぬ.く、ぬ.ける、ぬ.かす、ぬ.かる\tぬき\tslip out, extract\t⺘友(⼜)\tClassic Nelson 1854\tConning 1951\tHenshall 1708\tJapanese for Busy People -\tJLPT ~N1\tKanji Kentei 4\t64 ⼿\t64 ⼿\tSKIP 1-3-4\tU+629C'
     );
   });
 });
