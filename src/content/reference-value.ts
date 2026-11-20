@@ -27,7 +27,7 @@ export function getReferenceValue(
       return renderKanKen(entry.misc.kk, t);
 
     case 'jlpt':
-      return entry.misc.jlptn ? `N${entry.misc.jlptn}` : '';
+      return entry.misc.jlptn ? `~N${entry.misc.jlptn}` : '';
 
     case 'py':
     case 'kh':
