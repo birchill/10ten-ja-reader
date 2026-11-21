@@ -99,7 +99,7 @@
     "knip": "6.45.1",
     "mocha": "12.0.3",
     "nano-staged": "1.0.2",
-    "oxlint": "1.93.0",
+    "oxlint": "1.94.0",
     "oxlint-tsgolint": "7.0.2007",
     "playwright": "1.65.1",
     "postcss": "8.5.33",
