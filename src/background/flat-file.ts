@@ -40,6 +40,11 @@ class FlatFileDatabase {
   constructor(options: FlatFileDatabaseOptions) {
     this.bugsnag = options.bugsnag;
     this.loaded = this.#loadData();
+    // Loading continues in the background after the first failed attempt, so
+    // there may no longer be a caller waiting when the final attempt fails.
+    void this.loaded.catch((error) => {
+      void this.bugsnag?.notify(error);
+    });
   }
 
   //
@@ -85,6 +90,7 @@ class FlatFileDatabase {
       // we can at least abort and try again.
       const TIMEOUT_MS = 5 * 1000;
       let timeoutId: number | undefined;
+      let didTimeout = false;
 
       try {
         let controller: AbortController | undefined;
@@ -100,6 +106,7 @@ class FlatFileDatabase {
           () => {
             timeoutId = undefined;
             if (controller) {
+              didTimeout = true;
               console.error(`Load of ${url} timed out. Aborting.`);
               if (this.bugsnag) {
                 this.bugsnag.leaveBreadcrumb(makeBreadcrumb('Aborting: ', url));
@@ -128,6 +135,8 @@ class FlatFileDatabase {
 
         return responseText;
       } catch (e) {
+        const error = didTimeout ? new Error(`Load of ${url} timed out.`) : e;
+
         if (typeof timeoutId === 'number') {
           clearTimeout(timeoutId);
         }
@@ -140,10 +149,10 @@ class FlatFileDatabase {
 
         if (++attempts >= 3) {
           console.error(`Failed to load ${url} after ${attempts} attempts`);
-          throw e;
+          throw error;
         }
 
-        this.notifyListeners({ type: 'error', error: e, willRetry: true });
+        this.notifyListeners({ type: 'error', error, willRetry: true });
 
         // Wait for a (probably) increasing interval before trying again
         const intervalToWait = Math.round(Math.random() * attempts * 1000);
