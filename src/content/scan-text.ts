@@ -4,6 +4,7 @@ import {
   assertNoSplitMaskLength,
 } from '../common/no-split-mask';
 import { nonJapaneseChar } from '../utils/char-range';
+import { getParentOrShadowHost } from '../utils/dom-utils';
 import { normalizeContext } from '../utils/normalize';
 
 import {
@@ -466,21 +467,12 @@ function isVisibleElement(element: Element): boolean {
     return false;
   }
 
-  let boxAncestor = getParentElementAcrossShadowBoundary(element);
+  let boxAncestor = getParentOrShadowHost(element);
   while (boxAncestor && getComputedStyle(boxAncestor).display === 'contents') {
-    boxAncestor = getParentElementAcrossShadowBoundary(boxAncestor);
+    boxAncestor = getParentOrShadowHost(boxAncestor);
   }
 
   return !boxAncestor || boxAncestor.checkVisibility({ opacityProperty: true });
-}
-
-function getParentElementAcrossShadowBoundary(element: Element) {
-  if (element.parentElement) {
-    return element.parentElement;
-  }
-
-  const root = element.getRootNode();
-  return root instanceof ShadowRoot ? root.host : null;
 }
 
 // ----------------------------------------------------------------------------
