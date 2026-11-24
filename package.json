@@ -109,7 +109,7 @@
     "prettier-plugin-organize-attributes": "1.0.0",
     "prettier-plugin-packagejson": "3.1.0",
     "prettier-plugin-tailwindcss": "0.8.1",
-    "react-cosmos": "7.4.1",
+    "react-cosmos": "7.5.0",
     "react-cosmos-plugin-boolean-input": "7.5.0",
     "react-cosmos-plugin-rspack": "3.0.0",
     "semver-parser": "4.2.2",
