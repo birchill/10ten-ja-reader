@@ -574,6 +574,88 @@ describe('getTextAtPoint', () => {
         textAtPoint('履く', [firstTextNode, 0, 1], [lastTextNode, 0, 1])
       );
     });
+
+    it.each([
+      [
+        'display: contents',
+        '<span style="display: contents" id="target">勉強</span>',
+      ],
+      [
+        'nested display: contents',
+        '<span style="display: contents"><span style="display: contents" id="target">勉強</span></span>',
+      ],
+    ])('reads across %s elements', (_, html) => {
+      // Arrange
+      testDiv.innerHTML = `<p>日本語を${html}しています</p>`;
+      const paragraph = testDiv.firstElementChild!;
+      const firstTextNode = paragraph.firstChild as Text;
+      const middleTextNode = testDiv.querySelector('#target')!
+        .firstChild as Text;
+      const lastTextNode = paragraph.lastChild as Text;
+      const bbox = getBboxForOffset(firstTextNode, 0);
+
+      // Act
+      const result = getTextAtPoint({
+        point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+      });
+
+      // Assert
+      expect(result).toMatchObject(
+        textAtPoint(
+          '日本語を勉強しています',
+          [firstTextNode, 0, 4],
+          [middleTextNode, 0, 2],
+          [lastTextNode, 0, 5]
+        )
+      );
+    });
+
+    it('looks up text when the lookup point is inside a display: contents element', () => {
+      // Arrange
+      testDiv.innerHTML =
+        '<p>日本語を<strong style="display: contents">勉強</strong>しています</p>';
+      const textNode = testDiv.querySelector('strong')!.firstChild as Text;
+      const lastTextNode = testDiv.firstElementChild!.lastChild as Text;
+      const bbox = getBboxForOffset(textNode, 0);
+
+      // Act
+      const result = getTextAtPoint({
+        point: { x: bbox.left + bbox.width / 2, y: bbox.top + bbox.height / 2 },
+      });
+
+      // Assert
+      expect(result).toMatchObject(
+        textAtPoint('勉強しています', [textNode, 0, 2], [lastTextNode, 0, 5])
+      );
+    });
+
+    it.each([
+      ['display: none', 'display: none', 'display: contents'],
+      ['visibility: hidden', '', 'display: contents; visibility: hidden'],
+      ['opacity: 0', 'opacity: 0', 'display: contents'],
+    ])(
+      'skips display: contents text hidden by %s',
+      (_, wrapperStyle, contentsStyle) => {
+        // Arrange
+        testDiv.innerHTML = `<p>履<span style="${wrapperStyle}"><span style="${contentsStyle}">｛は｝</span></span>く</p>`;
+        const firstTextNode = testDiv.firstElementChild!.firstChild as Text;
+        const lastTextNode = testDiv.firstElementChild!.lastChild as Text;
+        const bbox = getBboxForOffset(firstTextNode, 0);
+
+        // Act
+        const result = getTextAtPoint({
+          point: {
+            x: bbox.left + bbox.width / 2,
+            y: bbox.top + bbox.height / 2,
+          },
+        });
+
+        // Assert
+        expect(result).toMatchObject(
+          textAtPoint('履く', [firstTextNode, 0, 1], [lastTextNode, 0, 1])
+        );
+      }
+    );
   });
 
   /* ------------------------------------------------------------------------

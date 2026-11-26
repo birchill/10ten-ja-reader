@@ -4,6 +4,7 @@ import {
   assertNoSplitMaskLength,
 } from '../common/no-split-mask';
 import { nonJapaneseChar } from '../utils/char-range';
+import { getParentOrShadowHost } from '../utils/dom-utils';
 import { normalizeContext } from '../utils/normalize';
 
 import {
@@ -410,6 +411,9 @@ function isEffectiveInline(element: Element | null): element is Element {
     // Finally, if an element's parent is inline-block, then the element will
     // still be laid out "inline" so we allow that too (and that appears to be
     // used by Kanshudo at least).
+    //
+    // Elements with `display: contents` don't generate a box at all so their
+    // children are laid out as part of the parent's flow.
     (['RB', 'RUBY', 'SPAN'].includes(element.tagName) ||
       [
         'inline',
@@ -419,6 +423,7 @@ function isEffectiveInline(element: Element | null): element is Element {
         'ruby',
         'ruby-base',
         'ruby-text',
+        'contents',
       ].includes(getComputedStyle(element).display!) ||
       (!!element.parentElement &&
         getComputedStyle(element.parentElement)?.display === 'inline-block'))
@@ -437,13 +442,37 @@ function isVisibleTextNode(node: Node): node is Text {
   const parent = node.parentElement;
   return (
     node.nodeType === Node.TEXT_NODE &&
-    (!parent ||
-      !parent.isConnected ||
-      parent.checkVisibility({
-        opacityProperty: true,
-        visibilityProperty: true,
-      }))
+    (!parent || !parent.isConnected || isVisibleElement(parent))
   );
+}
+
+function isVisibleElement(element: Element): boolean {
+  const options = { opacityProperty: true, visibilityProperty: true };
+  if (element.checkVisibility(options)) {
+    return true;
+  }
+
+  // display: contents elements don't generate a box so checkVisibility()
+  // reports false for them even when their text is visible.
+  //
+  // In that case, check the nearest ancestor that does generate a box (which
+  // also covers ancestors that are display: none, transparent etc.) and use
+  // the element's own computed visibility since that is an inherited property.
+  const { display, visibility } = getComputedStyle(element);
+  if (display !== 'contents') {
+    return false;
+  }
+
+  if (visibility === 'hidden' || visibility === 'collapse') {
+    return false;
+  }
+
+  let boxAncestor = getParentOrShadowHost(element);
+  while (boxAncestor && getComputedStyle(boxAncestor).display === 'contents') {
+    boxAncestor = getParentOrShadowHost(boxAncestor);
+  }
+
+  return !boxAncestor || boxAncestor.checkVisibility({ opacityProperty: true });
 }
 
 // ----------------------------------------------------------------------------
