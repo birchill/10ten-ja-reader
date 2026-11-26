@@ -49,12 +49,27 @@ export class FxFetcher {
   #updated: number | undefined;
 
   constructor() {
-    browser.alarms.onAlarm.addListener((alarm) => {
-      if (alarm.name === 'fx-update') {
-        Bugsnag.leaveBreadcrumb('Running FX data update from alarm');
-        this.#fetchData().catch((e) => Bugsnag.notify(e));
-      }
-    });
+    if (browser.alarms) {
+      browser.alarms.onAlarm.addListener((alarm) => {
+        if (alarm.name === 'fx-update') {
+          Bugsnag.leaveBreadcrumb('Running FX data update from alarm');
+          this.#fetchData().catch((e) => Bugsnag.notify(e));
+        }
+      });
+    } else {
+      const permissions = browser.runtime.getManifest().permissions || [];
+      void Bugsnag.notify(new Error('Alarms API unavailable at startup'), {
+        severity: 'warning',
+        metadata: {
+          alarmsStartup: {
+            declaresAlarms: permissions.includes('alarms'),
+            declaresStorage: permissions.includes('storage'),
+            nativeAlarms: typeof chrome !== 'undefined' && !!chrome.alarms,
+            storageLocal: !!browser.storage?.local,
+          },
+        },
+      });
+    }
 
     // Fetch the latest update date and if we've never downloaded the data,
     // do it now.
@@ -246,6 +261,10 @@ export class FxFetcher {
   }
 
   async scheduleNextUpdate() {
+    if (!browser.alarms) {
+      return;
+    }
+
     // If we have an existing alarm, it's not likely to be later than we
     const existingAlarm = await browser.alarms.get('fx-update');
     if (existingAlarm) {
@@ -301,6 +320,6 @@ export class FxFetcher {
   }
 
   async cancelScheduledUpdate() {
-    await browser.alarms.clear('fx-update');
+    await browser.alarms?.clear('fx-update');
   }
 }
