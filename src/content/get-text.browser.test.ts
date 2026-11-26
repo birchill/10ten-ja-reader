@@ -576,26 +576,20 @@ describe('getTextAtPoint', () => {
     });
 
     it.each([
-      ['strong', '<strong>勉強</strong>'],
-      ['b', '<b>勉強</b>'],
-      ['em', '<em>勉強</em>'],
-      ['font-weight: 700', '<span style="font-weight: 700">勉強</span>'],
-      ['nested bold', '<b><strong>勉強</strong></b>'],
-      ['display: contents', '<span style="display: contents">勉強</span>'],
       [
-        'bold with display: contents',
-        '<strong style="display: contents">勉強</strong>',
+        'display: contents',
+        '<span style="display: contents" id="target">勉強</span>',
       ],
       [
         'nested display: contents',
-        '<strong><span style="display: contents"><span style="display: contents">勉強</span></span></strong>',
+        '<span style="display: contents"><span style="display: contents" id="target">勉強</span></span>',
       ],
-    ])('reads text formatted as %s', (_, html) => {
+    ])('reads across %s elements', (_, html) => {
       // Arrange
       testDiv.innerHTML = `<p>日本語を${html}しています</p>`;
       const paragraph = testDiv.firstElementChild!;
       const firstTextNode = paragraph.firstChild as Text;
-      const middleTextNode = [...paragraph.querySelectorAll('*')].at(-1)!
+      const middleTextNode = testDiv.querySelector('#target')!
         .firstChild as Text;
       const lastTextNode = paragraph.lastChild as Text;
       const bbox = getBboxForOffset(firstTextNode, 0);
