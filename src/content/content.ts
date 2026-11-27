@@ -48,6 +48,7 @@
 import type { MajorDataSeries } from '@birchill/jpdict-idb';
 import { createRef } from 'preact';
 import * as s from 'superstruct';
+import type { Storage } from 'webextension-polyfill';
 import browser from 'webextension-polyfill';
 
 import { BackgroundMessageSchema } from '../background/background-message';
@@ -58,6 +59,7 @@ import type {
 import type { CopyType } from '../common/copy-keys';
 import { CopyKeys } from '../common/copy-keys';
 import { MAX_LOOKUP_LENGTH } from '../common/limits';
+import type { TablessEnableReply } from '../common/tabless-content';
 import { isEditableNode, isInteractiveElement } from '../utils/dom-utils';
 import type { MarginBox, Point, Rect } from '../utils/geometry';
 import {
@@ -2846,11 +2848,18 @@ declare global {
   }
 
   let contentHandler: ContentHandler | null = null;
+  let isTabless = false;
+  let enableRequestId = 0;
 
   window.readerScriptVer = __VERSION__;
   window.removeReaderScript = () => {
+    ++enableRequestId;
     disable();
     browser.runtime.onMessage.removeListener(onMessage);
+    if (isTabless) {
+      browser.storage.local.onChanged.removeListener(onStorageChanged);
+      window.removeEventListener('pageshow', onPageShow);
+    }
   };
 
   // Track if we are the top-most window or not.
@@ -2869,9 +2878,7 @@ declare global {
 
   browser.runtime.onMessage.addListener(onMessage);
 
-  browser.runtime.sendMessage({ type: 'enable?' }).catch(() => {
-    // Ignore
-  });
+  void requestEnable();
 
   // Poll the background page until it finishes updating
   void (async function checkIfUpdating() {
@@ -2925,6 +2932,56 @@ declare global {
     return 'ok';
   }
 
+  async function requestEnable(): Promise<void> {
+    const requestId = ++enableRequestId;
+    let tablessReply: TablessEnableReply | undefined;
+    try {
+      // Only tabless senders get a direct reply. They receive { config: null }
+      // when disabled, so any reply identifies a tabless sender. A sender in
+      // a tab receives a separate `enable` message if the reader is enabled.
+      tablessReply = await browser.runtime.sendMessage({ type: 'enable?' });
+    } catch {
+      return;
+    }
+
+    // Tabless content shows the popup in its own top-level document. Child
+    // frames would need a way to forward lookups to that document.
+    if (
+      !tablessReply ||
+      window.top !== window ||
+      requestId !== enableRequestId
+    ) {
+      return;
+    }
+
+    if (!isTabless) {
+      isTabless = true;
+      browser.storage.local.onChanged.addListener(onStorageChanged);
+      // The document can miss storage events in the back-forward cache.
+      // Refresh when restored, including if the reader was previously disabled.
+      window.addEventListener('pageshow', onPageShow);
+
+      // The state may have changed before we started listening.
+      return requestEnable();
+    }
+
+    if (tablessReply.config) {
+      enable(tablessReply.config);
+    } else {
+      disable();
+    }
+  }
+
+  function onStorageChanged(changes: Record<string, Storage.StorageChange>) {
+    if (changes.enabled || changes.tablessConfigUpdated) {
+      void requestEnable();
+    }
+
+    if (changes.tablessDbUpdated) {
+      contentHandler?.onDbUpdated();
+    }
+  }
+
   function enable(config: ContentConfigParams) {
     if (contentHandler) {
       contentHandler.setConfig(config);
@@ -2942,6 +2999,24 @@ declare global {
       contentHandler = new ContentHandler(config);
     }
 
+    if (isTabless) {
+      contentHandler.setFrameId(0);
+    } else {
+      // Unregister the frame on navigation and request enable again on restore.
+      registerFrame();
+      window.addEventListener('pagehide', onPageHide);
+      window.addEventListener('pageshow', onPageShow);
+    }
+
+    // Let the background know the current state of hover devices since this
+    // might be its first chance to access the DOM.
+    void browser.runtime.sendMessage({
+      type: 'canHoverChanged',
+      value: contentHandler.canHover,
+    });
+  }
+
+  function registerFrame() {
     browser.runtime
       .sendMessage<unknown, { frameId: number } | undefined>({
         type: 'enabled',
@@ -2963,16 +3038,6 @@ declare global {
       .catch((e) => {
         console.warn(e);
       });
-
-    // Let the background know the current state of hover devices since this
-    // might be its first chance to access the DOM.
-    void browser.runtime.sendMessage({
-      type: 'canHoverChanged',
-      value: contentHandler.canHover,
-    });
-
-    window.addEventListener('pageshow', onPageShow);
-    window.addEventListener('pagehide', onPageHide);
   }
 
   function disable() {
@@ -2981,12 +3046,14 @@ declare global {
       contentHandler = null;
     }
 
-    window.removeEventListener('pageshow', onPageShow);
-    window.removeEventListener('pagehide', onPageHide);
+    if (!isTabless) {
+      window.removeEventListener('pageshow', onPageShow);
+      window.removeEventListener('pagehide', onPageHide);
+    }
   }
 
   function onPageShow() {
-    void browser.runtime.sendMessage({ type: 'enable?' });
+    void requestEnable();
   }
 
   function onPageHide() {

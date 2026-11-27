@@ -18,7 +18,9 @@ export type TtsFetchResult =
   | { ok: true; audioBase64: string; moraTiming?: MoraTimingData }
   | { ok: false };
 
-export type TtsFetchKey = { tabId: number; frameId: number; requestId: string };
+export type TtsFetchKey = { requestId: string } & (
+  { tabId: number; frameId: number } | { documentId: string }
+);
 
 type AttemptResult =
   TtsFetchResult | { ok: false; retry: 'throttled' | 'network' };
@@ -210,6 +212,10 @@ function wait(ms: number, signal: AbortSignal): Promise<void> {
 }
 
 function keyFor(key: TtsFetchKey): string {
+  if ('documentId' in key) {
+    return `document:${key.documentId}:${key.requestId}`;
+  }
+
   return `${key.tabId}:${key.frameId}:${key.requestId}`;
 }
 

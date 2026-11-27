@@ -57,6 +57,8 @@ import { Config } from '../common/config';
 import type { DbListenerMessage } from '../common/db-listener-messages';
 import { notifyDbStateUpdated } from '../common/db-listener-messages';
 import { captureReply } from '../common/prepared-report';
+import type { TablessEnableReply } from '../common/tabless-content';
+import { supportsTablessContent } from '../common/tabless-content';
 import { startBugsnag } from '../utils/bugsnag';
 import { getInstallationId } from '../utils/installation-id';
 import { isAbortError } from '../utils/is-abort-error';
@@ -85,6 +87,7 @@ import { shouldRequestPersistentStorage } from './quota-management';
 import { ReportingService } from './reporting';
 import type { SearchOtherResult, SearchWordsResult } from './search-result';
 import TabManager from './tab-manager';
+import type { TtsFetchKey } from './tts-fetch';
 import { cancelTtsFetch, fetchTtsClip } from './tts-fetch';
 
 //
@@ -195,7 +198,7 @@ config.addChangeListener(async (changes) => {
   await tabManager.updateConfig(config.contentConfig);
 });
 
-void config.ready.then(async () => {
+const tabManagerReady = config.ready.then(async () => {
   // If we have a non-default toolbar icon, set it for all tabs now so that
   // when we open a new tab, etc. it will be set correctly.
   if (config.toolbarIcon !== 'default') {
@@ -205,7 +208,9 @@ void config.ready.then(async () => {
   // Initialize the tab manager first since we'll need its enabled state for
   // a number of other things.
   await tabManager.init(config.contentConfig);
+});
 
+void tabManagerReady.then(async () => {
   await updateContextMenus({
     tabEnabled: tabManager.isEnabled(),
     toggleMenuEnabled: config.contextMenuEnable,
@@ -473,15 +478,35 @@ browser.runtime.onMessage.addListener(
       return Promise.resolve({ status: 'skipped', reason: 'invalid-source' });
     }
 
+    // Restrict the fallback to web content. Extension pages such as options
+    // can also send messages without a tab ID.
+    const isTablessContent =
+      sender.tab?.id === undefined &&
+      sender.id === browser.runtime.id &&
+      !!sender.url &&
+      /^https?:/.test(sender.url) &&
+      supportsTablessContent();
+
     const leaveActivityBreadcrumb: typeof Bugsnag.leaveBreadcrumb = (
       ...args
     ) => {
-      if (!sender.tab?.incognito) {
+      // Firefox omits private browsing information for tabless content.
+      if (!sender.tab?.incognito && !isTablessContent) {
         Bugsnag.leaveBreadcrumb(...args);
       }
     };
 
     switch (request.type) {
+      case 'enable?':
+        if (isTablessContent) {
+          // We can't push an enable message without a tab ID. The content
+          // script requests its state on load and after storage change events.
+          return tabManagerReady.then((): TablessEnableReply => ({
+            config: tabManager.isEnabled() ? config.contentConfig : null,
+          }));
+        }
+        break;
+
       case 'capturePreparedReport':
         return reporting.capture(request.report).then(captureReply);
 
@@ -646,25 +671,34 @@ browser.runtime.onMessage.addListener(
         return Promise.resolve(isDbUpdating());
 
       case 'fetchTtsClip':
-        if (!sender.tab?.id || typeof sender.frameId !== 'number') {
-          return Promise.resolve({ ok: false });
-        }
-        return fetchTtsClip(
-          {
-            tabId: sender.tab.id,
-            frameId: sender.frameId,
-            requestId: request.requestId,
-          },
-          request.request
-        );
-
       case 'cancelTtsFetch':
-        if (sender.tab?.id && typeof sender.frameId === 'number') {
-          cancelTtsFetch({
-            tabId: sender.tab.id,
-            frameId: sender.frameId,
-            requestId: request.requestId,
-          });
+        {
+          let key: TtsFetchKey | undefined;
+          if (
+            typeof sender.tab?.id === 'number' &&
+            typeof sender.frameId === 'number'
+          ) {
+            key = {
+              tabId: sender.tab.id,
+              frameId: sender.frameId,
+              requestId: request.requestId,
+            };
+          } else if (isTablessContent && sender.documentId) {
+            key = {
+              documentId: sender.documentId,
+              requestId: request.requestId,
+            };
+          }
+
+          if (request.type === 'fetchTtsClip') {
+            return key
+              ? fetchTtsClip(key, request.request)
+              : Promise.resolve({ ok: false });
+          }
+
+          if (key) {
+            cancelTtsFetch(key);
+          }
         }
         break;
 
