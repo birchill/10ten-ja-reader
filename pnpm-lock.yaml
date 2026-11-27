@@ -130,8 +130,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1(jiti@2.7.0)(postcss@8.5.33)(tsx@4.23.15)(yaml@2.9.1)
       postcss-loader:
-        specifier: 8.2.1
-        version: 8.2.1(@rspack/core@2.3.3)(postcss@8.5.33)(typescript@7.0.2)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.33))
+        specifier: 8.2.2
+        version: 8.2.2(@rspack/core@2.3.3)(postcss@8.5.33)(typescript@7.0.2)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.33))
       prettier:
         specifier: 3.10.1
         version: 3.10.1
@@ -3343,10 +3343,6 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
 
-  jiti@2.6.1:
-    resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
-    hasBin: true
-
   jiti@2.7.0:
     resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==}
     hasBin: true
@@ -4034,8 +4030,8 @@ packages:
       yaml:
         optional: true
 
-  postcss-loader@8.2.1:
-    resolution: {integrity: sha512-k98jtRzthjj3f76MYTs9JTpRqV1RaaMhEU0Lpw9OTmQZQdppg4B30VZ74BojuBHt3F4KyubHJoXCMUeM8Bqeow==}
+  postcss-loader@8.2.2:
+    resolution: {integrity: sha512-NMFUxyFeNHdQSnK0wewFwnkYwsjmohSZzGUBTjcxPMJzOOf7BVANeU8rljwkfjuWhZVRSGgCaXwV6YSkfETeyg==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
       '@rspack/core': 0.x || ^1.0.0 || ^2.0.0-0
@@ -4454,11 +4450,6 @@ packages:
 
   semver-parser@4.2.2:
     resolution: {integrity: sha512-ZvOv58J8vDKC9b+Y4QD3veCkaTbL1E/+1r4eoYfZJoM/0CQgliHYPzhlDZMZNoJMkuHDZLgv4Y53XOFQROfNFg==}
-
-  semver@7.7.4:
-    resolution: {integrity: sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==}
-    engines: {node: '>=10'}
-    hasBin: true
 
   semver@7.8.5:
     resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
@@ -8214,8 +8205,6 @@ snapshots:
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
-  jiti@2.6.1: {}
-
   jiti@2.7.0: {}
 
   jju@1.4.0: {}
@@ -8941,12 +8930,12 @@ snapshots:
       tsx: 4.23.15
       yaml: 2.9.1
 
-  postcss-loader@8.2.1(@rspack/core@2.3.3)(postcss@8.5.33)(typescript@7.0.2)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.33)):
+  postcss-loader@8.2.2(@rspack/core@2.3.3)(postcss@8.5.33)(typescript@7.0.2)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.33)):
     dependencies:
       cosmiconfig: 9.0.0(typescript@7.0.2)
-      jiti: 2.6.1
+      jiti: 2.7.0
       postcss: 8.5.33
-      semver: 7.7.4
+      semver: 7.8.5
     optionalDependencies:
       '@rspack/core': 2.3.3
       webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.33)
@@ -9318,8 +9307,6 @@ snapshots:
       webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.33)
 
   semver-parser@4.2.2: {}
-
-  semver@7.7.4: {}
 
   semver@7.8.5: {}
 
