@@ -219,6 +219,10 @@ export default class TabManager {
     }
 
     this.#notifyListeners(this.#enabled);
+
+    // The persisted enabled key might not change, for example if an earlier
+    // write failed and there is no key to remove when disabling.
+    await notifyTablessContent('tablessStateChanged');
   }
 
   async #enableTab(tabId: number, frameId?: number): Promise<void> {
@@ -266,7 +270,7 @@ export default class TabManager {
 
     await Promise.all([
       sendMessageToAllTabs({ type: 'enable', config, frame: '*' }),
-      notifyTablessContent('tablessConfigUpdated'),
+      notifyTablessContent('tablessStateChanged'),
     ]);
   }
 
@@ -461,7 +465,7 @@ export default class TabManager {
 // Tabless documents can receive storage events even if the Firefox event page
 // has gone idle. Publish only a change signal and let them request the config.
 async function notifyTablessContent(
-  key: 'tablessConfigUpdated' | 'tablessDbUpdated'
+  key: 'tablessStateChanged' | 'tablessDbUpdated'
 ) {
   if (supportsTablessContent()) {
     await browser.storage.local

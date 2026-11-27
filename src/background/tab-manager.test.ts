@@ -18,6 +18,7 @@ const { browserMock, messageListeners } = vi.hoisted(() => {
   const messageListeners: Array<MessageListener> = [];
   const browserMock = {
     runtime: {
+      getURL: () => 'moz-extension://test/',
       onMessage: {
         addListener: vi.fn<(listener: MessageListener) => void>((listener) => {
           messageListeners.push(listener);
@@ -25,7 +26,13 @@ const { browserMock, messageListeners } = vi.hoisted(() => {
       },
     },
     storage: {
-      local: { get: vi.fn<() => Promise<object>>(() => Promise.resolve({})) },
+      local: {
+        get: vi.fn<() => Promise<object>>(() => Promise.resolve({})),
+        remove: vi.fn<(key: string) => Promise<void>>().mockResolvedValue(),
+        set: vi
+          .fn<(items: Record<string, unknown>) => Promise<void>>()
+          .mockResolvedValue(),
+      },
     },
     tabs: {
       onActivated: {
@@ -85,5 +92,28 @@ describe('TabManager', () => {
     expect(
       manager.getInitialFrameSrc({ tabId: 1, frameId: 2 })
     ).toBeUndefined();
+  });
+
+  it('notifies tabless documents when the enabled key cannot emit a change', async () => {
+    const { remove, set } = browserMock.storage.local;
+    set.mockRejectedValueOnce(new Error('Failed to store enabled'));
+
+    const manager = new TabManager();
+    const config = {} as ContentConfigParams;
+    await manager.init(config);
+
+    await manager.toggle(config);
+    expect(set).toHaveBeenCalledWith({ enabled: true });
+    expect(set).toHaveBeenCalledWith({
+      tablessStateChanged: expect.any(String),
+    });
+
+    // The failed write left nothing to remove when disabling the reader.
+    set.mockClear();
+    await manager.toggle(config);
+    expect(remove).toHaveBeenCalledWith('enabled');
+    expect(set).toHaveBeenCalledWith({
+      tablessStateChanged: expect.any(String),
+    });
   });
 });

@@ -2973,7 +2973,7 @@ declare global {
   }
 
   function onStorageChanged(changes: Record<string, Storage.StorageChange>) {
-    if (changes.enabled || changes.tablessConfigUpdated) {
+    if (changes.enabled || changes.tablessStateChanged) {
       void requestEnable();
     }
 
