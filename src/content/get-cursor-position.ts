@@ -45,6 +45,14 @@ export function getCursorPosition({
     return null;
   }
 
+  const captionPosition = getYouTubeEmbedCaptionPosition({
+    point,
+    elements: initialElements,
+  });
+  if (captionPosition) {
+    return captionPosition;
+  }
+
   // Do an initial lookup
   const initialResult = getCursorPositionForElement({
     point,
@@ -136,6 +144,41 @@ export function getCursorPosition({
   // We didn't find anything better by toggling pointer-events, so use the
   // original result.
   return initialResult;
+}
+
+function getYouTubeEmbedCaptionPosition({
+  point,
+  elements,
+}: {
+  point: Point;
+  elements: ReadonlyArray<Element>;
+}): CursorPosition<Text> | null {
+  if (!elements[0].closest('#player-controls.ytPlayerControlsContainerHost')) {
+    return null;
+  }
+
+  const segment = elements.find((element) =>
+    element.matches('.ytp-caption-segment')
+  );
+  const caption = segment?.closest('.caption-window');
+  const player = caption?.closest('#movie_player.html5-video-player');
+  if (!segment || !caption || !(player instanceof HTMLElement)) {
+    return null;
+  }
+
+  // YouTube embeds put their controls in a separate layer above the entire
+  // video player, including the captions. Raise the player only for the caret
+  // lookup so it does not interfere with mouse interaction with the controls.
+  const stylesToRestore = new Map([[player, player.getAttribute('style')]]);
+  try {
+    player.style.setProperty('z-index', '2147483647', 'important');
+    const position = getCursorPositionForElement({ point, element: segment });
+    return isTextNodePosition(position) && caption.contains(position.offsetNode)
+      ? position
+      : null;
+  } finally {
+    restoreStyles(stylesToRestore);
+  }
 }
 
 export function isTextNodePosition(

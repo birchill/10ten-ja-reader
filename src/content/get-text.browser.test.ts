@@ -556,6 +556,37 @@ describe('getTextAtPoint', () => {
       );
     });
 
+    it('finds YouTube embed captions behind the player controls', () => {
+      // The caption is above the video but inside a lower stacking context
+      // than the separate controls layer.
+      testDiv.innerHTML = `
+        <div id="movie_player" class="html5-video-player" style="position: relative; z-index: 0">
+          <div class="caption-window" style="position: relative; z-index: 41; user-select: none">
+            <span class="ytp-caption-segment">こんにちは</span>
+          </div>
+        </div>
+        <div id="player-controls" class="ytPlayerControlsContainerHost" style="position: absolute; inset: 0; z-index: 1">
+          <button style="width: 100%; height: 100%">More videos</button>
+        </div>`;
+      const player = testDiv.querySelector('#movie_player')!;
+      const originalStyle = player.getAttribute('style');
+      const button = testDiv.querySelector('button');
+      const textNode = testDiv.querySelector('.ytp-caption-segment')!
+        .firstChild as Text;
+      const bbox = getBboxForOffset(textNode, 1);
+      const point = {
+        x: bbox.left + bbox.width / 2,
+        y: bbox.top + bbox.height / 2,
+      };
+
+      expect(document.elementFromPoint(point.x, point.y)).toBe(button);
+      expect(getTextAtPoint({ point })).toMatchObject(
+        textAtPoint('んにちは', [textNode, 1, 5])
+      );
+      expect(player.getAttribute('style')).toBe(originalStyle);
+      expect(document.elementFromPoint(point.x, point.y)).toBe(button);
+    });
+
     it('skips text that is display:none', () => {
       // Arrange
       testDiv.innerHTML =
