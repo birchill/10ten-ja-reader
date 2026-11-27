@@ -4,6 +4,7 @@ import type { Runtime, Tabs, Windows } from 'webextension-polyfill';
 import browser from 'webextension-polyfill';
 
 import type { ContentConfigParams } from '../common/content-config-params';
+import { supportsTablessContent } from '../common/tabless-content';
 import { requestIdleCallback } from '../utils/request-idle-callback';
 
 import type {
@@ -218,6 +219,10 @@ export default class TabManager {
     }
 
     this.#notifyListeners(this.#enabled);
+
+    // The persisted enabled key might not change, for example if an earlier
+    // write failed and there is no key to remove when disabling.
+    await notifyTablessContent('tablessStateChanged');
   }
 
   async #enableTab(tabId: number, frameId?: number): Promise<void> {
@@ -263,11 +268,17 @@ export default class TabManager {
       return;
     }
 
-    await sendMessageToAllTabs({ type: 'enable', config, frame: '*' });
+    await Promise.all([
+      sendMessageToAllTabs({ type: 'enable', config, frame: '*' }),
+      notifyTablessContent('tablessStateChanged'),
+    ]);
   }
 
   async notifyDbUpdated() {
-    await sendMessageToAllTabs({ type: 'dbUpdated', frame: '*' });
+    await Promise.all([
+      sendMessageToAllTabs({ type: 'dbUpdated', frame: '*' }),
+      notifyTablessContent('tablessDbUpdated'),
+    ]);
   }
 
   //
@@ -448,6 +459,20 @@ export default class TabManager {
     for (const listener of this.#listeners.slice()) {
       listener(enabled);
     }
+  }
+}
+
+// Tabless documents can receive storage events even if the Firefox event page
+// has gone idle. Publish only a change signal and let them request the config.
+async function notifyTablessContent(
+  key: 'tablessStateChanged' | 'tablessDbUpdated'
+) {
+  if (supportsTablessContent()) {
+    await browser.storage.local
+      .set({ [key]: crypto.randomUUID() })
+      .catch(() => {
+        // Ignore storage errors, as we do for the enabled state.
+      });
   }
 }
 
