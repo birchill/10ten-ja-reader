@@ -6,6 +6,34 @@ The format is based roughly on [Keep a Changelog](https://keepachangelog.com/en/
 This project does _not_ adhere to semantic versioning—it's a consumer
 app.
 
+## 1.30.0
+
+- (Firefox) Look up Japanese text in Firefox's chatbot sidebar. ([#3229](https://github.com/birchill/10ten-ja-reader/issues/3229))
+- Reading audio playback is enabled by default. The temporary toggle in Settings
+  has been removed.
+- Kanji JLPT levels are now shown using the current N5 to N1 levels instead of
+  the pre-2010 4級 to 1級 levels. Since there is no official list of kanji for
+  each level, these levels are based on an existing list, adjusted using the
+  kanji that appear in the official JLPT practice tests ([#3271](https://github.com/birchill/10ten-ja-reader/issues/3271)).
+- Automatic error reporting now requires consent, using Firefox's native
+  data-collection permission where supported and a default-off setting elsewhere.
+  Up to 10 diagnostic reports are saved locally when reporting is off or delivery
+  fails. Repeated reports share one saved copy with an occurrence count.
+  Saved reports can be sent once without enabling automatic reporting, with
+  explicit retries limited to the reports selected in that batch.
+  Administrators can disable diagnostic sending and local report storage
+  independently through managed policy. Reports use a dedicated installation ID
+  and mask lookup text in known error messages and pronunciation-audio URLs.
+  The options page has a new Error reporting section for turning automatic
+  reporting on or off and for reviewing, sending, or deleting saved reports,
+  along with a dismissible notice when unsent reports are waiting. You can copy
+  your installation ID from this section when contacting support about a problem.
+- Avoid a startup failure when the browser does not provide the alarms API.
+- Fixed lookups failing, or silently skipping text, when Japanese text is inside an
+  element styled with `display: contents`.
+- Fixed lookups on captions in embedded YouTube videos when the player controls
+  cover the caption text. ([#3184](https://github.com/birchill/10ten-ja-reader/issues/3184))
+
 ## [1.29.0] - 2026-10-21
 
 - Added an experimental, off-by-default setting (Settings → Audio) that shows a
