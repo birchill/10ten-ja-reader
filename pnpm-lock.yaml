@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@birchill/bugsnag-zero':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.1
+        version: 1.0.1
       '@birchill/discriminator':
         specifier: 0.3.1
         version: 0.3.1(superstruct@2.0.2)
@@ -263,8 +263,8 @@ packages:
     resolution: {integrity: sha512-ruv7Ae4J5dUYULmeXw1gmb7rYRz57OWCPM57pHojnLq/3Z1CK2lNSLTCVjxVk1F/TZHwOZZrOWi0ur95BbLxNQ==}
     engines: {node: '>=6.9.0'}
 
-  '@birchill/bugsnag-zero@1.0.0':
-    resolution: {integrity: sha512-AEhgmTiRS51qyQxwBbNDrdsJt3vZRjJ5QMyHEx0tcjM3Bx/npBZjsJ8GSqpgJwJHe4QFL0xz2Kuv8GJV468u/g==}
+  '@birchill/bugsnag-zero@1.0.1':
+    resolution: {integrity: sha512-uH1NEXRbUaG6OHbuw77ph1s4e4SeEitT5SzfhlGwEBNPfIAz3LWO214ykebRg4NPILxI7MfD7VLENVR2CTvyOg==}
 
   '@birchill/discriminator@0.3.1':
     resolution: {integrity: sha512-vc7dbXbcURpbFUBFnoa++Cb6ywoI3Ky6lyIL/pp7YuhcDn2gQUSoeWTeUZa02vUmEF7r/NH2YY2jj1irsNa7Ww==}
@@ -5356,7 +5356,7 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
 
-  '@birchill/bugsnag-zero@1.0.0': {}
+  '@birchill/bugsnag-zero@1.0.1': {}
 
   '@birchill/discriminator@0.3.1(superstruct@2.0.2)':
     dependencies:
